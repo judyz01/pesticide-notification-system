@@ -1,11 +1,25 @@
-import {Home, Navbar} from './components';
+import { Navbar, Home, Resources, NOIs } from './components';
+import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import { Route, Routes } from "react-router";
+
+import theme from "./styles/theme";
+
 
 const App = () => {
   return (
-    <div className="App">
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <Navbar />
-      <Home />
-    </div>
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/Resources" element={<Resources />} />
+        <Route path="/NOIs" element={<NOIs />} />
+      </Routes>
+
+    </ThemeProvider>
+
   );
 };
 

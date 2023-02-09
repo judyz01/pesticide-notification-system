@@ -1,13 +1,12 @@
 import React from "react";
 import { Box } from '@mui/material';
 
-
-const Home = () => {
+const NOIs = () => {
   return (
     <Box sx={{pt:20, display: { xs: "none", sm: "block" } }}>
-      HOME PAGE
+      NOIS PAGE
     </Box>
   );
 };
 
-export default Home;
+export default NOIs;
