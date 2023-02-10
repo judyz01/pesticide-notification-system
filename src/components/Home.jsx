@@ -1,16 +1,22 @@
 import React from "react";
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import CommunityVoices from "./CommunityVoices";
+import MapView from "./MapView";
 
 
 
 const Home = () => {
   return (
-    <Box sx={{display: "flex",  height: "100vh", width: "100vw"}}>
+    <Box sx={{display: "flex"}}>
       <CommunityVoices />
 
-      <Box sx={{backgroundColor: "#fdf7ee", flexGrow: 1}}>
-        HOME PAGE
+      <Box sx={{display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#fdf7ee", flexGrow: 1}}>
+        
+        <Typography sx={{mt: "25px", fontSize: 28, fontWeight: 600, color: "#126701"}}>
+          Find Nearby Pesticides
+        </Typography>
+
+        <MapView />
       </Box>
     </Box>
   );
