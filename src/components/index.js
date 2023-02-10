@@ -1,11 +1,14 @@
+import CommunityVoices from "./CommunityVoices";
 import Home from "./Home";
 import Navbar from "./Navbar";
-import Resources from "./Resources";
 import NOIs from "./NOIs";
+import Resources from "./Resources";
+
 
 export {
-  Navbar, 
   Home,
+  Navbar, 
+  NOIs, 
   Resources,
-  NOIs,
+  CommunityVoices,
 };

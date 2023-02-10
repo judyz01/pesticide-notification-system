@@ -1,9 +1,9 @@
 import { createTheme } from "@mui/material/styles";
 
 export const Colors = {
-  primary: "#126701",
-  secondary: "#34A853",
-  background: "#fdf7ee",
+  primary: "#126701", // Dark Green
+  secondary: "#34A853", // Light Green
+  background: "#fdf7ee", // Off White
 }
 
 const theme = createTheme({

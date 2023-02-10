@@ -11,7 +11,7 @@ const Navbar = () => {
     return (
       <Toolbar sx={{
         display: "flex",
-        justifyContent: "space-between",
+        justifyContent: "space-between"
       }}>
         <a href="/">
           <Box
@@ -27,7 +27,7 @@ const Navbar = () => {
         </a>
 
         <Box sx={{pt:10, display: { xs: "none", sm: "block" } }}>
-              {/* Redundant Code, any other way to route back to "/"? */}
+              {/* TODO // Redundant Code, any other way to route back to "/" instead of "/Home"? */}
               <Button
                 sx={{ 
                   pl:4,
