@@ -23,7 +23,6 @@ export default function MapView() {
   };
 
   return (
-    // Important! Always set the container height explicitly
     <Box sx={{ mt: "25px", height:"542px", width:"873px", display: { xs: "none", sm: "block" } }}>
       <div style={{ height: '100%', width: '100%' }}>
         <GoogleMapReact
