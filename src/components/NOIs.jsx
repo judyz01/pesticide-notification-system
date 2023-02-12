@@ -4,9 +4,8 @@ import { Box } from '@mui/material';
 const NOIs = () => {
   return (
     <Box sx={{display: { xs: "none", sm: "block" } }}>
-      NOIS PAGE
+      NOIs PAGE
     </Box>
   );
 };
-
 export default NOIs;

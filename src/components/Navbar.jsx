@@ -26,35 +26,46 @@ const Navbar = () => {
           />
         </a>
 
-        <Box sx={{pt:10, display: { xs: "none", sm: "block" } }}>
-              {/* TODO // Redundant Code, any other way to route back to "/" instead of "/Home"? */}
-              <Button
-                sx={{ 
-                  pl:4,
-                  pr:4,
-                  fontSize: 18,
-                  fontWeight: 600,
-                  color: "#126701" }}>
-                <Link style={{textDecoration: "none", color: "#126701"}} to={`/`}>
-                  Home
-                </Link>
-              </Button>
+        <Box sx={{ display: "flex", flexDirection: "column"}}>
+          
+          <Box sx={{pl:"275px", m:"20px", display: { xs: "none", sm: "block" } }}>
+            <Button sx={{variant:"contained", backgroundColor:"#F79407", color:"white"}}>
+              Español 
+            </Button>
+          </Box>
 
-            {navItems.map((item) => (
-              <Button key={item} 
-                sx={{ 
-                  pl:4,
-                  pr:4,
-                  fontSize: 18,
-                  fontWeight: 600,
-                  color: "#126701" }}>
-                <Link style={{textDecoration: "none", color: "#126701"}} to={`/${item}`}>
-                  {item}
-                </Link>
-              </Button>
-            ))}
+          <Box sx={{ display: { xs: "none", sm: "block" } }}>
+                {/* TODO // Redundant Code, any other way to route back to "/" instead of "/Home"? */}
+                <Button
+                  sx={{ 
+                    pl:4,
+                    pr:4,
+                    fontSize: 18,
+                    fontWeight: 600,
+                    color: "#126701" }}>
+                  <Link style={{textDecoration: "none", color: "#126701"}} to={`/`}>
+                    Home
+                  </Link>
+                </Button>
+
+              {navItems.map((item) => (
+                <Button key={item} 
+                  sx={{ 
+                    pl:4,
+                    pr:4,
+                    fontSize: 18,
+                    fontWeight: 600,
+                    color: "#126701" }}>
+                  <Link style={{textDecoration: "none", color: "#126701"}} to={`/${item}`}>
+                    {item}
+                  </Link>
+                </Button>
+              ))}
+          </Box>
+
 
         </Box>
+
       </Toolbar>
     );
   };

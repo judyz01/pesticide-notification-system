@@ -19,7 +19,7 @@ export default function MapView() {
       lat: 38.5373,
       lng: -121.7617
     },
-    zoom: 11
+    zoom: 16
   };
 
   return (
