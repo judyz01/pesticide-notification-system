@@ -1,4 +1,5 @@
-import React, { useState, useEffect, updateMedia }from "react";
+import React, { useState, useEffect } from "react";
+import updateMedia from "react";
 import { AppBar, Box, Button, Toolbar } from '@mui/material';
 import { Link } from "react-router-dom";
 import MenuIcon from '@mui/icons-material/Menu';
@@ -76,7 +77,6 @@ const Navbar = () => {
             </Button>
           </Box>
          {isMobile ? setShowButtons(false) : undefined}
-
           <Box sx={{m:"20px", display: { xs: "block", sm: "none" } }}>
             <Button 
             sx={{float:"right"}}
