@@ -1,11 +1,17 @@
-import React from "react";
+import React, { useState }from "react";
 import { AppBar, Box, Button, Toolbar } from '@mui/material';
 import { Link } from "react-router-dom";
-
+import MenuIcon from '@mui/icons-material/Menu';
 
 const navItems = ['Resources', 'NOIs'];
 
 const Navbar = () => {
+
+  const [showButtons, setShowButtons] = useState(false);
+  
+  const renderButtons = () => {
+    setShowButtons(true);
+  }
 
   const displayDesktop = () => {
     return (
@@ -19,7 +25,7 @@ const Navbar = () => {
               sx={{
                 width: 183,
                 height: 100,
-                display: { xs: "none", sm: "block" } 
+                display: { xs: "block", sm: "block" } 
               }}
               alt="logo"
               src="../images/logo.png"
@@ -28,11 +34,24 @@ const Navbar = () => {
 
         <Box sx={{ display: "flex", flexDirection: "column"}}>
           
-          <Box sx={{pl:"275px", m:"20px", display: { xs: "none", sm: "block" } }}>
-            <Button sx={{variant:"contained", backgroundColor:"#F79407", color:"white"}}>
+          <Box sx={{m:"20px", display: { xs: "block", sm: "block" } }}>
+            <Button sx={{float: "right", variant:"contained", backgroundColor:"#F79407", color:"white"}}>
               Español 
             </Button>
           </Box>
+
+          <Box sx={{m:"20px", display: { xs: "block", sm: "none" } }}>
+            <Button 
+            sx={{float:"right"}}
+            startIcon={<MenuIcon/>} 
+            onclick={{renderButtons}}
+            />
+          </Box>
+
+
+          {/* TODO // Put this logic in renderButtons, 
+          create two different styles xs vs sm for columns vs row depending on viewsize, 
+          showButtons as a condition to toggle menu*/}
 
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
                 {/* TODO // Redundant Code, any other way to route back to "/" instead of "/Home"? */}
@@ -47,7 +66,6 @@ const Navbar = () => {
                     Home
                   </Link>
                 </Button>
-
               {navItems.map((item) => (
                 <Button key={item} 
                   sx={{ 
