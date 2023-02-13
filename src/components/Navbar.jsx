@@ -8,10 +8,39 @@ const navItems = ['Resources', 'NOIs'];
 const Navbar = () => {
 
   const [showButtons, setShowButtons] = useState(false);
-  
+
   const renderButtons = () => {
-    setShowButtons(true);
-  }
+    return(
+      <Box sx={{ display: { xs: "none", sm: "block" } }}>
+        {/* TODO // Redundant Code, any other way to route back to "/" instead of "/Home"? */}
+        <Button
+          sx={{ 
+            pl:4,
+            pr:4,
+            fontSize: 18,
+            fontWeight: 600,
+            color: "#126701" }}>
+            <Link style={{textDecoration: "none", color: "#126701"}} to={`/`}>
+              Home
+            </Link>
+        </Button>
+        {navItems.map((item) => (
+          <Button key={item} 
+            sx={{ 
+              pl:4,
+              pr:4,
+              fontSize: 18,
+              fontWeight: 600,
+              color: "#126701" }}
+          >
+            <Link style={{textDecoration: "none", color: "#126701"}} to={`/${item}`}>
+              {item}
+            </Link>
+          </Button>
+        ))}
+      </Box>
+    );
+  };
 
   const displayDesktop = () => {
     return (
@@ -44,44 +73,15 @@ const Navbar = () => {
             <Button 
             sx={{float:"right"}}
             startIcon={<MenuIcon/>} 
-            onclick={{renderButtons}}
+            onclick={() => {
+              setShowButtons(true); 
+              renderButtons();
+            }}
             />
           </Box>
-
-
-          {/* TODO // Put this logic in renderButtons, 
-          create two different styles xs vs sm for columns vs row depending on viewsize, 
-          showButtons as a condition to toggle menu*/}
-
-          <Box sx={{ display: { xs: "none", sm: "block" } }}>
-                {/* TODO // Redundant Code, any other way to route back to "/" instead of "/Home"? */}
-                <Button
-                  sx={{ 
-                    pl:4,
-                    pr:4,
-                    fontSize: 18,
-                    fontWeight: 600,
-                    color: "#126701" }}>
-                  <Link style={{textDecoration: "none", color: "#126701"}} to={`/`}>
-                    Home
-                  </Link>
-                </Button>
-              {navItems.map((item) => (
-                <Button key={item} 
-                  sx={{ 
-                    pl:4,
-                    pr:4,
-                    fontSize: 18,
-                    fontWeight: 600,
-                    color: "#126701" }}>
-                  <Link style={{textDecoration: "none", color: "#126701"}} to={`/${item}`}>
-                    {item}
-                  </Link>
-                </Button>
-              ))}
-          </Box>
-
-
+          {/* TODO // add logic that decides whether to render or not, always for desktop view, 
+          toggle for mobile view based on menu button click*/}
+          {renderButtons()}
         </Box>
 
       </Toolbar>
