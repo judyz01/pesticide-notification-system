@@ -10,7 +10,7 @@ const Home = () => {
     <Box sx={{display: "flex"}}>
       <CommunityVoices />
 
-      <Box sx={{display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#fdf7ee", flexGrow: 1}}>
+      <Box sx={{display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#fdf7ee", flexGrow: 1, height: "100vh"}}>
         
         <Typography sx={{mt: "25px", fontSize: 28, fontWeight: 600, color: "#126701"}}>
           Find Nearby Pesticides

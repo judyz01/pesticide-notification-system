@@ -1,4 +1,4 @@
-import React, { useState }from "react";
+import React, { useState, useEffect, updateMedia }from "react";
 import { AppBar, Box, Button, Toolbar } from '@mui/material';
 import { Link } from "react-router-dom";
 import MenuIcon from '@mui/icons-material/Menu';
@@ -7,7 +7,14 @@ const navItems = ['Resources', 'NOIs'];
 
 const Navbar = () => {
 
-  const [showButtons, setShowButtons] = useState(false);
+  const [showButtons, setShowButtons] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 650);
+
+  useEffect(() => {
+    window.addEventListener("resize", updateMedia);
+    return () => window.removeEventListener("resize", updateMedia);
+  });
+
 
   const renderButtons = () => {
     return(
@@ -68,11 +75,12 @@ const Navbar = () => {
               Español 
             </Button>
           </Box>
+         {isMobile ? setShowButtons(false) : undefined}
 
           <Box sx={{m:"20px", display: { xs: "block", sm: "none" } }}>
             <Button 
             sx={{float:"right"}}
-            startIcon={<MenuIcon/>} 
+            startIcon={<MenuIcon sx={{width:"40px", height:"40px"}}/>} 
             onclick={() => {
               setShowButtons(true); 
               renderButtons();
@@ -81,7 +89,8 @@ const Navbar = () => {
           </Box>
           {/* TODO // add logic that decides whether to render or not, always for desktop view, 
           toggle for mobile view based on menu button click*/}
-          {renderButtons()}
+        {showButtons ? renderButtons() : undefined}
+         
         </Box>
 
       </Toolbar>
