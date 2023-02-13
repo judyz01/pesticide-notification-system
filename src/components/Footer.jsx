@@ -5,7 +5,10 @@ const Footer = () => {
   return (
     <Box sx={{
         display: "flex", 
-        background: "#227711"
+        background: "#227711", 
+        left:0,
+        bottom:0,
+        right:0,
     }}>
         <Box
             component="img"
@@ -15,7 +18,7 @@ const Footer = () => {
             ml: 1,
             mt: 2,
             mb: 1,
-            display: { xs: "none", sm: "block" } 
+            display: { xs: "block", sm: "block" } 
             }}
             alt="logo-white"
             src="../images/logo-white.png"

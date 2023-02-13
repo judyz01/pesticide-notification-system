@@ -23,7 +23,7 @@ export default function MapView() {
   };
 
   return (
-    <Box sx={{ mt: "25px", height:"542px", width:"873px", display: { xs: "none", sm: "block" } }}>
+    <Box sx={{ mt: "25px", height:"542px", width:"80%", display: { xs: "none", sm: "block" } }}>
       <div style={{ height: '100%', width: '100%' }}>
         <GoogleMapReact
           bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY }}
