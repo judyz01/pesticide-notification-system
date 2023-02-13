@@ -1,4 +1,4 @@
-import { Navbar, Home, Resources, NOIs } from './components';
+import { Navbar, Home, Resources, NOIs, Footer } from './components';
 import { ThemeProvider } from "@mui/material/styles";
 import { Box, CssBaseline } from "@mui/material";
 import { Route, Routes } from "react-router";
@@ -18,7 +18,7 @@ const App = () => {
           <Route path="/NOIs" element={<NOIs />} />
         </Routes>
       </Box>
-
+      <Footer />
     </ThemeProvider>
 
   );
