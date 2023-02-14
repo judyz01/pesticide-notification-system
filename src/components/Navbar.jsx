@@ -76,12 +76,12 @@ const Navbar = () => {
               Español 
             </Button>
           </Box>
-         {isMobile ? setShowButtons(false) : undefined}
+          {isMobile ? setShowButtons(false) : undefined}
           <Box sx={{m:"20px", display: { xs: "block", sm: "none" } }}>
             <Button 
             sx={{float:"right"}}
             startIcon={<MenuIcon sx={{width:"40px", height:"40px"}}/>} 
-            onclick={() => {
+            onClick={() => {
               setShowButtons(true); 
               renderButtons();
             }}
@@ -90,7 +90,7 @@ const Navbar = () => {
           {/* TODO // add logic that decides whether to render or not, always for desktop view, 
           toggle for mobile view based on menu button click*/}
         {showButtons ? renderButtons() : undefined}
-         
+
         </Box>
 
       </Toolbar>
