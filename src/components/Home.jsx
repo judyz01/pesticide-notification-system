@@ -1,9 +1,12 @@
 import React from "react";
 import { Box, Typography } from '@mui/material';
 import CommunityVoices from "./CommunityVoices";
+import { LoadScript } from "@react-google-maps/api";
+
 import MapView from "./MapView";
 
-
+const lib = ["places"];
+const key = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 const Home = () => {
   return (
@@ -15,8 +18,9 @@ const Home = () => {
         <Typography sx={{mt: "25px", fontSize: 28, fontWeight: 600, color: "#126701"}}>
           Find Nearby Pesticides
         </Typography>
-
-        <MapView />
+        <LoadScript googleMapsApiKey={key} libraries={lib}>
+          <MapView />
+        </LoadScript>
       </Box>
     </Box>
   );

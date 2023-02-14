@@ -1,62 +1,45 @@
+/*global google*/
+
 import React from "react";
-import { Box } from '@mui/material';
-import { useMemo } from "react";
-import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
-import GoogleMapReact from 'google-map-react';
+import { GoogleMap, Marker } from "@react-google-maps/api";
+import { Box } from "@mui/material";
 
-
-export default function MapView() {
-  // const { isLoaded } = useLoadScript({
-  //   googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-  // });
-
-  // if (!isLoaded) return <div>Loading...</div>;
-  // console.log("loaded map");
-  // return <Map />;
-
-  const defaultProps = {
-    center: {
-      lat: 38.5373,
-      lng: -121.7617
-    },
-    zoom: 16
+class MapView extends React.Component {
+  state = {
+    currentLocation: { lat: 0, lng: 0 },
+    markers: [],
+    bounds: null
   };
 
-  return (
-    <Box sx={{ mt: "25px", height:"542px", width:"80%", display: { xs: "none", sm: "block" } }}>
-      <div style={{ height: '100%', width: '100%' }}>
-        <GoogleMapReact
-          bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY }}
-          defaultCenter={defaultProps.center}
-          defaultZoom={defaultProps.zoom}
-        >
-        </GoogleMapReact>
-      </div>
-    </Box>
+  onMapLoad = map => {
+    navigator?.geolocation.getCurrentPosition(
+      ({ coords: { latitude: lat, longitude: lng } }) => {
+        const pos = { lat, lng };
+        this.setState({ currentLocation: pos });
+      }
+    );
+    google.maps.event.addListener(map, "bounds_changed", () => {
+      this.setState({ bounds: map.getBounds() });
+    });
+  };
 
+  render() {
+    return (
+      <Box sx={{ mt: "25px", height:"542px", width:"80%", display: { xs: "none", sm: "block" } }}>
+          <GoogleMap
+            center={this.state.currentLocation}
+            zoom={17}
+            onLoad={map => this.onMapLoad(map)}
+            mapContainerStyle={{ height: "100%", width: "100%" }}
+          >
 
+            <Marker position={this.state.currentLocation} />
 
-  );
+          </GoogleMap>
+      </Box>
+    );
+  }
 }
 
-// function Map() {
-//   const center = useMemo(() => ({ lat: 44, lng: -80 }), []);
-
-//   return (
-//     // <Box sx={{ mt: "25px", height:"542px", width:"873px", display: { xs: "none", sm: "block" } }}>
-//     //   <div style={{ height: '100vh', width: '100%' }}>
-//     //   <GoogleMap zoom={10} center={center} mapContainerClassName="map-container">
-//     //     <Marker position={center} />
-//     //   </GoogleMap>
-//     //   </div>
-//     // </Box>
-
-//     <div style={{ height: '500px', width: '500px' }}>
-//     <GoogleMap zoom={10} center={center} mapContainerClassName="map-container">
-//       <Marker position={center} />
-//     </GoogleMap>
-//     </div>
-      
-//   );
-// };
+export default MapView;
 
