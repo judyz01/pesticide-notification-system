@@ -18,6 +18,7 @@ const Home = () => {
         <Typography sx={{mt: "25px", fontSize: 28, fontWeight: 600, color: "#126701"}}>
           Find Nearby Pesticides
         </Typography>
+
         <LoadScript googleMapsApiKey={key} libraries={lib}>
           <MapView />
         </LoadScript>
