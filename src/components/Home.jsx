@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from '@mui/material';
+import { Box, Link, Typography } from '@mui/material';
 import CommunityVoices from "./CommunityVoices";
 import { LoadScript } from "@react-google-maps/api";
 
@@ -21,10 +21,20 @@ const Home = () => {
         </Typography>
 
         <LoadScript googleMapsApiKey={key} libraries={lib}>
-          <MapView sx={{mb:"25px"}}/>
+          <MapView />
         </LoadScript>
 
-        <HomeTable/>
+        <Box sx={{pt: "30px", display: "flex", justifyContent: "space-between", width: "80%" }}>
+          <Typography sx={{ fontSize: 21, fontWeight: 600, color: "#126701" }}>
+            Notices of Intent
+          </Typography>
+
+          <Link href="/NOIs" underline="hover" sx={{ pt: "5px", component: "button", color: "#208EF3", fontSize: 18, fontWeight: 600}}>
+            See All
+          </Link>
+        </Box>
+
+        <HomeTable />
       </Box>
     </Box>
   );
