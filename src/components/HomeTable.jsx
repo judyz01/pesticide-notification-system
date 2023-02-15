@@ -77,7 +77,7 @@ export default function HomeTable() {
   };
 
   return (
-    <Paper sx={{ width: '80%', overflow: 'hidden', mt: '25px'}}>
+    <Paper sx={{ width: '80%', overflow: 'hidden', mt: '20px'}}>
       <TableContainer sx={{ maxHeight: 440 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
