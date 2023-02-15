@@ -113,7 +113,7 @@ function rowContent(_index, row) {
 
 const NOIs = () => {
   return (
-      <Box sx={{mt:"25px", display: "flex", flexDirection: "column", alignItems: "center", flexGrow: 1}}>
+      <Box sx={{mt:"25px", mb:"25px", display: "flex", flexDirection: "column", alignItems: "center", flexGrow: 1}}>
         <Paper style={{ height: '80vh', width: '75%' }}>
           <TableVirtuoso
             data={rows}
