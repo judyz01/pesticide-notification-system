@@ -60,7 +60,7 @@ const columns = [
   }
 ];
 
-const rows = Array.from({ length: 200 }, (_, index) => {
+const rows = Array.from({ length: 15 }, (_, index) => {
   const randomSelection = sample[Math.floor(Math.random() * sample.length)];
   return createData(index, ...randomSelection);
 });
@@ -112,7 +112,7 @@ function rowContent(_index, row) {
 
 const NOIsTable = () => {
   return (
-        <Paper style={{ height: '80vh', width: '75%' }}>
+        <Paper style={{ height: '80vh', width: '75%'}}>
           <TableVirtuoso
             data={rows}
             components={VirtuosoTableComponents}

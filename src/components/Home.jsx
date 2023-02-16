@@ -26,7 +26,7 @@ const Home = () => {
           <MapView />
         </LoadScript>
 
-        <Box sx={{pt: "30px", display: "flex", justifyContent: "space-between", width: "80%" }}>
+        <Box sx={{m: "30px", display: "flex", justifyContent: "space-between", width: "80%" }}>
           <Typography sx={{ fontSize: 21, fontWeight: 600, color: "#126701" }}>
             Notices of Intent
           </Typography>
@@ -36,7 +36,7 @@ const Home = () => {
           </Link>
         </Box>
 
-        <NOIsTable />
+        <NOIsTable/>
       </Box>
     </Box>
   );
