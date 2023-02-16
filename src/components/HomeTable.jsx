@@ -77,7 +77,7 @@ export default function HomeTable() {
   };
 
   return (
-    <Paper sx={{ width: '80%', overflow: 'hidden', mt: '20px'}}>
+    <Paper sx={{ width: '80%', mt: '20px'}}>
       <TableContainer sx={{ maxHeight: 440 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -86,7 +86,7 @@ export default function HomeTable() {
                 <StyledTableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth }}
+                  style={{ width: column.width }}
                 >
                   {column.label}
                 </StyledTableCell>

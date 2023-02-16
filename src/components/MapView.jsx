@@ -34,7 +34,7 @@ class MapView extends React.Component {
 
   render() {
     return (
-      <Box sx={{ mt: "25px", height:"542px", width:"80%", display: { xs: "none", sm: "block" } }}>
+      <Box sx={{ mt: "25px", height:"542px", width:"80%", display: { xs: "block", sm: "block" } }}>
 
           <GoogleMap
             center={this.state.currentLocation}

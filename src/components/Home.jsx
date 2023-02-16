@@ -5,6 +5,8 @@ import { LoadScript } from "@react-google-maps/api";
 
 import MapView from "./MapView";
 import HomeTable from "./HomeTable";
+import NOIsTable from "./NOIsTable";
+
 
 const lib = ["places"];
 const key = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
@@ -34,7 +36,7 @@ const Home = () => {
           </Link>
         </Box>
 
-        <HomeTable />
+        <NOIsTable />
       </Box>
     </Box>
   );
