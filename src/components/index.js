@@ -5,9 +5,6 @@ import Navbar from "./Navbar";
 import NOIs from "./NOIs";
 import Resources from "./Resources";
 
-
-
-
 export {
   Home,
   Navbar, 

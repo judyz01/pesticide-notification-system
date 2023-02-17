@@ -11,7 +11,12 @@ import NOIsTable from "./NOIsTable";
 const lib = ["places"];
 const key = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
+
+
+const Loading = <div background-color="#FFAAAA" />
+
 const Home = () => {
+
   return (
     <Box sx={{display: "flex"}}>
       <CommunityVoices />
@@ -22,7 +27,10 @@ const Home = () => {
           Find Nearby Pesticides
         </Typography>
 
-        <LoadScript googleMapsApiKey={key} libraries={lib}>
+        <LoadScript 
+          googleMapsApiKey={key} 
+          libraries={lib}
+          loadingElement={Loading}>
           <MapView />
         </LoadScript>
 
