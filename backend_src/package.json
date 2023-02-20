@@ -1,0 +1,28 @@
+{
+  "name": "backend_src",
+  "version": "1.0.0",
+  "description": "Backend for NOI Notification System",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx functions-framework --target=api [--signature-type=http]"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/judyz01/pesticide-notification-system.git#backend"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/judyz01/pesticide-notification-system/issues"
+  },
+  "homepage": "https://github.com/judyz01/pesticide-notification-system/tree/backend#readme",
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.1.3",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "knex": "^2.4.2",
+    "pg": "^8.9.0",
+    "postgres": "^3.3.3"
+  }
+}
