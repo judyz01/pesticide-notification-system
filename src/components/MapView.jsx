@@ -3,6 +3,8 @@ import React from "react";
 import { GoogleMap, Marker } from "@react-google-maps/api";
 import { Box } from "@mui/material";
 
+import axios from 'axios';
+
 class MapView extends React.Component {
 
   constructor(props) {
@@ -22,6 +24,35 @@ class MapView extends React.Component {
         this.setState({ currentLocation: pos });
       }
     );
+
+    // CORS error 
+    axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
+        headers: {
+          "Access-Control-Allow-Origin": true, 
+          'Access-Control-Allow-Credentials':true, 
+          "Access-Control-Allow-Methods":"GET,PUT,POST,DELETE,PATCH,OPTIONS"
+        },
+        withCredentials: false,
+        params: { latitude: '37.511418', longitude: '-120.81', radius: '2000' },
+    })
+    .then(function (response) {
+        console.log(response.data);
+    })
+    .catch(function (error) {
+        console.error(error);
+    });
+
+    // example below works
+
+    // axios.get('https://api.github.com/users/mapbox')
+    // .then((response) => {
+    //   console.log(response.data);
+    //   console.log(response.status);
+    //   console.log(response.statusText);
+    //   console.log(response.headers);
+    //   console.log(response.config);
+    // });
+
   }
 
   blueDot = {

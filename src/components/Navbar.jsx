@@ -41,9 +41,9 @@ const Navbar = () => {
       <Box sx={{
         display: { xs: "flex", sm: "flex" }, 
         flexDirection: {xs: "column", sm: "row"},
-         position: "relative", 
-         border: {xs: "2px solid #126701", sm: "none"},
-         zIndex: 12000 }}>
+        position: "relative", 
+        border: {xs: "2px solid #126701", sm: "none"},
+        zIndex: 12000 }}>
         {/* TODO // Redundant Code, any other way to route back to "/" instead of "/Home"? */}
         <Button
           sx={{ 
@@ -88,7 +88,7 @@ const Navbar = () => {
         backgroundColor: "#FFFFFF",
         zIndex: 12000 }}>
           {renderButtons()}
-         </Box>
+      </Box>
     );
   };
 
