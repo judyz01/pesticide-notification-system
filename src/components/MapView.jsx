@@ -54,13 +54,13 @@ class MapView extends React.Component {
           >
 
             <Marker icon={this.blueDot} position={this.state.currentLocation} />
-          </GoogleMap>
 
-          <div id="legend">
-            <div>
-              <img src="../images/legend.svg"/>
+            <div id="legend">
+              <div>
+                <img src="../images/legend.svg"/>
+              </div>
             </div>
-          </div>
+          </GoogleMap>
       </Box>
     );
   }

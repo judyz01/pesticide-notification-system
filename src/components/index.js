@@ -1,4 +1,5 @@
 import CommunityVoices from "./CommunityVoices";
+import Filters from "./Filters";
 import Footer from "./Footer";
 import Home from "./Home";
 import Navbar from "./Navbar";
@@ -11,5 +12,6 @@ export {
   NOIs, 
   Resources,
   CommunityVoices,
+  Filters,
   Footer
 };
