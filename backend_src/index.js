@@ -77,8 +77,8 @@ app.get('/findNearbyNOI', async (req, res) => {
     let longitude = req.query.longitude
     let radius = req.query.radius
     try {
-        const noiList = await pool.raw('SELECT row_to_json(find_nearby_noi(?, ?, ?))', [latitude, longitude, radius]);
-        res.status(200).json(noiList)
+        const noiList = await pool.raw('SELECT * FROM get_nearby_noi_data(?, ?, ?)', [latitude, longitude, radius]);
+        res.status(200).json(noiList.rows)
     } catch (err) {
         console.error(err)
         res.status(500).send('Error in request')
