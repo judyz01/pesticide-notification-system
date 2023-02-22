@@ -27,7 +27,7 @@ function valueLabelFormat(value) {
 const Filters = () => {
   return (
     // TODO: Implement filters for mobile view
-    <Box sx={{display: "flex", direction: "column", overflow: "scroll", backgroundColor: "#EAEAEA", width: "20%", minWidth: "150px", display:{ xs: "none" , sm: "block" } }}>
+    <Box sx={{display: "flex", direction: "column", overflow: "scroll", backgroundColor: "#EAEAEA", width: "20%", minWidth: "150px", display:{xs: "none" , sm: "block" } }}>
       <Typography align='center' sx={{pt: "45px", fontSize: 21, fontWeight: 600, color: "#126701" }}>
         Filters
       </Typography>
