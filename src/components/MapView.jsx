@@ -1,10 +1,12 @@
 /*global google*/
 import React from "react";
-import { GoogleMap, Marker } from "@react-google-maps/api";
+import { GoogleMap, Marker, MarkerClusterer } from "@react-google-maps/api";
 import { Box } from "@mui/material";
 
 import axios from 'axios';
 
+// Radius is in meters
+var currRadius = 100000;
 class MapView extends React.Component {
 
   constructor(props) {
@@ -13,6 +15,7 @@ class MapView extends React.Component {
     this.state = {
       currentLocation: { lat: 38.53709139783189, lng: -121.75506664377548 },
       markers: [],
+      pesticideData: [],
       bounds: null
     };
   }
@@ -25,34 +28,14 @@ class MapView extends React.Component {
       }
     );
 
-    // CORS error 
     axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-        headers: {
-          "Access-Control-Allow-Origin": true, 
-          'Access-Control-Allow-Credentials':true, 
-          "Access-Control-Allow-Methods":"GET,PUT,POST,DELETE,PATCH,OPTIONS"
-        },
-        withCredentials: false,
-        params: { latitude: '37.511418', longitude: '-120.81', radius: '2000' },
+        params: { latitude: this.state.currentLocation.lat, longitude: this.state.currentLocation.lng, radius: currRadius },
     })
-    .then(function (response) {
-        console.log(response.data);
-    })
+    .then(response => 
+      this.setState({ pesticideData: response.data }))
     .catch(function (error) {
         console.error(error);
     });
-
-    // example below works
-
-    // axios.get('https://api.github.com/users/mapbox')
-    // .then((response) => {
-    //   console.log(response.data);
-    //   console.log(response.status);
-    //   console.log(response.statusText);
-    //   console.log(response.headers);
-    //   console.log(response.config);
-    // });
-
   }
 
   blueDot = {
@@ -73,7 +56,16 @@ class MapView extends React.Component {
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
   };
 
+
   render() {
+
+    console.log("Expected number of markers");
+    console.log(this.state.pesticideData.length);
+
+    // console.log("Data");
+    // console.log(this.state.pesticideData);
+    // console.log(this.state.currentLocation.lat);
+    // console.log(this.state.currentLocation.lng);
 
     return (
       <Box sx={{ mt: "25px", height:"542px", width:"80%", display: { xs: "block", sm: "block" } }}>
@@ -85,6 +77,20 @@ class MapView extends React.Component {
           >
 
             <Marker icon={this.blueDot} position={this.state.currentLocation} />
+            
+            {/* Previous attempt at generating markers with the long and lat values, problem is there are duplicate coordinates so clusters were used (below) */}
+            {/* {this.state.pesticideData.map((elem) => (
+              <Marker position={ {lat: parseFloat(elem.latitude), lng: parseFloat(elem.longitude)} } />
+            ))} */}
+
+            <MarkerClusterer>
+              {(clusterer) =>
+                this.state.pesticideData.map((elem) => (
+                  <Marker position={ {lat: parseFloat(elem.latitude), lng: parseFloat(elem.longitude)} } clusterer={clusterer} />
+                ))
+              }
+            </MarkerClusterer>
+
 
             <div id="legend">
               <div>
