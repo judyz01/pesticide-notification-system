@@ -21,9 +21,4 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# zip file for cloud function upload
-backend_src.zip
-
-# Local Netlify folder
-.netlify
+.env
