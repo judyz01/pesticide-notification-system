@@ -5,11 +5,16 @@ import { LoadScript } from "@react-google-maps/api";
 
 import MapView from "./MapView";
 import HomeTable from "./HomeTable";
+import NOIsTable from "./NOIsTable";
+
 
 const lib = ["places"];
 const key = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
+const Loading = <div background-color="#FFAAAA" />
+
 const Home = () => {
+
   return (
     <Box sx={{display: "flex"}}>
       <CommunityVoices />
@@ -20,11 +25,14 @@ const Home = () => {
           Find Nearby Pesticides
         </Typography>
 
-        <LoadScript googleMapsApiKey={key} libraries={lib}>
+        <LoadScript 
+          googleMapsApiKey={key} 
+          libraries={lib}
+          loadingElement={Loading}>
           <MapView />
         </LoadScript>
 
-        <Box sx={{pt: "30px", display: "flex", justifyContent: "space-between", width: "80%" }}>
+        <Box sx={{m: "30px", display: "flex", justifyContent: "space-between", width: "80%" }}>
           <Typography sx={{ fontSize: 21, fontWeight: 600, color: "#126701" }}>
             Notices of Intent
           </Typography>
@@ -34,7 +42,7 @@ const Home = () => {
           </Link>
         </Box>
 
-        <HomeTable />
+        <NOIsTable/>
       </Box>
     </Box>
   );

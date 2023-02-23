@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import updateMedia from "react";
 import { AppBar, Box, Button, Toolbar } from '@mui/material';
 import { Link } from "react-router-dom";
 import MenuIcon from '@mui/icons-material/Menu';
@@ -9,17 +8,42 @@ const navItems = ['Resources', 'NOIs'];
 const Navbar = () => {
 
   const [showButtons, setShowButtons] = useState(true);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 650);
+  const [showMenu, setShowMenu] = useState(false);
+  const [isDesktop, setDesktop] = useState(true);
 
   useEffect(() => {
-    window.addEventListener("resize", updateMedia);
-    return () => window.removeEventListener("resize", updateMedia);
-  });
+    if (window.innerWidth > 599) {
+      setShowButtons(true);
+      setDesktop(true);
+      setShowMenu(false);
+    } else {
+      setShowButtons(false);
+      setDesktop(false);
+    }
 
+    const updateMedia = () => {
+      if (window.innerWidth > 599) {
+        setShowButtons(true);
+        setDesktop(true);
+        setShowMenu(false);
+      } else {
+        setShowButtons(false);
+        setDesktop(false);
+      }
+    };
+    window.addEventListener('resize', updateMedia);
+    return () => window.removeEventListener('resize', updateMedia);
+  }, []);
 
+ /*display: { xs: "none", sm: "block" } */
   const renderButtons = () => {
     return(
-      <Box sx={{ display: { xs: "none", sm: "block" } }}>
+      <Box sx={{
+        display: { xs: "flex", sm: "flex" }, 
+        flexDirection: {xs: "column", sm: "row"},
+        position: "relative", 
+        border: {xs: "2px solid #126701", sm: "none"},
+        zIndex: 12000 }}>
         {/* TODO // Redundant Code, any other way to route back to "/" instead of "/Home"? */}
         <Button
           sx={{ 
@@ -27,7 +51,9 @@ const Navbar = () => {
             pr:4,
             fontSize: 18,
             fontWeight: 600,
-            color: "#126701" }}>
+            color: "#126701"}}
+            onClick={() => !isDesktop ? setShowMenu(false): undefined}
+            >
             <Link style={{textDecoration: "none", color: "#126701"}} to={`/`}>
               Home
             </Link>
@@ -39,13 +65,29 @@ const Navbar = () => {
               pr:4,
               fontSize: 18,
               fontWeight: 600,
-              color: "#126701" }}
+              color: "#126701",
+              borderTop: {xs: "1px solid #126701", sm: "none"} }}
+              onClick={() => !isDesktop ? setShowMenu(false): undefined}
           >
             <Link style={{textDecoration: "none", color: "#126701"}} to={`/${item}`}>
               {item}
             </Link>
           </Button>
         ))}
+      </Box>
+    );
+  };
+
+  const renderMenu = () => {
+    return(
+      <Box sx={{
+        display: "block", 
+        position: "absolute",
+        top: "119px",
+        right: "0px",
+        backgroundColor: "#FFFFFF",
+        zIndex: 12000 }}>
+          {renderButtons()}
       </Box>
     );
   };
@@ -76,20 +118,19 @@ const Navbar = () => {
               Español 
             </Button>
           </Box>
-          {isMobile ? setShowButtons(false) : undefined}
-          <Box sx={{m:"20px", display: { xs: "block", sm: "none" } }}>
+          <Box sx={{display: { xs: "block", sm: "none" }}}>
             <Button 
             sx={{float:"right"}}
-            startIcon={<MenuIcon sx={{width:"40px", height:"40px"}}/>} 
+            startIcon={<MenuIcon sx={{width:"30px", height:"30px"}}/>} 
             onClick={() => {
-              setShowButtons(true); 
-              renderButtons();
+              showMenu ? setShowMenu(false) : setShowMenu(true); 
             }}
             />
           </Box>
           {/* TODO // add logic that decides whether to render or not, always for desktop view, 
           toggle for mobile view based on menu button click*/}
         {showButtons ? renderButtons() : undefined}
+        {showMenu ? renderMenu() : undefined}
 
         </Box>
 
