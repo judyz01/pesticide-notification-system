@@ -1,37 +1,57 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Button, Card, CardContent, CardHeader, CardMedia, Stack, Typography } from '@mui/material';
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 
+import axios from 'axios';
+
+
 
 const NOICards = () =>  {
-  const data = [
-      { name: "Asana XL Insecticide", distance: "1.2 miles", time: "9:38 am", method: "Restricted" },
-      { name: "Abba Ultra Miticide/Insecticide", distance: "2.2 miles", time: "9:38 am", method: "Non-Restricted" },
-      { name: "Besiege Insecticide", distance: "3.2 miles", time: "9:38 am", method: "Restricted" },
-  ];
+  const [pesticideData, setPesticideData] = useState('');
+
+  const update = () => {
+    axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
+        params: { latitude: 37.511418, longitude: -120.81, radius: 1609.34 },
+    })
+    .then((response) => {
+      setPesticideData(response.data);
+    })
+    .catch(function (error) {
+        console.error(error);
+    });
+  };
+
+  useEffect(update, []);
+
+  if (!pesticideData) return null;
+
+  pesticideData.sort(function (a, b) {
+    return new Date(b.applic_dt) - new Date(a.applic_dt);
+  });
+
   return (
     <Stack
       spacing="20px"
       direction="column"
       justifyContent="flex-start"
       alignItems="center"
-      sx={{ width: "100%"}}
+      sx={{ width: "100%", mb: "30px"}}
     >
-      {data.map((elem) => (
+      {pesticideData.map((elem) => (
           <Card sx={{ display:"flex", width: "80%", borderRadius: "16px", justifyContent: "space-between" }}>
             <Box sx={{ flexDirection: "column" }}>
               <CardHeader
-                title={`${elem.name}`}
+                title={`${elem.product_name}`}
               />
               <CardContent>
                 <Typography variant="h11" color="#A5ADBB">
-                  Address: 
+                  Address: TBD
                 </Typography>
 
                 <Typography color="#A5ADBB">
-                  Coverage:
+                  Coverage: {`${elem.acre_treated}`} acres
                 </Typography>
               </CardContent>
             </Box>
@@ -41,19 +61,19 @@ const NOICards = () =>  {
               <Stack direction="row" alignItems="center" gap={2}>
                 <LocationOnOutlinedIcon />
                 <Typography variant="body1">
-                {`${elem.distance}`}
+                  TBD
                 </Typography>
               </Stack>
               <Stack direction="row" alignItems="center" gap={2}>
                 <AccessTimeOutlinedIcon />
                 <Typography variant="body1">
-                {`${elem.time}`}
+                {`${elem.applic_dt}`}
                 </Typography>
               </Stack>
               <Stack direction="row" alignItems="center" gap={2}>
                 <WarningAmberOutlinedIcon />
                 <Typography variant="body1">
-                {`${elem.method}`}
+                {`${elem.aer_grnd_ind}`}
                 </Typography>
               </Stack>
 
