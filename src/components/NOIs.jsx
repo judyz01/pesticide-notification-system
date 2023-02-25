@@ -6,12 +6,9 @@ import NOICards from "./NOICards";
 
 const NOIs = () => {
   return (
-      // <Box sx={{mt:"25px", mb:"25px", display: "flex", flexDirection: "column", alignItems: "center", flexGrow: 1}}>
-      //   <NOIsTable />
-      // </Box>
 
     <Box sx={{display: "flex"}}>
-      <Filters />
+      <Filters/>
 
       <Box sx={{display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#fdf7ee", flexGrow: 1}}>
         

@@ -3,10 +3,7 @@ import { Box, Button, Card, CardContent, CardHeader, CardMedia, Stack, Typograph
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
-
 import axios from 'axios';
-
-
 
 const NOICards = () =>  {
   const [pesticideData, setPesticideData] = useState('');
@@ -27,11 +24,30 @@ const NOICards = () =>  {
 
   if (!pesticideData) return null;
 
+  // Sort by date from newest to oldest
   pesticideData.sort(function (a, b) {
     return new Date(b.applic_dt) - new Date(a.applic_dt);
   });
 
+  // const findAddress = (elem) => {
+  //   axios.get(`http://nominatim.openstreetmap.org/reverse?format=json`, {
+  //       params: { lat: 54.9824031826, lon: 9.2833114795 },
+  //   })
+  //   .then((response) => {
+  //     const address = response.data.display_name;
+  //     console.log(address)
+  //     return address
+  //   })
+  //   .catch(function (error) {
+  //       console.error(error);
+  //   });
+  // }
+
+  // findAddress();
+
+
   return (
+
     <Stack
       spacing="20px"
       direction="column"
@@ -40,14 +56,16 @@ const NOICards = () =>  {
       sx={{ width: "100%", mb: "30px"}}
     >
       {pesticideData.map((elem) => (
+
           <Card sx={{ display:"flex", width: "80%", borderRadius: "16px", justifyContent: "space-between" }}>
             <Box sx={{ flexDirection: "column" }}>
               <CardHeader
                 title={`${elem.product_name}`}
+                sx={{pb:0}}
               />
               <CardContent>
                 <Typography variant="h11" color="#A5ADBB">
-                  Address: TBD
+                  Address:
                 </Typography>
 
                 <Typography color="#A5ADBB">
@@ -57,20 +75,24 @@ const NOICards = () =>  {
             </Box>
 
             {/* TODO: Not responsive for smaller devices (less than m) yet */}
-            <CardMedia sx={{ pt:"40px", flexDirection: "column", width: "20%", display:{ xs: "none" , m: "block", lg: "block" }}}>
+            <CardMedia sx={{ pt:"35px", flexDirection: "column", width: "20%", display:{ xs: "none" , m: "block", lg: "block" }}}>
               <Stack direction="row" alignItems="center" gap={2}>
                 <LocationOnOutlinedIcon />
                 <Typography variant="body1">
                   TBD
                 </Typography>
               </Stack>
-              <Stack direction="row" alignItems="center" gap={2}>
+              <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
                 <AccessTimeOutlinedIcon />
                 <Typography variant="body1">
-                {`${elem.applic_dt}`}
+                {`${elem.applic_dt}`} 
                 </Typography>
+{/* 
+                <Typography >
+                {`${elem.applic_time}`} 
+                </Typography> */}
               </Stack>
-              <Stack direction="row" alignItems="center" gap={2}>
+              <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
                 <WarningAmberOutlinedIcon />
                 <Typography variant="body1">
                 {`${elem.aer_grnd_ind}`}
