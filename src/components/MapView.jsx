@@ -6,7 +6,7 @@ import { Box } from "@mui/material";
 import axios from 'axios';
 
 // Radius is in meters
-var currRadius = 100000;
+var currRadius = 1000000;
 class MapView extends React.Component {
 
   constructor(props) {

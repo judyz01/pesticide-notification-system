@@ -1,59 +1,101 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Button, Card, CardContent, CardHeader, CardMedia, Stack, Typography } from '@mui/material';
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
-
+import axios from 'axios';
 
 const NOICards = () =>  {
-  const data = [
-      { name: "Asana XL Insecticide", distance: "1.2 miles", time: "9:38 am", method: "Restricted" },
-      { name: "Abba Ultra Miticide/Insecticide", distance: "2.2 miles", time: "9:38 am", method: "Non-Restricted" },
-      { name: "Besiege Insecticide", distance: "3.2 miles", time: "9:38 am", method: "Restricted" },
-  ];
+  const [pesticideData, setPesticideData] = useState('');
+
+  const update = () => {
+    axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
+        params: { latitude: 37.511418, longitude: -120.81, radius: 1609.34 },
+    })
+    .then((response) => {
+      setPesticideData(response.data);
+    })
+    .catch(function (error) {
+        console.error(error);
+    });
+  };
+
+  useEffect(update, []);
+
+  if (!pesticideData) return null;
+
+  // Sort by date from newest to oldest
+  pesticideData.sort(function (a, b) {
+    return new Date(b.applic_dt) - new Date(a.applic_dt);
+  });
+
+  // const findAddress = (elem) => {
+  //   axios.get(`http://nominatim.openstreetmap.org/reverse?format=json`, {
+  //       params: { lat: 54.9824031826, lon: 9.2833114795 },
+  //   })
+  //   .then((response) => {
+  //     const address = response.data.display_name;
+  //     console.log(address)
+  //     return address
+  //   })
+  //   .catch(function (error) {
+  //       console.error(error);
+  //   });
+  // }
+
+  // findAddress();
+
+
   return (
+
     <Stack
       spacing="20px"
       direction="column"
       justifyContent="flex-start"
       alignItems="center"
-      sx={{ width: "100%"}}
+      sx={{ width: "100%", mb: "30px"}}
     >
-      {data.map((elem) => (
+      {pesticideData.map((elem) => (
+
           <Card sx={{ display:"flex", width: "80%", borderRadius: "16px", justifyContent: "space-between" }}>
             <Box sx={{ flexDirection: "column" }}>
               <CardHeader
-                title={`${elem.name}`}
+                title={`${elem.product_name}`}
+                sx={{pb:0}}
               />
               <CardContent>
                 <Typography variant="h11" color="#A5ADBB">
-                  Address: 
+                  Address:
                 </Typography>
 
                 <Typography color="#A5ADBB">
-                  Coverage:
+                  Coverage: {`${elem.acre_treated}`} acres
                 </Typography>
               </CardContent>
             </Box>
 
             {/* TODO: Not responsive for smaller devices (less than m) yet */}
-            <CardMedia sx={{ pt:"40px", flexDirection: "column", width: "20%", display:{ xs: "none" , m: "block", lg: "block" }}}>
+            <CardMedia sx={{ pt:"35px", flexDirection: "column", width: "20%", display:{ xs: "none" , m: "block", lg: "block" }}}>
               <Stack direction="row" alignItems="center" gap={2}>
                 <LocationOnOutlinedIcon />
                 <Typography variant="body1">
-                {`${elem.distance}`}
+                  TBD
                 </Typography>
               </Stack>
-              <Stack direction="row" alignItems="center" gap={2}>
+              <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
                 <AccessTimeOutlinedIcon />
                 <Typography variant="body1">
-                {`${elem.time}`}
+                {`${elem.applic_dt}`} 
                 </Typography>
+{/* 
+                <Typography >
+                {`${elem.applic_time}`} 
+                </Typography> */}
               </Stack>
-              <Stack direction="row" alignItems="center" gap={2}>
+              <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
                 <WarningAmberOutlinedIcon />
                 <Typography variant="body1">
-                {`${elem.method}`}
+                {`${elem.aer_grnd_ind}`}
                 </Typography>
               </Stack>
 
