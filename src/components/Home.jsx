@@ -5,8 +5,7 @@ import CommunityVoices from "./CommunityVoices";
 import { LoadScript } from "@react-google-maps/api";
 
 import MapView from "./MapView";
-import HomeTable from "./HomeTable";
-import NOIsTable from "./NOIsTable";
+import NOICards from "./NOICards";
 
 
 const lib = ["places"];
@@ -44,7 +43,7 @@ const Home = () => {
           </Link>
         </Box>
 
-        <NOIsTable/>
+        <NOICards/>
       </Box>
     </Box>
   );

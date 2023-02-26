@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import MenuIcon from '@mui/icons-material/Menu';
 
 const Navbar = () => {
-  const navItems = ["Filters", "NOIS"];
+  const navItems = ["Resources", "NOIS"];
   const [showButtons, setShowButtons] = useState(true);
   const [showMenu, setShowMenu] = useState(false);
   const [isDesktop, setDesktop] = useState(true);
