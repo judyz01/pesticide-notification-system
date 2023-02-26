@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Box, Link, Typography } from '@mui/material';
 import CommunityVoices from "./CommunityVoices";
 import { LoadScript } from "@react-google-maps/api";
@@ -14,6 +15,7 @@ const key = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 const Loading = <div background-color="#FFAAAA" />
 
 const Home = () => {
+  const { t } = useTranslation();
 
   return (
     <Box sx={{display: "flex"}}>
@@ -22,7 +24,7 @@ const Home = () => {
       <Box sx={{display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#fdf7ee", flexGrow: 1}}>
         
         <Typography sx={{mt: "25px", fontSize: 28, fontWeight: 600, color: "#126701"}}>
-          Find Nearby Pesticides
+            {t("Title")}
         </Typography>
 
         <LoadScript 
@@ -34,11 +36,11 @@ const Home = () => {
 
         <Box sx={{m: "30px", display: "flex", justifyContent: "space-between", width: "80%" }}>
           <Typography sx={{ fontSize: 21, fontWeight: 600, color: "#126701" }}>
-            Notices of Intent
+            {t("NOI")}
           </Typography>
 
           <Link href="/NOIs" underline="hover" sx={{ pt: "5px", component: "button", color: "#208EF3", fontSize: 18, fontWeight: 600}}>
-            See All
+            {t("SeeAll")}
           </Link>
         </Box>
 

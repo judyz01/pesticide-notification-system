@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { AppBar, Box, Button, Toolbar } from '@mui/material';
 import { Link } from "react-router-dom";
 import MenuIcon from '@mui/icons-material/Menu';
 
-const navItems = ['Resources', 'NOIs'];
-
 const Navbar = () => {
-
+  const navItems = ["Filters", "NOIS"];
   const [showButtons, setShowButtons] = useState(true);
   const [showMenu, setShowMenu] = useState(false);
   const [isDesktop, setDesktop] = useState(true);
+  const { t, i18n } = useTranslation();
+  const [language, setLanguage] = useState("sp");
+
 
   useEffect(() => {
     if (window.innerWidth > 599) {
@@ -35,7 +37,11 @@ const Navbar = () => {
     return () => window.removeEventListener('resize', updateMedia);
   }, []);
 
- /*display: { xs: "none", sm: "block" } */
+  const changeLanguage = () => {
+    language === "en" ? setLanguage("sp") : setLanguage("en");
+    i18n.changeLanguage(language);
+  }
+
   const renderButtons = () => {
     return(
       <Box sx={{
@@ -55,7 +61,7 @@ const Navbar = () => {
             onClick={() => !isDesktop ? setShowMenu(false): undefined}
             >
             <Link style={{textDecoration: "none", color: "#126701"}} to={`/`}>
-              Home
+              {t("Home")}
             </Link>
         </Button>
         {navItems.map((item) => (
@@ -67,10 +73,10 @@ const Navbar = () => {
               fontWeight: 600,
               color: "#126701",
               borderTop: {xs: "1px solid #126701", sm: "none"} }}
-              onClick={() => !isDesktop ? setShowMenu(false): undefined}
+            onClick={() => !isDesktop ? setShowMenu(false): undefined}
           >
             <Link style={{textDecoration: "none", color: "#126701"}} to={`/${item}`}>
-              {item}
+              {t(item)}
             </Link>
           </Button>
         ))}
@@ -114,8 +120,15 @@ const Navbar = () => {
         <Box sx={{ display: "flex", flexDirection: "column"}}>
           
           <Box sx={{m:"20px", display: { xs: "block", sm: "block" } }}>
-            <Button sx={{float: "right", variant:"contained", backgroundColor:"#F79407", color:"white"}}>
-              Español 
+            <Button 
+              sx={{
+                float: "right", 
+                variant:"contained", 
+                backgroundColor:"#F79407", 
+                color:"white"}}
+              onClick={() => changeLanguage()}
+            >
+              {t("Language")}
             </Button>
           </Box>
           <Box sx={{display: { xs: "block", sm: "none" }}}>

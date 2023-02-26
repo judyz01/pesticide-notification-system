@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Navbar, Home, Resources, NOIs, Footer } from './components';
 import { ThemeProvider } from "@mui/material/styles";
 import { Box, CssBaseline } from "@mui/material";
@@ -8,19 +9,20 @@ import theme from "./styles/theme";
 
 const App = () => {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Navbar />
-      <Box component="main" sx={{ pt: 15 }}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/Resources" element={<Resources />} />
-          <Route path="/NOIs" element={<NOIs />} />
-        </Routes>
-      </Box>
-      <Footer />
-    </ThemeProvider>
-
+    <Suspense fallback="loading">
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Navbar />
+        <Box component="main" sx={{ pt: 15 }}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/Resources" element={<Resources />} />
+            <Route path="/NOIs" element={<NOIs />} />
+          </Routes>
+        </Box>
+        <Footer />
+      </ThemeProvider>
+      </Suspense>
   );
 };
 

@@ -1,6 +1,7 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Box, Slider, Typography } from '@mui/material';
-
+ 
 const radiusMarks = [
   {
     value: 1,
@@ -25,11 +26,13 @@ function valueLabelFormat(value) {
 }
 
 const Filters = () => {
+  const { t } = useTranslation();
+
   return (
     // TODO: Implement filters for mobile view
     <Box sx={{display: "flex", direction: "column", overflow: "scroll", backgroundColor: "#EAEAEA", width: "20%", minWidth: "150px", display:{xs: "none" , sm: "block" } }}>
       <Typography align='center' sx={{pt: "45px", fontSize: 21, fontWeight: 600, color: "#126701" }}>
-        Filters
+        {t("Filters")}
       </Typography>
 
       <Box sx={{p: "30px", width: "100%"}}>

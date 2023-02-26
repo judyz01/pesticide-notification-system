@@ -1,11 +1,14 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Box } from '@mui/material';
 
 const CommunityVoices = () => {
+  const { t } = useTranslation();
+
   return (
     <Box sx={{display: "flex", direction: "column", overflow: "scroll", backgroundColor: "#EAEAEA", width: "20%", display:{ xs: "none" , sm: "none", lg: "block" } }}>
       <Box sx={{pt: "45px", pl: "20px", fontSize: 21, fontWeight: 600, color: "#126701" }}>
-        Community Voices
+        {t("Community Voices")}
       </Box>
 
       <Box sx={{m:"20px"}}>
