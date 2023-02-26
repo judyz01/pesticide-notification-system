@@ -22,7 +22,7 @@ const App = () => {
         </Box>
         <Footer />
       </ThemeProvider>
-      </Suspense>
+    </Suspense>
   );
 };
 

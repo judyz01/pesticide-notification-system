@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, Card, CardContent, CardHeader, CardMedia, Stack, Typography } from '@mui/material';
+import { Box, Card, CardContent, CardHeader, CardMedia, Stack, Typography } from '@mui/material';
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
@@ -9,6 +9,7 @@ const NOICards = () =>  {
   const [pesticideData, setPesticideData] = useState('');
 
   const update = () => {
+    // TODO: pass current location to latitude and longitude
     axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
         params: { latitude: 37.511418, longitude: -120.81, radius: 1609.34 },
     })
@@ -45,7 +46,6 @@ const NOICards = () =>  {
 
   // findAddress();
 
-
   return (
 
     <Stack
@@ -53,6 +53,7 @@ const NOICards = () =>  {
       direction="column"
       justifyContent="flex-start"
       alignItems="center"
+      overflow="auto"
       sx={{ width: "100%", mb: "30px"}}
     >
       {pesticideData.map((elem) => (
