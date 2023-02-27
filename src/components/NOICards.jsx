@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Card, CardContent, CardHeader, CardMedia, Skeleton, Stack, Typography } from '@mui/material';
-import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
-import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
-import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
+import { AccessTimeOutlined, LocationOnOutlined, WarningAmberOutlined}  from '@mui/icons-material';
 import axios from 'axios';
 
 function loadSkeleton() {
   return [
-    <Skeleton sx={{m:"15px"}} animation="wave" variant="rectangular" width="80%" height={120} />,
-    <Skeleton sx={{m:"15px"}} animation="wave" variant="rectangular" width="80%" height={120} />,
-    <Skeleton sx={{m:"15px"}} animation="wave" variant="rectangular" width="80%" height={120} />,
-    <Skeleton sx={{m:"15px"}} animation="wave" variant="rectangular" width="80%" height={120} />,
-    <Skeleton sx={{m:"15px"}} animation="wave" variant="rectangular" width="80%" height={120} />,
+    <Skeleton sx={{m:"15px"}} animation="wave" variant="rectangular" width="80%" height={150} />,
+    <Skeleton sx={{m:"15px"}} animation="wave" variant="rectangular" width="80%" height={150} />,
+    <Skeleton sx={{m:"15px"}} animation="wave" variant="rectangular" width="80%" height={150} />,
+    <Skeleton sx={{m:"15px"}} animation="wave" variant="rectangular" width="80%" height={150} />,
+    <Skeleton sx={{m:"15px"}} animation="wave" variant="rectangular" width="80%" height={150} />,
   ];
 }
 
@@ -40,6 +38,7 @@ const NOICards = () =>  {
     return new Date(b.applic_dt) - new Date(a.applic_dt);
   });
 
+  // TODO: reverse geocoding apis too costly, need to find better alternative
   // const findAddress = (elem) => {
   //   axios.get(`http://nominatim.openstreetmap.org/reverse?format=json`, {
   //       params: { lat: 54.9824031826, lon: 9.2833114795 },
@@ -56,6 +55,37 @@ const NOICards = () =>  {
 
   // findAddress();
 
+  const getApplicatorType = (char) => {
+    switch(char) {
+      case 'A':
+        return "Aerial";
+      case 'B':
+        return "Ground";
+      case 'C':
+        return "Aerial/Ground";
+      default:
+        return "N/A";
+    }
+  }
+
+  const getStandardTime = (time) => {
+
+    // Times that are listed null
+    if (!time) {
+      return "";
+    }
+
+    var militaryTime = time.padStart(4, '0');
+
+    var militaryHour = parseInt(militaryTime.substring(0,2));
+    var standardHour = ((militaryHour + 11) % 12) + 1;
+    var amPm = militaryHour > 11 ? 'PM' : 'AM';
+    var minutes = militaryTime.substring(2);
+
+
+    return standardHour + ':' + minutes + amPm;
+  };
+
   return (
 
     <Stack
@@ -66,9 +96,9 @@ const NOICards = () =>  {
       overflow="auto"
       sx={{ width: "100%", mb: "30px"}}
     >
-      {pesticideData.map((elem) => (
-        <Card sx={{ display:"flex", width: "80%", borderRadius: "16px", justifyContent: "space-between" }}>
-            <Box sx={{ flexDirection: "column" }}>
+      {pesticideData.map((elem, index) => (
+        <Card key={index} sx={{ display:"flex", width: "80%", borderRadius: "16px", justifyContent: "space-between" }}>
+            <Box key={index} sx={{ flexDirection: "column" }}>
 
                 <CardHeader
                   title={`${elem.product_name}`}
@@ -77,7 +107,7 @@ const NOICards = () =>  {
               
               <CardContent>
                 <Typography variant="h11" color="#A5ADBB">
-                  Address:
+                  Address: {`${elem.latitude}`}, {`${elem.longitude}`}
                 </Typography>
 
                 <Typography color="#A5ADBB">
@@ -86,23 +116,29 @@ const NOICards = () =>  {
               </CardContent>
             </Box>
 
-          <CardMedia sx={{ pt:"35px", flexDirection: "column", width: "20%", display:{ xs: "none" , m: "block", lg: "block" }}}>
+          <CardMedia sx={{ pt:"35px", pb:"25px", flexDirection: "column", width: "20%", display:{ xs: "none" , m: "block", lg: "block" }}}>
             <Stack direction="row" alignItems="center" gap={2}>
-              <LocationOnOutlinedIcon />
+              <LocationOnOutlined />
               <Typography variant="body1">
                 TBD
               </Typography>
             </Stack>
             <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
-              <AccessTimeOutlinedIcon />
-              <Typography variant="body1">
-              {`${elem.applic_dt}`} 
-              </Typography>
+              <AccessTimeOutlined />
+              <Stack direction="column">
+                <Typography variant="body1">
+                  {`${getStandardTime(elem.applic_time)}`} 
+                </Typography>
+                <Typography>
+                  {`${elem.applic_dt}`} 
+                </Typography>
+
+              </Stack>
             </Stack>
             <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
-              <WarningAmberOutlinedIcon />
+              <WarningAmberOutlined />
               <Typography variant="body1">
-              {`${elem.aer_grnd_ind}`}
+              {`${getApplicatorType(elem.aer_grnd_ind)}`}
               </Typography>
             </Stack>
 

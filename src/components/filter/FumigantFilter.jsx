@@ -20,7 +20,6 @@ export default function FumigantFilter() {
           labelPlacement="end"
           checked={checked}
           onChange={handleChange}
-          inputProps={{ 'aria-label': 'Without label' }}
     />
   );
 }
