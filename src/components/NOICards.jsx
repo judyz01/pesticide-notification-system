@@ -1,19 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Card, CardContent, CardHeader, CardMedia, Skeleton, Stack, Typography } from '@mui/material';
 import { AccessTimeOutlined, LocationOnOutlined, WarningAmberOutlined}  from '@mui/icons-material';
+import { useTranslation } from "react-i18next";
 import axios from 'axios';
+
 
 function loadSkeleton() {
   return [
-    <Skeleton sx={{m:"15px"}} animation="wave" variant="rectangular" width="80%" height={150} />,
-    <Skeleton sx={{m:"15px"}} animation="wave" variant="rectangular" width="80%" height={150} />,
-    <Skeleton sx={{m:"15px"}} animation="wave" variant="rectangular" width="80%" height={150} />,
-    <Skeleton sx={{m:"15px"}} animation="wave" variant="rectangular" width="80%" height={150} />,
-    <Skeleton sx={{m:"15px"}} animation="wave" variant="rectangular" width="80%" height={150} />,
+    <Skeleton sx={{mb:"15px", borderRadius: "16px"}} animation="wave" variant="rectangular" width="80%" height={150} />,
+    <Skeleton sx={{m:"15px", borderRadius: "16px"}} animation="wave" variant="rectangular" width="80%" height={150} />,
+    <Skeleton sx={{m:"15px", borderRadius: "16px"}} animation="wave" variant="rectangular" width="80%" height={150} />,
+    <Skeleton sx={{m:"15px", borderRadius: "16px"}} animation="wave" variant="rectangular" width="80%" height={150} />,
+    <Skeleton sx={{m:"15px", borderRadius: "16px"}} animation="wave" variant="rectangular" width="80%" height={150} />,
   ];
 }
 
 const NOICards = () =>  {
+  const { t } = useTranslation();
+  const COVERAGE_UNIT = t("acres");
+  const DISTANCE_UNIT = t("miles");
+
   const [pesticideData, setPesticideData] = useState('');
 
   const update = () => {
@@ -58,11 +64,11 @@ const NOICards = () =>  {
   const getApplicatorType = (char) => {
     switch(char) {
       case 'A':
-        return "Aerial";
+        return t("Aerial");
       case 'B':
-        return "Ground";
+        return t("Ground");
       case 'C':
-        return "Aerial/Ground";
+        return t("Aerial/Ground");
       default:
         return "N/A";
     }
@@ -111,7 +117,7 @@ const NOICards = () =>  {
                 </Typography>
 
                 <Typography color="#A5ADBB">
-                  Coverage: {`${elem.acre_treated}`} acres
+                  Coverage: {`${elem.acre_treated}`} {`${COVERAGE_UNIT}`}
                 </Typography>
               </CardContent>
             </Box>

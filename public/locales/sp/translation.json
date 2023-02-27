@@ -24,8 +24,13 @@
     "Closest": "Mas cercano",
     "Furthest": "Más lejos",
 
-    "Fumigant": "Fumigante de Suelo"
+    "Fumigant": "Fumigante de Suelo",
 
+    "acres": "hectáreas",
+    "miles": "millas",
+    "Aerial": "Aéreo",
+    "Ground": "Suelo",
+    "Aerial/Ground": "Aéreo/Suelo"
 
 
 

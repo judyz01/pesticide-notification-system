@@ -23,7 +23,14 @@
     "Closest": "Closest",
     "Furthest": "Furthest",
 
-    "Fumigant": "Soil Fumigant"
+    "Fumigant": "Soil Fumigant", 
+
+    "acres": "acres",
+    "miles": "miles",
+    "Aerial": "Aerial",
+    "Ground": "Ground",
+    "Aerial/Ground": "Aerial/Ground"
+
 
 
 
