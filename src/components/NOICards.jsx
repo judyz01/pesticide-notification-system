@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Card, CardContent, CardHeader, CardMedia, Stack, Typography } from '@mui/material';
+import { Box, Card, CardContent, CardHeader, CardMedia, Skeleton, Stack, Typography } from '@mui/material';
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
@@ -57,25 +57,31 @@ const NOICards = () =>  {
       sx={{ width: "100%", mb: "30px"}}
     >
       {pesticideData.map((elem) => (
-
+        <>
+          {elem ? (
           <Card sx={{ display:"flex", width: "80%", borderRadius: "16px", justifyContent: "space-between" }}>
-            <Box sx={{ flexDirection: "column" }}>
-              <CardHeader
-                title={`${elem.product_name}`}
-                sx={{pb:0}}
-              />
-              <CardContent>
-                <Typography variant="h11" color="#A5ADBB">
-                  Address:
-                </Typography>
+            
 
-                <Typography color="#A5ADBB">
-                  Coverage: {`${elem.acre_treated}`} acres
-                </Typography>
-              </CardContent>
-            </Box>
+              <Box sx={{ flexDirection: "column" }}>
 
-            {/* TODO: Not responsive for smaller devices (less than m) yet */}
+                  <CardHeader
+                    title={`${elem.product_name}`}
+                    sx={{pb:0}}
+                  />
+                
+                <CardContent>
+                  <Typography variant="h11" color="#A5ADBB">
+                    Address:
+                  </Typography>
+
+                  <Typography color="#A5ADBB">
+                    Coverage: {`${elem.acre_treated}`} acres
+                  </Typography>
+                </CardContent>
+              </Box>
+
+
+
             <CardMedia sx={{ pt:"35px", flexDirection: "column", width: "20%", display:{ xs: "none" , m: "block", lg: "block" }}}>
               <Stack direction="row" alignItems="center" gap={2}>
                 <LocationOnOutlinedIcon />
@@ -88,10 +94,6 @@ const NOICards = () =>  {
                 <Typography variant="body1">
                 {`${elem.applic_dt}`} 
                 </Typography>
-{/* 
-                <Typography >
-                {`${elem.applic_time}`} 
-                </Typography> */}
               </Stack>
               <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
                 <WarningAmberOutlinedIcon />
@@ -101,8 +103,12 @@ const NOICards = () =>  {
               </Stack>
 
             </CardMedia>
-
           </Card>
+
+          ) : (
+            <Skeleton animation="wave" variant="rectangular" width="80%" height={120} />
+          )}
+        </>
       ))}
     </Stack>
   );
