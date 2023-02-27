@@ -89,6 +89,7 @@ export default function CountyDropdown() {
   const [countyName, setcountyName] = React.useState([]);
 
   const { t } = useTranslation();
+  const COUNTY_LABEL = t("County");
 
   const handleChange = (event) => {
     const {
@@ -103,17 +104,17 @@ export default function CountyDropdown() {
 
   return (
       <FormControl sx={{ m: 1, width: "100%", mt: 3 }}>
-        <InputLabel id="county-label">Select County</InputLabel>
+        <InputLabel id="county-label"> {COUNTY_LABEL} </InputLabel>
         <Select
           labelId="county-label"
           id="county"
           multiple
           value={countyName}
-          label="Select County"
+          label={COUNTY_LABEL}
           onChange={handleChange}
           renderValue={(selected) => {
             if (selected.length === 0) {
-              return <em>{t("County")}</em>;
+              return <em>{COUNTY_LABEL}</em>;
             }
 
             return selected.join(', ');

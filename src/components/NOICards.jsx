@@ -80,8 +80,6 @@ const NOICards = () =>  {
                 </CardContent>
               </Box>
 
-
-
             <CardMedia sx={{ pt:"35px", flexDirection: "column", width: "20%", display:{ xs: "none" , m: "block", lg: "block" }}}>
               <Stack direction="row" alignItems="center" gap={2}>
                 <LocationOnOutlinedIcon />

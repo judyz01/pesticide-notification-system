@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { InputLabel, MenuItem, FormControl, Select } from '@mui/material';
-
+import { useTranslation } from "react-i18next";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -29,6 +29,9 @@ function getStyles(name, distanceOrder, theme) {
 }
 
 export default function DistanceFilter() {
+  const { t } = useTranslation();
+  const DISTANCE_LABEL = t("Distance");
+
   const theme = useTheme();
   const [distanceOrder, setDistanceOrder] = React.useState('Closest');
 
@@ -39,12 +42,12 @@ export default function DistanceFilter() {
   return (
 
     <FormControl sx={{ m: 1, width: "100%", mt: 3  }}>
-      <InputLabel id="order-by-distance-label">Order by Distance</InputLabel>
+      <InputLabel id="order-by-distance-label">{DISTANCE_LABEL}</InputLabel>
       <Select
         labelId="order-by-distance-label"
         id="order-by-distance"
         value={distanceOrder}
-        label="Order by Distance"
+        label={DISTANCE_LABEL}
         onChange={handleChange}
         MenuProps={MenuProps}
         inputProps={{ 'aria-label': 'Without label' }}
@@ -55,7 +58,7 @@ export default function DistanceFilter() {
               value={name}
               style={getStyles(name, distanceOrder, theme)}
             >
-              {name}
+              {t(name)}
             </MenuItem>
           ))}
       </Select>
