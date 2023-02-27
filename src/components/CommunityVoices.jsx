@@ -12,43 +12,28 @@ const CommunityVoices = () => {
       </Box>
 
       <Box sx={{m:"20px"}}>
-        “Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris 
-        nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in 
-        reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla 
-        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa 
-        qui officia deserunt mollit anim id est laborum.”
 
-        <Box sx={{mt:"10px"}}>
-          User 1
-        </Box>
+        "{t("CommunityUser1")}"
+
+        {/* <Box sx={{mt:"10px"}}>
+          - Nyeland interviewee 
+        </Box> */}
       </Box>
       <Box sx={{m:"20px"}}>
-        “Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris 
-        nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in 
-        reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla 
-        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa 
-        qui officia deserunt mollit anim id est laborum.”
 
-        <Box sx={{mt:"10px"}}>
+        "{t("CommunityUser2")}"
+
+        {/* <Box sx={{mt:"10px"}}>
           User 2
-        </Box>
+        </Box> */}
       </Box>
       <Box sx={{m:"20px"}}>
-        “Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris 
-        nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in 
-        reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla 
-        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa 
-        qui officia deserunt mollit anim id est laborum.”
 
-        <Box sx={{mt:"10px"}}>
+        "{t("CommunityUser3")}"
+
+        {/* <Box sx={{mt:"10px"}}>
           User 3
-        </Box>
+        </Box> */}
       </Box>
     </Box>
   );
