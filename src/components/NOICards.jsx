@@ -5,6 +5,16 @@ import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 import axios from 'axios';
 
+function loadSkeleton() {
+  return [
+    <Skeleton sx={{m:"15px"}} animation="wave" variant="rectangular" width="80%" height={120} />,
+    <Skeleton sx={{m:"15px"}} animation="wave" variant="rectangular" width="80%" height={120} />,
+    <Skeleton sx={{m:"15px"}} animation="wave" variant="rectangular" width="80%" height={120} />,
+    <Skeleton sx={{m:"15px"}} animation="wave" variant="rectangular" width="80%" height={120} />,
+    <Skeleton sx={{m:"15px"}} animation="wave" variant="rectangular" width="80%" height={120} />,
+  ];
+}
+
 const NOICards = () =>  {
   const [pesticideData, setPesticideData] = useState('');
 
@@ -23,7 +33,7 @@ const NOICards = () =>  {
 
   useEffect(update, []);
 
-  if (!pesticideData) return null;
+  if (!pesticideData) return loadSkeleton();
 
   // Sort by date from newest to oldest
   pesticideData.sort(function (a, b) {
@@ -57,56 +67,47 @@ const NOICards = () =>  {
       sx={{ width: "100%", mb: "30px"}}
     >
       {pesticideData.map((elem) => (
-        <>
-          {elem ? (
-          <Card sx={{ display:"flex", width: "80%", borderRadius: "16px", justifyContent: "space-between" }}>
-            
+        <Card sx={{ display:"flex", width: "80%", borderRadius: "16px", justifyContent: "space-between" }}>
+            <Box sx={{ flexDirection: "column" }}>
 
-              <Box sx={{ flexDirection: "column" }}>
-
-                  <CardHeader
-                    title={`${elem.product_name}`}
-                    sx={{pb:0}}
-                  />
-                
-                <CardContent>
-                  <Typography variant="h11" color="#A5ADBB">
-                    Address:
-                  </Typography>
-
-                  <Typography color="#A5ADBB">
-                    Coverage: {`${elem.acre_treated}`} acres
-                  </Typography>
-                </CardContent>
-              </Box>
-
-            <CardMedia sx={{ pt:"35px", flexDirection: "column", width: "20%", display:{ xs: "none" , m: "block", lg: "block" }}}>
-              <Stack direction="row" alignItems="center" gap={2}>
-                <LocationOnOutlinedIcon />
-                <Typography variant="body1">
-                  TBD
+                <CardHeader
+                  title={`${elem.product_name}`}
+                  sx={{pb:0}}
+                />
+              
+              <CardContent>
+                <Typography variant="h11" color="#A5ADBB">
+                  Address:
                 </Typography>
-              </Stack>
-              <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
-                <AccessTimeOutlinedIcon />
-                <Typography variant="body1">
-                {`${elem.applic_dt}`} 
-                </Typography>
-              </Stack>
-              <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
-                <WarningAmberOutlinedIcon />
-                <Typography variant="body1">
-                {`${elem.aer_grnd_ind}`}
-                </Typography>
-              </Stack>
 
-            </CardMedia>
-          </Card>
+                <Typography color="#A5ADBB">
+                  Coverage: {`${elem.acre_treated}`} acres
+                </Typography>
+              </CardContent>
+            </Box>
 
-          ) : (
-            <Skeleton animation="wave" variant="rectangular" width="80%" height={120} />
-          )}
-        </>
+          <CardMedia sx={{ pt:"35px", flexDirection: "column", width: "20%", display:{ xs: "none" , m: "block", lg: "block" }}}>
+            <Stack direction="row" alignItems="center" gap={2}>
+              <LocationOnOutlinedIcon />
+              <Typography variant="body1">
+                TBD
+              </Typography>
+            </Stack>
+            <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
+              <AccessTimeOutlinedIcon />
+              <Typography variant="body1">
+              {`${elem.applic_dt}`} 
+              </Typography>
+            </Stack>
+            <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
+              <WarningAmberOutlinedIcon />
+              <Typography variant="body1">
+              {`${elem.aer_grnd_ind}`}
+              </Typography>
+            </Stack>
+
+          </CardMedia>
+        </Card>
       ))}
     </Stack>
   );
