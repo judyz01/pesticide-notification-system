@@ -17,13 +17,15 @@ const MenuProps = {
 
 const names = [
   'Most Recent',
-  'Least Recent'
+  'Least Recent',
+  'Closest',
+  'Furthest'
 ];
 
-function getStyles(name, dateOrder, theme) {
+function getStyles(name, distanceDateOrder, theme) {
   return {
     fontWeight:
-    dateOrder.indexOf(name) === -1
+    distanceDateOrder.indexOf(name) === -1
         ? theme.typography.fontWeightRegular
         : theme.typography.fontWeightMedium,
   };
@@ -31,24 +33,24 @@ function getStyles(name, dateOrder, theme) {
 
 export default function DateFilter() {
   const { t } = useTranslation();
-  const DATE_LABEL = t("Date");
+  const INPUT_LABEL = t("Date/Distance");
 
   const theme = useTheme();
-  const [dateOrder, setDateOrder] = React.useState(t("Most Recent"));
+  const [distanceDateOrder, setDistanceDateOrder] = React.useState('');
 
   const handleChange = (event) => {
-    setDateOrder(event.target.value);
+    setDistanceDateOrder(event.target.value);
   };
 
   return (
 
     <FormControl sx={{ m: 1, width: "100%", mt: 3  }}>
-      <InputLabel id="order-by-date-label">{DATE_LABEL}</InputLabel>
+      <InputLabel id="order-by-distance-date-label">{INPUT_LABEL}</InputLabel>
       <Select
-        labelId="order-by-date-label"
-        id="order-by-date"
-        value={dateOrder}
-        label={DATE_LABEL}
+        labelId="order-by-distance-date-label"
+        id="order-by-distance-date"
+        value={distanceDateOrder}
+        label={INPUT_LABEL}
         onChange={handleChange}
         MenuProps={MenuProps}
         inputProps={{ 'aria-label': 'Without label' }}
@@ -57,7 +59,7 @@ export default function DateFilter() {
           <MenuItem
             key={name}
             value={name}
-            style={getStyles(name, dateOrder, theme)}
+            style={getStyles(name, distanceDateOrder, theme)}
           >
             {t(name)}
           </MenuItem>

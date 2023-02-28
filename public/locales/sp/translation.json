@@ -16,11 +16,9 @@
     "Filters": "Filtros",
     "County": "Seleccionar Condado",
 
-    "Date": "Ordenar por Fecha",
+    "Date/Distance": "Ordenar por Fecha/Distancia",
     "Most Recent": "Más reciente",
     "Least Recent": "Menos reciente",
-
-    "Distance": "Ordenar por Distancia",
     "Closest": "Mas cercano",
     "Furthest": "Más lejos",
 
@@ -31,7 +29,5 @@
     "Aerial": "Aéreo",
     "Ground": "Suelo",
     "Aerial/Ground": "Aéreo/Suelo"
-
-
 
 }

@@ -15,11 +15,9 @@
     "Filters": "Filters",
     "County": "Select County",
 
-    "Date": "Order by Date",
+    "Date/Distance": "Order by Date/Distance",
     "Most Recent": "Most Recent",
     "Least Recent": "Least Recent",
-
-    "Distance": "Order by Distance",
     "Closest": "Closest",
     "Furthest": "Furthest",
 
@@ -30,8 +28,5 @@
     "Aerial": "Aerial",
     "Ground": "Ground",
     "Aerial/Ground": "Aerial/Ground"
-
-
-
 
 }
