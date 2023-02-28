@@ -1,11 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Card, CardContent, CardHeader, CardMedia, Stack, Typography } from '@mui/material';
-import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
-import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
-import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
+import { Box, Card, CardContent, CardHeader, CardMedia, Skeleton, Stack, Typography } from '@mui/material';
+import { AccessTimeOutlined, LocationOnOutlined, WarningAmberOutlined}  from '@mui/icons-material';
+import { useTranslation } from "react-i18next";
 import axios from 'axios';
 
+
+function loadSkeleton() {
+  return [
+    <Skeleton sx={{mb:"15px", borderRadius: "16px"}} animation="wave" variant="rectangular" width="80%" height={150} />,
+    <Skeleton sx={{m:"15px", borderRadius: "16px"}} animation="wave" variant="rectangular" width="80%" height={150} />,
+    <Skeleton sx={{m:"15px", borderRadius: "16px"}} animation="wave" variant="rectangular" width="80%" height={150} />,
+    <Skeleton sx={{m:"15px", borderRadius: "16px"}} animation="wave" variant="rectangular" width="80%" height={150} />,
+    <Skeleton sx={{m:"15px", borderRadius: "16px"}} animation="wave" variant="rectangular" width="80%" height={150} />,
+  ];
+}
+
 const NOICards = () =>  {
+  const { t } = useTranslation();
+  const COVERAGE_UNIT = t("acres");
+  const DISTANCE_UNIT = t("miles");
+
   const [pesticideData, setPesticideData] = useState('');
 
   const update = () => {
@@ -23,13 +37,14 @@ const NOICards = () =>  {
 
   useEffect(update, []);
 
-  if (!pesticideData) return null;
+  if (!pesticideData) return loadSkeleton();
 
   // Sort by date from newest to oldest
   pesticideData.sort(function (a, b) {
     return new Date(b.applic_dt) - new Date(a.applic_dt);
   });
 
+  // TODO: reverse geocoding apis too costly, need to find better alternative
   // const findAddress = (elem) => {
   //   axios.get(`http://nominatim.openstreetmap.org/reverse?format=json`, {
   //       params: { lat: 54.9824031826, lon: 9.2833114795 },
@@ -46,6 +61,37 @@ const NOICards = () =>  {
 
   // findAddress();
 
+  const getApplicatorType = (char) => {
+    switch(char) {
+      case 'A':
+        return t("Aerial");
+      case 'B':
+        return t("Ground");
+      case 'C':
+        return t("Aerial/Ground");
+      default:
+        return "N/A";
+    }
+  }
+
+  const getStandardTime = (time) => {
+
+    // Times that are listed null
+    if (!time) {
+      return "";
+    }
+
+    var militaryTime = time.padStart(4, '0');
+
+    var militaryHour = parseInt(militaryTime.substring(0,2));
+    var standardHour = ((militaryHour + 11) % 12) + 1;
+    var amPm = militaryHour > 11 ? 'PM' : 'AM';
+    var minutes = militaryTime.substring(2);
+
+
+    return standardHour + ':' + minutes + amPm;
+  };
+
   return (
 
     <Stack
@@ -56,53 +102,54 @@ const NOICards = () =>  {
       overflow="auto"
       sx={{ width: "100%", mb: "30px"}}
     >
-      {pesticideData.map((elem) => (
+      {pesticideData.map((elem, index) => (
+        <Card key={index} sx={{ display:"flex", width: "80%", borderRadius: "16px", justifyContent: "space-between" }}>
+            <Box key={index} sx={{ flexDirection: "column" }}>
 
-          <Card sx={{ display:"flex", width: "80%", borderRadius: "16px", justifyContent: "space-between" }}>
-            <Box sx={{ flexDirection: "column" }}>
-              <CardHeader
-                title={`${elem.product_name}`}
-                sx={{pb:0}}
-              />
+                <CardHeader
+                  title={`${elem.product_name}`}
+                  sx={{pb:0}}
+                />
+              
               <CardContent>
                 <Typography variant="h11" color="#A5ADBB">
-                  Address:
+                  Address: {`${elem.latitude}`}, {`${elem.longitude}`}
                 </Typography>
 
                 <Typography color="#A5ADBB">
-                  Coverage: {`${elem.acre_treated}`} acres
+                  Coverage: {`${elem.acre_treated}`} {`${COVERAGE_UNIT}`}
                 </Typography>
               </CardContent>
             </Box>
 
-            {/* TODO: Not responsive for smaller devices (less than m) yet */}
-            <CardMedia sx={{ pt:"35px", flexDirection: "column", width: "20%", display:{ xs: "none" , m: "block", lg: "block" }}}>
-              <Stack direction="row" alignItems="center" gap={2}>
-                <LocationOnOutlinedIcon />
+          <CardMedia sx={{ pt:"35px", pb:"25px", flexDirection: "column", width: "20%", display:{ xs: "none" , m: "block", lg: "block" }}}>
+            <Stack direction="row" alignItems="center" gap={2}>
+              <LocationOnOutlined />
+              <Typography variant="body1">
+                TBD
+              </Typography>
+            </Stack>
+            <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
+              <AccessTimeOutlined />
+              <Stack direction="column">
                 <Typography variant="body1">
-                  TBD
+                  {`${getStandardTime(elem.applic_time)}`} 
                 </Typography>
-              </Stack>
-              <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
-                <AccessTimeOutlinedIcon />
-                <Typography variant="body1">
-                {`${elem.applic_dt}`} 
+                <Typography>
+                  {`${elem.applic_dt}`} 
                 </Typography>
-{/* 
-                <Typography >
-                {`${elem.applic_time}`} 
-                </Typography> */}
-              </Stack>
-              <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
-                <WarningAmberOutlinedIcon />
-                <Typography variant="body1">
-                {`${elem.aer_grnd_ind}`}
-                </Typography>
-              </Stack>
 
-            </CardMedia>
+              </Stack>
+            </Stack>
+            <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
+              <WarningAmberOutlined />
+              <Typography variant="body1">
+              {`${getApplicatorType(elem.aer_grnd_ind)}`}
+              </Typography>
+            </Stack>
 
-          </Card>
+          </CardMedia>
+        </Card>
       ))}
     </Stack>
   );

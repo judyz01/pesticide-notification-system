@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Box, Stack, Typography } from '@mui/material';
-import { CountyFilter, DateFilter, DistanceFilter, FumigantFilter, RadiusFilter } from './filter';
+import { CountyFilter, DateDistanceFilter, FumigantFilter, RadiusFilter } from './filter';
 
 
 
@@ -21,8 +21,7 @@ const Filters = () => {
 
         <RadiusFilter />
         <CountyFilter />
-        <DateFilter />
-        <DistanceFilter />
+        <DateDistanceFilter />
         <FumigantFilter />
 
 

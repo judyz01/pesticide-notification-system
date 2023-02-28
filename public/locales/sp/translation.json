@@ -1,17 +1,33 @@
 {
     "Language": "English",
-    "Title": "Encuentre pesticidas cercanos",
+    "Title": "Encuentre Pesticidas Cercanos",
     "NOI": "Avisos de Intención",
     "SeeAll": "Ver Todo",
     "Home": "HOGAR",
     "Resources": "RECURSOS",
     "NOIS": "NOIS",
+
     "Community Voices": "Voces de la Comunidad",
+    "CommunityUser1": "Quiero que me digan cuándo y cómo protegerse, así no dejamos salir a los niños. Pero deben de saber que yo trabajo con personas que no saben leer o escribir. Yo también quiero saber cómo los pesticidas afectan a los niños, porque me preocupa que el hijo de mi hermana tenga problemas de desarrollo por los pesticidas.",
+    "CommunityUser2": "Qué tipo de pesticida van a poner, porque no nomás precisamente queremos que nos avisen cuando van a poner un peticida. No. Queremos que sea general, que cualquier tipo de pesticida, sea bueno o sea malo, avisen.",
+    "CommunityUser3": "Hace 17 años que vivo en Nyeland Acres y desde que llegué trabajo en el campo. Creo que es muy importante un sistema de notificación que nos diga qué químicos se utilizan porque no sé qué químicos usan donde andamos trabajando y siempre se huelen.",
+
     "NOISearch": "NOIs Buscar",
     "Filters": "Filtros",
     "County": "Seleccionar Condado",
-    "CommunityUser1": "Quiero que me digan cuándo y cómo protegerse, así no dejamos salir a los niños. Pero deben de saber que yo trabajo con personas que no saben leer o escribir. Yo también quiero saber cómo los pesticidas afectan a los niños, porque me preocupa que el hijo de mi hermana tenga problemas de desarrollo por los pesticidas.",
-    "CommunityUser2": "Qué tipo de pesticida van a poner, porque no nomás precisamente queremos que nos avisen cuando van a poner un peticida. No. Queremos que sea general, que cualquier tipo de pesticida, sea bueno o sea malo, avisen.",
-    "CommunityUser3": "Hace 17 años que vivo en Nyeland Acres y desde que llegué trabajo en el campo. Creo que es muy importante un sistema de notificación que nos diga qué químicos se utilizan porque no sé qué químicos usan donde andamos trabajando y siempre se huelen."
+
+    "Date/Distance": "Ordenar por Fecha/Distancia",
+    "Most Recent": "Más reciente",
+    "Least Recent": "Menos reciente",
+    "Closest": "Mas cercano",
+    "Furthest": "Más lejos",
+
+    "Fumigant": "Fumigante de Suelo",
+
+    "acres": "hectáreas",
+    "miles": "millas",
+    "Aerial": "Aéreo",
+    "Ground": "Suelo",
+    "Aerial/Ground": "Aéreo/Suelo"
 
 }

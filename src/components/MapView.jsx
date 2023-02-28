@@ -1,12 +1,12 @@
 /*global google*/
 import React from "react";
-import { GoogleMap, Marker, MarkerClusterer } from "@react-google-maps/api";
+import { Circle, GoogleMap, Marker, MarkerClusterer } from "@react-google-maps/api";
 import { Box } from "@mui/material";
 
 import axios from 'axios';
 
 // Radius is in meters
-var currRadius = 1000000;
+var currRadius = 110000;
 class MapView extends React.Component {
 
   constructor(props) {
@@ -56,6 +56,19 @@ class MapView extends React.Component {
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
   };
 
+  options = {
+    strokeColor: '#4285F4',
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    fillColor: '#4285F4',
+    fillOpacity: 0.35,
+    clickable: false,
+    draggable: false,
+    editable: false,
+    visible: true,
+    radius: currRadius,
+    zIndex: 1
+  };
 
   render() {
 
@@ -71,17 +84,16 @@ class MapView extends React.Component {
       <Box sx={{ mt: "25px", height:"542px", width:"80%", display: { xs: "block", sm: "block" } }}>
           <GoogleMap
             center={this.state.currentLocation}
-            zoom={17}
+            zoom={8}
             onLoad={map => this.onMapLoad(map)}
             mapContainerStyle={{ height: "100%", width: "100%" }}
           >
 
             <Marker icon={this.blueDot} position={this.state.currentLocation} />
-            
-            {/* Previous attempt at generating markers with the long and lat values, problem is there are duplicate coordinates so clusters were used (below) */}
-            {/* {this.state.pesticideData.map((elem) => (
-              <Marker position={ {lat: parseFloat(elem.latitude), lng: parseFloat(elem.longitude)} } />
-            ))} */}
+            <Circle
+              center={this.state.currentLocation}
+              options={this.options}
+            />
 
             <MarkerClusterer>
               {(clusterer) =>

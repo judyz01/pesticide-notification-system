@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { InputLabel, MenuItem, FormControl, Select } from '@mui/material';
+import { useTranslation } from "react-i18next";
 
 
 const ITEM_HEIGHT = 48;
@@ -15,49 +16,54 @@ const MenuProps = {
 };
 
 const names = [
+  'Most Recent',
+  'Least Recent',
   'Closest',
   'Furthest'
 ];
 
-function getStyles(name, distanceOrder, theme) {
+function getStyles(name, distanceDateOrder, theme) {
   return {
     fontWeight:
-    distanceOrder.indexOf(name) === -1
+    distanceDateOrder.indexOf(name) === -1
         ? theme.typography.fontWeightRegular
         : theme.typography.fontWeightMedium,
   };
 }
 
-export default function DistanceFilter() {
+export default function DateFilter() {
+  const { t } = useTranslation();
+  const INPUT_LABEL = t("Date/Distance");
+
   const theme = useTheme();
-  const [distanceOrder, setDistanceOrder] = React.useState('Closest');
+  const [distanceDateOrder, setDistanceDateOrder] = React.useState('');
 
   const handleChange = (event) => {
-    setDistanceOrder(event.target.value);
+    setDistanceDateOrder(event.target.value);
   };
 
   return (
 
     <FormControl sx={{ m: 1, width: "100%", mt: 3  }}>
-      <InputLabel id="order-by-distance-label">Order by Distance</InputLabel>
+      <InputLabel id="order-by-distance-date-label">{INPUT_LABEL}</InputLabel>
       <Select
-        labelId="order-by-distance-label"
-        id="order-by-distance"
-        value={distanceOrder}
-        label="Order by Distance"
+        labelId="order-by-distance-date-label"
+        id="order-by-distance-date"
+        value={distanceDateOrder}
+        label={INPUT_LABEL}
         onChange={handleChange}
         MenuProps={MenuProps}
         inputProps={{ 'aria-label': 'Without label' }}
       >
         {names.map((name) => (
-            <MenuItem
-              key={name}
-              value={name}
-              style={getStyles(name, distanceOrder, theme)}
-            >
-              {name}
-            </MenuItem>
-          ))}
+          <MenuItem
+            key={name}
+            value={name}
+            style={getStyles(name, distanceDateOrder, theme)}
+          >
+            {t(name)}
+          </MenuItem>
+        ))}
       </Select>
     </FormControl>
   );
