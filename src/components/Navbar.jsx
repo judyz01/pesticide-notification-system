@@ -48,7 +48,6 @@ const Navbar = () => {
         display: { xs: "flex", sm: "flex" }, 
         flexDirection: {xs: "column", sm: "row"},
         position: "relative", 
-        border: {xs: "2px solid #126701", sm: "none"},
         zIndex: 12000 }}>
         {/* TODO // Redundant Code, any other way to route back to "/" instead of "/Home"? */}
         <Button
@@ -71,8 +70,7 @@ const Navbar = () => {
               pr:4,
               fontSize: 18,
               fontWeight: 600,
-              color: "#126701",
-              borderTop: {xs: "1px solid #126701", sm: "none"} }}
+              color: "#126701" }}
             onClick={() => !isDesktop ? setShowMenu(false): undefined}
           >
             <Link style={{textDecoration: "none", color: "#126701"}} to={`/${item}`}>
@@ -92,6 +90,7 @@ const Navbar = () => {
         top: "119px",
         right: "0px",
         backgroundColor: "#FFFFFF",
+        boxShadow: 5,
         zIndex: 12000 }}>
           {renderButtons()}
       </Box>

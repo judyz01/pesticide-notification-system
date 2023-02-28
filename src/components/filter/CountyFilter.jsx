@@ -84,7 +84,7 @@ function getStyles(name, countyName, theme) {
   };
 }
 
-export default function CountyDropdown() {
+export default function CountyDropdown(props) {
   const theme = useTheme();
   const [countyName, setcountyName] = React.useState([]);
 
@@ -99,8 +99,11 @@ export default function CountyDropdown() {
     setcountyName(
       typeof value === 'string' ? value.split(',') : value,
     );
-
   };
+
+  React.useEffect(() => {
+    props.func(countyName);
+  }, [countyName, props]);
 
   return (
       <FormControl sx={{ m: 1, width: "100%", mt: 3 }}>

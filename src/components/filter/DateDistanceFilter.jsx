@@ -31,7 +31,7 @@ function getStyles(name, distanceDateOrder, theme) {
   };
 }
 
-export default function DateFilter() {
+export default function DateFilter(props) {
   const { t } = useTranslation();
   const INPUT_LABEL = t("Date/Distance");
 
@@ -41,6 +41,10 @@ export default function DateFilter() {
   const handleChange = (event) => {
     setDistanceDateOrder(event.target.value);
   };
+
+  React.useEffect(() => {
+    props.func(distanceDateOrder);
+  }, [distanceDateOrder, props]);
 
   return (
 

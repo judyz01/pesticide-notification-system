@@ -3,6 +3,7 @@ import { Box, Card, CardContent, CardHeader, CardMedia, Skeleton, Stack, Typogra
 import { AccessTimeOutlined, LocationOnOutlined, WarningAmberOutlined}  from '@mui/icons-material';
 import { useTranslation } from "react-i18next";
 import axios from 'axios';
+import { use } from 'i18next';
 
 
 function loadSkeleton() {
@@ -15,7 +16,7 @@ function loadSkeleton() {
   ];
 }
 
-const NOICards = () =>  {
+const NOICards = (props) =>  {
   const { t } = useTranslation();
   const COVERAGE_UNIT = t("acres");
   const DISTANCE_UNIT = t("miles");
@@ -36,6 +37,15 @@ const NOICards = () =>  {
   };
 
   useEffect(update, []);
+
+
+  //These props hold the data from each of the filters - county is array of strings, order is a string, fumigant is boolean, radius is int
+  useEffect(() => {
+    console.log(props.county);
+    console.log(props.order);
+    console.log(props.fumigant);
+    console.log(props.radius);
+  }, [props]);
 
   if (!pesticideData) return loadSkeleton();
 

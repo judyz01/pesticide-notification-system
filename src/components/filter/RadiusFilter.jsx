@@ -24,7 +24,18 @@ function valueLabelFormat(value) {
   return value;
 }
 
-export default function RadiusFilter() {
+export default function RadiusFilter(props) {
+
+  const [radius, setRadius] = React.useState();
+
+  const handleChange = (event) => {
+    setRadius(event.target.value);
+  };
+
+  React.useEffect(() => {
+    props.func(radius);
+  }, [radius, props]);
+
   return (
 
   <Slider
@@ -36,6 +47,7 @@ export default function RadiusFilter() {
     marks={radiusMarks}
     min={1}
     max={10}
+    onChange={handleChange}
   />
 
   );
