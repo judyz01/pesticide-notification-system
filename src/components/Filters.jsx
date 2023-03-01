@@ -4,9 +4,6 @@ import { Box, Stack, Typography } from '@mui/material';
 import { CountyFilter, DateDistanceFilter, FumigantFilter, RadiusFilter } from './filter';
 
 
-
-
-
 const Filters = (props) => {
   const { t } = useTranslation();
 
