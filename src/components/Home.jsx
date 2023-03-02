@@ -13,8 +13,13 @@ const key = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 const Loading = <div background-color="#FFAAAA" />
 
-const Home = () => {
+const Home = (props) => {
   const { t } = useTranslation();
+
+
+  const get_location = (location) => {
+    props.set_location(location);
+  }
 
   return (
     <Box sx={{display: "flex"}}>
@@ -30,7 +35,7 @@ const Home = () => {
           googleMapsApiKey={key} 
           libraries={lib}
           loadingElement={Loading}>
-          <MapView />
+          <MapView func={get_location}/>
         </LoadScript>
 
         <Box sx={{m: "30px", display: "flex", justifyContent: "space-between", width: "80%" }}>

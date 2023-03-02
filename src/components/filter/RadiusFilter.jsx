@@ -3,16 +3,16 @@ import { Slider } from '@mui/material';
 
 const radiusMarks = [
   {
-    value: 1,
-    label: '1 mi.',
-  },
-  {
     value: 5,
     label: '5 mi.',
   },
   {
     value: 10,
     label: '10 mi.',
+  },
+  {
+    value: 15,
+    label: '15 mi.',
   },
 ];
 
@@ -45,8 +45,8 @@ export default function RadiusFilter(props) {
     step={null}
     valueLabelDisplay="auto"
     marks={radiusMarks}
-    min={1}
-    max={10}
+    min={5}
+    max={15}
     onChange={handleChange}
   />
 

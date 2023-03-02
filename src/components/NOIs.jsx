@@ -5,7 +5,7 @@ import Filters from "./Filters";
 
 import NOICards from "./NOICards";
 
-const NOIs = () => {
+const NOIs = (props) => {
   const { t } = useTranslation();
 
   const [county, setCounty] = React.useState([]);
@@ -50,6 +50,7 @@ const NOIs = () => {
           order={order}
           fumigant={fumigant}
           radius={radius}
+          location={props.location}
         />
       </Box>
     </Box>

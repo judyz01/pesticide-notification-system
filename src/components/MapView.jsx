@@ -1,5 +1,5 @@
 /*global google*/
-import React from "react";
+import * as React from 'react';
 import { Circle, GoogleMap, Marker, MarkerClusterer } from "@react-google-maps/api";
 import { Box } from "@mui/material";
 
@@ -18,6 +18,8 @@ class MapView extends React.Component {
       pesticideData: [],
       bounds: null
     };
+
+    props.func(this.state.currentLocation);
   }
 
   componentDidMount() {

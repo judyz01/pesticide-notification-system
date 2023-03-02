@@ -21,19 +21,39 @@ const NOICards = (props) =>  {
   const DISTANCE_UNIT = t("miles");
 
   const [pesticideData, setPesticideData] = useState('');
+  const [currentLocation, setCurrentLocation] = useState('');
+
 
   const update = () => {
 
-    // TODO: pass current location to latitude and longitude
-    axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-        params: { latitude: 37.511418, longitude: -120.81, radius: 1609.34, order: "DESC", orderParam: ""},
-    })
-    .then((response) => {
-      setPesticideData(response.data);
-    })
-    .catch(function (error) {
-        console.error(error);
-    });
+    // navigator.geolocation.getCurrentPosition(
+    //   ({ coords: { latitude: lat, longitude: lng } }) => {
+    //     const pos = { lat, lng };
+    //     setCurrentLocation({pos});
+    //     console.log("found location");
+    //     console.log(currentLocation);
+    //     console.log(currentLocation.pos.lat);
+    //     console.log(currentLocation.pos.lng);
+    //   }
+    // );
+
+
+    if (props.location) {
+      axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
+          params: { latitude: props.location.lat, longitude: props.location.lng, radius: 1609.34, order: "DESC", orderParam: ""},
+      })
+      // axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
+      //   params: { latitude: 37.511418, longitude: -120.81, radius: 1609.34, order: "DESC", orderParam: ""},
+      // })
+      .then((response) => {
+        setPesticideData(response.data);
+      })
+      .catch(function (error) {
+          console.error(error);
+      });
+    } else {
+      console.log("No location found");
+    }
   };
 
   useEffect(update, []);
@@ -45,7 +65,15 @@ const NOICards = (props) =>  {
     console.log(props.order);
     console.log(props.fumigant);
     console.log(props.radius);
-  }, [props]);
+
+    if (props.location) {
+      console.log(props.location);
+      console.log(props.location.lat);
+      console.log(props.location.lng);
+    } else {
+      console.log("no location yet");
+    }
+  }, [props], []);
 
   if (!pesticideData) return loadSkeleton();
 
