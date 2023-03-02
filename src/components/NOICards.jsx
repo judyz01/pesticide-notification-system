@@ -3,7 +3,6 @@ import { Box, Card, CardContent, CardHeader, CardMedia, Skeleton, Stack, Typogra
 import { AccessTimeOutlined, LocationOnOutlined, WarningAmberOutlined}  from '@mui/icons-material';
 import { useTranslation } from "react-i18next";
 import axios from 'axios';
-import { use } from 'i18next';
 
 
 function loadSkeleton() {
@@ -24,9 +23,10 @@ const NOICards = (props) =>  {
   const [pesticideData, setPesticideData] = useState('');
 
   const update = () => {
+
     // TODO: pass current location to latitude and longitude
     axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-        params: { latitude: 37.511418, longitude: -120.81, radius: 1609.34 },
+        params: { latitude: 37.511418, longitude: -120.81, radius: 1609.34, order: "DESC", orderParam: ""},
     })
     .then((response) => {
       setPesticideData(response.data);
@@ -39,7 +39,7 @@ const NOICards = (props) =>  {
   useEffect(update, []);
 
 
-  //These props hold the data from each of the filters - county is array of strings, order is a string, fumigant is boolean, radius is int
+  // These props hold the data from each of the filters - county is array of strings, order is a string, fumigant is boolean, radius is int
   useEffect(() => {
     console.log(props.county);
     console.log(props.order);
@@ -48,11 +48,6 @@ const NOICards = (props) =>  {
   }, [props]);
 
   if (!pesticideData) return loadSkeleton();
-
-  // Sort by date from newest to oldest
-  pesticideData.sort(function (a, b) {
-    return new Date(b.applic_dt) - new Date(a.applic_dt);
-  });
 
   // TODO: reverse geocoding apis too costly, need to find better alternative
   // const findAddress = (elem) => {
@@ -91,16 +86,30 @@ const NOICards = (props) =>  {
       return "";
     }
 
-    var militaryTime = time.padStart(4, '0');
-
+    var militaryTime = time.substring(0, 5);
     var militaryHour = parseInt(militaryTime.substring(0,2));
     var standardHour = ((militaryHour + 11) % 12) + 1;
     var amPm = militaryHour > 11 ? 'PM' : 'AM';
-    var minutes = militaryTime.substring(2);
+    var minutes = militaryTime.substring(3);
 
 
-    return standardHour + ':' + minutes + amPm;
+    return standardHour + ":" + minutes + amPm;
   };
+
+  const reformatDate = (date) => {
+    // Dates that are listed null
+    if (!date) {
+      return "";
+    }
+
+    var yymmdd_format = date.substring(0, 10);
+    var year = yymmdd_format.substring(0, 4);
+    var month = parseInt(yymmdd_format.substring(5, 7));
+    var day = yymmdd_format.substring(8, 10);
+
+    return month + "/" + day + "/" + year;
+  };
+
 
   return (
 
@@ -136,7 +145,7 @@ const NOICards = (props) =>  {
             <Stack direction="row" alignItems="center" gap={2}>
               <LocationOnOutlined />
               <Typography variant="body1">
-                TBD
+              {`${parseFloat(elem.distance).toFixed(2)}`} {DISTANCE_UNIT}
               </Typography>
             </Stack>
             <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
@@ -146,7 +155,7 @@ const NOICards = (props) =>  {
                   {`${getStandardTime(elem.applic_time)}`} 
                 </Typography>
                 <Typography>
-                  {`${elem.applic_dt}`} 
+                  {`${reformatDate(elem.applic_dt)}`} 
                 </Typography>
 
               </Stack>
