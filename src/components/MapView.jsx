@@ -6,7 +6,7 @@ import { Box } from "@mui/material";
 import axios from 'axios';
 
 // Radius is in meters
-var currRadius = 110000;
+var testRadius = 110000;
 class MapView extends React.Component {
 
   constructor(props) {
@@ -29,7 +29,7 @@ class MapView extends React.Component {
     );
 
     axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-        params: { latitude: this.state.currentLocation.lat, longitude: this.state.currentLocation.lng, radius: currRadius },
+        params: { latitude: this.state.currentLocation.lat, longitude: this.state.currentLocation.lng, radius: testRadius, order: "DESC", orderParam: "" },
     })
     .then(response => 
       this.setState({ pesticideData: response.data }))
@@ -66,7 +66,7 @@ class MapView extends React.Component {
     draggable: false,
     editable: false,
     visible: true,
-    radius: currRadius,
+    radius: testRadius,
     zIndex: 1
   };
 
