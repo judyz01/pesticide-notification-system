@@ -23,9 +23,10 @@ const NOICards = (props) =>  {
   const [pesticideData, setPesticideData] = useState('');
 
   const update = () => {
+
     // TODO: pass current location to latitude and longitude
     axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-        params: { latitude: 37.511418, longitude: -120.81, radius: 1609.34 },
+        params: { latitude: 37.511418, longitude: -120.81, radius: 1609.34, order: "DESC", orderParam: ""},
     })
     .then((response) => {
       setPesticideData(response.data);
@@ -38,7 +39,7 @@ const NOICards = (props) =>  {
   useEffect(update, []);
 
 
-  //These props hold the data from each of the filters - county is array of strings, order is a string, fumigant is boolean, radius is int
+  // These props hold the data from each of the filters - county is array of strings, order is a string, fumigant is boolean, radius is int
   useEffect(() => {
     console.log(props.county);
     console.log(props.order);
@@ -108,6 +109,7 @@ const NOICards = (props) =>  {
 
     return month + "/" + day + "/" + year;
   };
+
 
   return (
 
