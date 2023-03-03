@@ -1,12 +1,12 @@
 /*global google*/
-import React from "react";
+import * as React from 'react';
 import { Circle, GoogleMap, Marker, MarkerClusterer } from "@react-google-maps/api";
 import { Box } from "@mui/material";
 
 import axios from 'axios';
 
 // Radius is in meters
-var testRadius = 110000;
+var userRadius = 110000;
 class MapView extends React.Component {
 
   constructor(props) {
@@ -18,6 +18,8 @@ class MapView extends React.Component {
       pesticideData: [],
       bounds: null
     };
+
+    props.func(this.state.currentLocation);
   }
 
   componentDidMount() {
@@ -29,7 +31,7 @@ class MapView extends React.Component {
     );
 
     axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-        params: { latitude: this.state.currentLocation.lat, longitude: this.state.currentLocation.lng, radius: testRadius, order: "DESC", orderParam: "" },
+        params: { latitude: this.state.currentLocation.lat, longitude: this.state.currentLocation.lng, radius: userRadius, order: "DESC", orderParam: "" },
     })
     .then(response => 
       this.setState({ pesticideData: response.data }))
@@ -66,7 +68,7 @@ class MapView extends React.Component {
     draggable: false,
     editable: false,
     visible: true,
-    radius: testRadius,
+    radius: userRadius,
     zIndex: 1
   };
 

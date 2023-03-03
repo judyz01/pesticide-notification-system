@@ -24,20 +24,29 @@ const NOICards = (props) =>  {
 
   const update = () => {
 
-    // TODO: pass current location to latitude and longitude
-    axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-        params: { latitude: 37.511418, longitude: -120.81, radius: 1609.34, order: "DESC", orderParam: ""},
-    })
-    .then((response) => {
-      setPesticideData(response.data);
-    })
-    .catch(function (error) {
-        console.error(error);
-    });
+    var stored_coordinates = localStorage.getItem('location');
+    var coordinates = JSON.parse(stored_coordinates);
+
+    if (coordinates) {
+      axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
+          params: { latitude: coordinates.lat, longitude: coordinates.lng, radius: 110000, order: "DESC", orderParam: ""},
+      })
+      // axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
+      //   params: { latitude: 37.511418, longitude: -120.81, radius: 1609.34, order: "ASC", orderParam: "distance"},
+      // })
+      .then((response) => {
+        setPesticideData(response.data);
+        console.log("Pesticide data received for cards");
+      })
+      .catch(function (error) {
+          console.error(error);
+      });
+    } else {
+      console.log("no location found");
+    }
   };
 
-  useEffect(update, []);
-
+  useEffect(update, [props], []);
 
   // These props hold the data from each of the filters - county is array of strings, order is a string, fumigant is boolean, radius is int
   useEffect(() => {
@@ -45,26 +54,20 @@ const NOICards = (props) =>  {
     console.log(props.order);
     console.log(props.fumigant);
     console.log(props.radius);
-  }, [props]);
+
+    if (props.location) {
+      console.log("received location passed from mapview");
+      console.log(props.location);
+      console.log(props.location.lat);
+      console.log(props.location.lng);
+      localStorage.setItem('location', JSON.stringify(props.location));
+
+    } else {
+      console.log("no location passed from mapview");
+    }
+  }, [props], []);
 
   if (!pesticideData) return loadSkeleton();
-
-  // TODO: reverse geocoding apis too costly, need to find better alternative
-  // const findAddress = (elem) => {
-  //   axios.get(`http://nominatim.openstreetmap.org/reverse?format=json`, {
-  //       params: { lat: 54.9824031826, lon: 9.2833114795 },
-  //   })
-  //   .then((response) => {
-  //     const address = response.data.display_name;
-  //     console.log(address)
-  //     return address
-  //   })
-  //   .catch(function (error) {
-  //       console.error(error);
-  //   });
-  // }
-
-  // findAddress();
 
   const getApplicatorType = (char) => {
     switch(char) {

@@ -139,8 +139,6 @@ const Navbar = () => {
             }}
             />
           </Box>
-          {/* TODO // add logic that decides whether to render or not, always for desktop view, 
-          toggle for mobile view based on menu button click*/}
         {showButtons ? renderButtons() : undefined}
         {showMenu ? renderMenu() : undefined}
 

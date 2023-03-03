@@ -3,7 +3,7 @@ import { createTheme } from "@mui/material/styles";
 export const Colors = {
   primary: "#126701", // Dark Green
   secondary: "#34A853", // Light Green
-  background: "#fdf7ee", // Off White
+  background: "#237611", // 
 }
 
 const theme = createTheme({
