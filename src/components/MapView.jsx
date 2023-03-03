@@ -5,8 +5,9 @@ import { Box } from "@mui/material";
 
 import axios from 'axios';
 
-// Radius is in meters
-var userRadius = 110000;
+// Radius is in meters, currently set to 5 mile radius
+var userRadius = 100000;
+const DEMO_LOCATION = { lat: 37.511418, lng: -120.81 };
 class MapView extends React.Component {
 
   constructor(props) {
@@ -77,16 +78,11 @@ class MapView extends React.Component {
     console.log("Expected number of markers");
     console.log(this.state.pesticideData.length);
 
-    // console.log("Data");
-    // console.log(this.state.pesticideData);
-    // console.log(this.state.currentLocation.lat);
-    // console.log(this.state.currentLocation.lng);
-
     return (
       <Box sx={{ mt: "25px", height:"542px", width:"80%", display: { xs: "block", sm: "block" } }}>
           <GoogleMap
             center={this.state.currentLocation}
-            zoom={8}
+            zoom={12}
             onLoad={map => this.onMapLoad(map)}
             mapContainerStyle={{ height: "100%", width: "100%" }}
           >
