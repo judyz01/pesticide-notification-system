@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Card, CardContent, CardHeader, CardMedia, Skeleton, Stack, Typography } from '@mui/material';
+import { Box, Card, CardContent, CardHeader, CardMedia, Skeleton, Stack, Tooltip, Typography } from '@mui/material';
 import { AccessTimeOutlined, LocationOnOutlined, WarningAmberOutlined}  from '@mui/icons-material';
 import { useTranslation } from "react-i18next";
 import axios from 'axios';
@@ -195,13 +195,18 @@ const NOICards = (props) =>  {
 
           <CardMedia sx={{ pt:"35px", pb:"25px", flexDirection: "column", width: "20%", display:{ xs: "none" , m: "block", lg: "block" }}}>
             <Stack direction="row" alignItems="center" gap={2}>
-              <LocationOnOutlined />
+              <Tooltip title="Distance" arrow placement="left">
+                <LocationOnOutlined />
+              </Tooltip>
               <Typography variant="body1">
               {`${parseFloat(elem.distance).toFixed(2)}`} {DISTANCE_UNIT}
               </Typography>
             </Stack>
             <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
-              <AccessTimeOutlined />
+              <Tooltip title="Time/Date" arrow placement="left">
+                <AccessTimeOutlined />
+              </Tooltip>
+
               <Stack direction="column">
                 <Typography variant="body1">
                   {`${getStandardTime(elem.applic_time)}`} 
@@ -213,7 +218,9 @@ const NOICards = (props) =>  {
               </Stack>
             </Stack>
             <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
-              <WarningAmberOutlined />
+              <Tooltip title="Application Method" arrow placement="left">
+                <WarningAmberOutlined />
+              </Tooltip>
               <Typography variant="body1">
               {`${getApplicatorType(elem.aer_grnd_ind)}`}
               </Typography>
