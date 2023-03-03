@@ -28,6 +28,10 @@
     "miles": "millas",
     "Aerial": "Aéreo",
     "Ground": "Suelo",
-    "Aerial/Ground": "Aéreo/Suelo"
+    "Aerial/Ground": "Aéreo/Suelo",
+
+    "Tooltip Distance": "Distancia",
+    "Tooltip Time/Date": "Hora y fecha",
+    "Tooltip Application": "Método de aplicación" 
 
 }

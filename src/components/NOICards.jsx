@@ -17,6 +17,10 @@ function loadSkeleton() {
 
 const NOICards = (props) =>  {
   const { t } = useTranslation();
+  const TOOLTIP_DISTANCE = t("Tooltip Distance");
+  const TOOLTIP_DATE = t("Tooltip Time/Date");
+  const TOOLTIP_APPLICATION = t("Tooltip Application");
+
   const COVERAGE_UNIT = t("acres");
   const DISTANCE_UNIT = t("miles");
 
@@ -97,7 +101,6 @@ const NOICards = (props) =>  {
     console.log("order param is " + order[1]);
     console.log("location lat is " + coordinates.lat);
     console.log("location lng is " + coordinates.lng);
-
 
     if (coordinates) {
       axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
@@ -195,9 +198,9 @@ const NOICards = (props) =>  {
               </CardContent>
             </Box>
 
-          <CardMedia sx={{ pt:"35px", pb:"25px", flexDirection: "column", width: "20%", display:{ xs: "none" , m: "block", lg: "block" }}}>
+          <CardMedia sx={{ pt:"35px", pb:"25px", flexDirection: "column", width: "22%", display:{ xs: "none" , lg: "block"}}}>
             <Stack direction="row" alignItems="center" gap={2}>
-              <Tooltip title="Distance" arrow placement="left">
+              <Tooltip title={TOOLTIP_DISTANCE} arrow placement="left">
                 <LocationOnOutlined />
               </Tooltip>
               <Typography variant="body1">
@@ -205,7 +208,7 @@ const NOICards = (props) =>  {
               </Typography>
             </Stack>
             <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
-              <Tooltip title="Time/Date" arrow placement="left">
+              <Tooltip title={TOOLTIP_DATE}  arrow placement="left">
                 <AccessTimeOutlined />
               </Tooltip>
 
@@ -220,7 +223,7 @@ const NOICards = (props) =>  {
               </Stack>
             </Stack>
             <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
-              <Tooltip title="Application Method" arrow placement="left">
+              <Tooltip title={TOOLTIP_APPLICATION}  arrow placement="left">
                 <WarningAmberOutlined />
               </Tooltip>
               <Typography variant="body1">
