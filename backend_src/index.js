@@ -2,6 +2,7 @@
 const functions = require('@google-cloud/functions-framework');
 const express = require('express');
 const create_unix_socket = require('./create_unix_socket.js');
+const sendNotifications = require('./twilio_functions.js')
 require('dotenv').config()
 
 const app = express()
@@ -103,6 +104,26 @@ app.get('/findNearbyNOI', async (req, res) => {
   } catch (err) {
     console.error(err)
     res.status(500).send('Error in request')
+  }
+});
+
+app.get('/sms/sendNotifications', async (req, res) => {
+  pool = pool || (await createPool());
+  try {
+    //const numbers = await pool.raw('SELECT * FROM subscribers50');
+    const numbers = [
+      '+14082072865',
+      '+16262309800',
+      '+12078380638',
+      '+14159489392'
+    ]
+    numbers.forEach(element => {
+      sendNotifications(element)
+    })
+    res.status(200).send("Notifications sent")
+  } catch (err) {
+    console.error(err)
+    res.status(500).send('Error sending notifications')
   }
 });
 
