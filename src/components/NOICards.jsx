@@ -85,7 +85,7 @@ const NOICards = (props) =>  {
   const update = () => {
 
     var stored_coordinates = localStorage.getItem('location');
-    var coordinates = JSON.parse(stored_coordinates);
+    var coordinates = props.location ? props.location : stored_coordinates;
 
     var order = getOrderParams(props.order);
     var radius = props.radius? props.radius : 5;

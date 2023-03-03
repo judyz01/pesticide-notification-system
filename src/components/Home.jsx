@@ -45,11 +45,11 @@ const Home = (props) => {
         </LoadScript>
 
         <Box sx={{m: "30px", display: "flex", justifyContent: "space-between", width: "80%" }}>
-          <Typography sx={{ fontSize: 21, fontWeight: 600, color: "#126701" }}>
+          <Typography sx={{ pt: "15px", fontSize: 21, fontWeight: 600, color: "#126701" }}>
             {t("NOI")}
           </Typography>
 
-          <Link to="/NOIS" underline="hover" component={RouterLink} sx={{ pt: "5px", component: "button", color: "#208EF3", fontSize: 18, fontWeight: 600}}>
+          <Link to="/NOIS" underline="hover" component={RouterLink} sx={{ pt: "15px", component: "button", color: "#208EF3", fontSize: 18, fontWeight: 600}}>
             {t("SeeAll")}
           </Link>
 

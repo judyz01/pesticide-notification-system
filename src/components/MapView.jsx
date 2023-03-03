@@ -5,8 +5,11 @@ import { Box } from "@mui/material";
 
 import axios from 'axios';
 
-// Radius is in meters, currently set to 5 mile radius
-var userRadius = 100000;
+// Demo imports
+import { FormGroup, FormControlLabel, Switch } from '@mui/material';
+
+// Radius is in meters, currently set to 5 mile radius (8046.72m)
+var userRadius = 8046.72;
 const DEMO_LOCATION = { lat: 37.511418, lng: -120.81 };
 class MapView extends React.Component {
 
@@ -17,30 +20,58 @@ class MapView extends React.Component {
       currentLocation: { lat: 38.53709139783189, lng: -121.75506664377548 },
       markers: [],
       pesticideData: [],
-      bounds: null
+      bounds: null,
+      demo: false
     };
   }
 
-  componentDidUpdate(prevProps) {
-    this.props.func(this.state.currentLocation);
+  componentDidUpdate(prevProps, prevState) {
+    var location = this.state.demo ? DEMO_LOCATION : this.state.currentLocation;
+    this.props.func(location);
+    // this.props.func(this.state.currentLocation);
+
+    if (prevState.demo !== this.state.demo) {
+      axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
+        params: { latitude: location.lat, longitude: location.lng, radius: userRadius, order: "DESC", orderParam: "" },
+      })
+      .then(response => 
+        this.setState({ pesticideData: response.data }))
+      .catch(function (error) {
+          console.error(error);
+      });
+    }
+
   }
 
   componentDidMount() {
-    navigator.geolocation.getCurrentPosition(
-      ({ coords: { latitude: lat, longitude: lng } }) => {
-        const pos = { lat, lng };
-        this.setState({ currentLocation: pos });
-      }
-    );
 
-    axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-        params: { latitude: this.state.currentLocation.lat, longitude: this.state.currentLocation.lng, radius: userRadius, order: "DESC", orderParam: "" },
-    })
-    .then(response => 
-      this.setState({ pesticideData: response.data }))
-    .catch(function (error) {
-        console.error(error);
-    });
+    if (this.state.demo) {
+      axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
+        params: { latitude: DEMO_LOCATION.lat, longitude: DEMO_LOCATION.lng, radius: userRadius, order: "DESC", orderParam: "" },
+      })
+      .then(response => 
+        this.setState({ pesticideData: response.data }))
+      .catch(function (error) {
+          console.error(error);
+      });
+
+    } else {
+      navigator.geolocation.getCurrentPosition(
+        ({ coords: { latitude: lat, longitude: lng } }) => {
+          const pos = { lat, lng };
+          this.setState({ currentLocation: pos });
+        }
+      );
+  
+      axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
+          params: { latitude: this.state.currentLocation.lat, longitude: this.state.currentLocation.lng, radius: userRadius, order: "DESC", orderParam: "" },
+      })
+      .then(response => 
+        this.setState({ pesticideData: response.data }))
+      .catch(function (error) {
+          console.error(error);
+      });
+    }
   }
 
   blueDot = {
@@ -75,23 +106,29 @@ class MapView extends React.Component {
     zIndex: 1
   };
 
+  handleChange = (event) => {
+    this.setState({ demo: !this.state.demo });
+  };
+
   render() {
 
     console.log("Expected number of markers");
     console.log(this.state.pesticideData.length);
 
+    var location = this.state.demo ? DEMO_LOCATION : this.state.currentLocation;
+
     return (
       <Box sx={{ mt: "25px", height:"542px", width:"80%", display: { xs: "block", sm: "block" } }}>
           <GoogleMap
-            center={this.state.currentLocation}
+            center={location}
             zoom={12}
             onLoad={map => this.onMapLoad(map)}
             mapContainerStyle={{ height: "100%", width: "100%" }}
           >
 
-            <Marker icon={this.blueDot} position={this.state.currentLocation} />
+            <Marker icon={this.blueDot} position={location} />
             <Circle
-              center={this.state.currentLocation}
+              center={location}
               options={this.options}
             />
 
@@ -110,6 +147,10 @@ class MapView extends React.Component {
               </div>
             </div>
           </GoogleMap>
+
+          <FormGroup>
+            <FormControlLabel onChange={this.handleChange} control={<Switch />} label="Demo" />
+          </FormGroup>
       </Box>
     );
   }
