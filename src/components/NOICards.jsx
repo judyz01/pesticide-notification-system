@@ -98,12 +98,12 @@ const NOICards = (props) =>  {
 
 
     if (coordinates) {
-      // axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-      //     params: { latitude: coordinates.lat, longitude: coordinates.lng, radius: convertMilesToMeters(radius), order: order[0], orderParam: order[1]},
-      // })
       axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-        params: { latitude: 37.511418, longitude: -120.81, radius: convertMilesToMeters(radius), order: order[0], orderParam: order[1]},
+          params: { latitude: coordinates.lat, longitude: coordinates.lng, radius: convertMilesToMeters(radius), order: order[0], orderParam: order[1]},
       })
+      // axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
+      //   params: { latitude: 37.511418, longitude: -120.81, radius: convertMilesToMeters(radius), order: order[0], orderParam: order[1]},
+      // })
       .then((response) => {
         setPesticideData(response.data);
         console.log("Pesticide data received for cards");

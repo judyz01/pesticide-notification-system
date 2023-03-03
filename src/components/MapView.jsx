@@ -19,8 +19,10 @@ class MapView extends React.Component {
       pesticideData: [],
       bounds: null
     };
+  }
 
-    props.func(this.state.currentLocation);
+  componentDidUpdate(prevProps) {
+    this.props.func(this.state.currentLocation);
   }
 
   componentDidMount() {
