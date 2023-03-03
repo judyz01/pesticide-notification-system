@@ -14,7 +14,6 @@ const App = () => {
   const [location, setLocation] = React.useState();
 
   const set_location = (location) => {
-    console.log("APP: " + location.lat);
     setLocation(location);
   }
 

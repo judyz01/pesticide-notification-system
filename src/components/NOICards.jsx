@@ -43,7 +43,7 @@ const NOICards = (props) =>  {
       //     params: { latitude: props.location.lat, longitude: props.location.lng, radius: 1609.34, order: "DESC", orderParam: ""},
       // })
       axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-        params: { latitude: 37.511418, longitude: -120.81, radius: 1609.34, order: "DESC", orderParam: ""},
+        params: { latitude: 37.511418, longitude: -120.81, radius: 1609.34, order: "ASC", orderParam: "distance"},
       })
       .then((response) => {
         setPesticideData(response.data);

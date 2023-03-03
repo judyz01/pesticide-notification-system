@@ -3,10 +3,11 @@ import { useTranslation } from "react-i18next";
 import { Box, Link, Typography } from '@mui/material';
 import CommunityVoices from "./CommunityVoices";
 import { LoadScript } from "@react-google-maps/api";
+import {Link as RouterLink} from "react-router-dom";
+
 
 import MapView from "./MapView";
 import NOICards from "./NOICards";
-
 
 const lib = ["places"];
 const key = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
@@ -48,9 +49,10 @@ const Home = (props) => {
             {t("NOI")}
           </Typography>
 
-          <Link href="/NOIs" underline="hover" sx={{ pt: "5px", component: "button", color: "#208EF3", fontSize: 18, fontWeight: 600}}>
+          <Link to="/NOIS" underline="hover" component={RouterLink} sx={{ pt: "5px", component: "button", color: "#208EF3", fontSize: 18, fontWeight: 600}}>
             {t("SeeAll")}
           </Link>
+
         </Box>
 
         <NOICards location={location}/>
