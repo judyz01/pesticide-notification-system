@@ -85,12 +85,14 @@ const NOICards = (props) =>  {
   const update = () => {
 
     var stored_coordinates = localStorage.getItem('location');
-    var coordinates = props.location ? props.location : stored_coordinates;
+
+    var coordinates = props.location ? props.location : JSON.parse(stored_coordinates);
 
     var order = getOrderParams(props.order);
+
     var radius = props.radius? props.radius : 5;
 
-    console.log("radius is " + props.radius);
+    console.log("radius is " + radius);
     console.log("order rank is " + order[0]);
     console.log("order param is " + order[1]);
     console.log("location lat is " + coordinates.lat);
