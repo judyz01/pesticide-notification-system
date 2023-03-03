@@ -39,24 +39,25 @@ const NOICards = (props) =>  {
 
 
     if (props.location) {
-      axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-          params: { latitude: props.location.lat, longitude: props.location.lng, radius: 1609.34, order: "DESC", orderParam: ""},
-      })
       // axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-      //   params: { latitude: 37.511418, longitude: -120.81, radius: 1609.34, order: "DESC", orderParam: ""},
+      //     params: { latitude: props.location.lat, longitude: props.location.lng, radius: 1609.34, order: "DESC", orderParam: ""},
       // })
+      axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
+        params: { latitude: 37.511418, longitude: -120.81, radius: 1609.34, order: "DESC", orderParam: ""},
+      })
       .then((response) => {
         setPesticideData(response.data);
+        console.log("Pesticide data received for cards");
       })
       .catch(function (error) {
           console.error(error);
       });
-    } else {
-      console.log("No location found");
     }
+      console.log("No location found");
   };
 
-  useEffect(update, []);
+
+  useEffect(update, [props], []);
 
 
   // These props hold the data from each of the filters - county is array of strings, order is a string, fumigant is boolean, radius is int

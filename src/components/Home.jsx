@@ -16,10 +16,15 @@ const Loading = <div background-color="#FFAAAA" />
 const Home = (props) => {
   const { t } = useTranslation();
 
+  const [location, setLocation] = React.useState();
 
   const get_location = (location) => {
     props.set_location(location);
+
+    // Passes to NOICard component below as it's also listed on home page
+    setLocation(location);
   }
+
 
   return (
     <Box sx={{display: "flex"}}>
@@ -48,7 +53,7 @@ const Home = (props) => {
           </Link>
         </Box>
 
-        <NOICards/>
+        <NOICards location={location}/>
       </Box>
     </Box>
   );
