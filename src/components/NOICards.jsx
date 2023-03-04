@@ -31,6 +31,7 @@ const NOICards = (props) =>  {
 
   const handleChange = (event, value) => {
     setPage(value);
+    window.scroll({top: 0, left: 0, behavior: 'smooth' })
   };
 
   const convertMilesToMeters = (miles) => {
