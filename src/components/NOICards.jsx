@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Card, CardContent, CardHeader, CardMedia, Skeleton, Stack, Tooltip, Typography } from '@mui/material';
+import { Box, Card, CardContent, CardHeader, CardMedia, Pagination, Skeleton, Stack, Tooltip, Typography } from '@mui/material';
 import { AccessTimeOutlined, LocationOnOutlined, WarningAmberOutlined}  from '@mui/icons-material';
 import { useTranslation } from "react-i18next";
 import axios from 'axios';
@@ -25,6 +25,13 @@ const NOICards = (props) =>  {
   const DISTANCE_UNIT = t("miles");
 
   const [pesticideData, setPesticideData] = useState('');
+
+  const itemsPerPage = 10;
+  const [page, setPage] = React.useState(1);
+
+  const handleChange = (event, value) => {
+    setPage(value);
+  };
 
   const convertMilesToMeters = (miles) => {
     return miles * 1609.34;
@@ -87,6 +94,7 @@ const NOICards = (props) =>  {
   };
 
   const update = () => {
+    loadSkeleton();
 
     var stored_coordinates = localStorage.getItem('location');
 
@@ -130,29 +138,29 @@ const NOICards = (props) =>  {
       // radius defaulted to 5 miles
       // order defaulted to closest distance 
 
-    if (props.radius) {
-      console.log(props.radius);
-    } else {
-      console.log("No radius specified");
-    }
+    // if (props.radius) {
+    //   console.log(props.radius);
+    // } else {
+    //   console.log("No radius specified");
+    // }
 
-    if (props.county) {
-      console.log(props.county);
-    } else {
-      console.log("No county specified");
-    }
+    // if (props.county) {
+    //   console.log(props.county);
+    // } else {
+    //   console.log("No county specified");
+    // }
 
-    if (props.order) {
-      console.log(props.order);
-    } else {
-      console.log("No order specified");
-    }
+    // if (props.order) {
+    //   console.log(props.order);
+    // } else {
+    //   console.log("No order specified");
+    // }
 
-    if (props.fumigant) {
-      console.log(props.fumigant);
-    } else {
-      console.log("No fumigant specified");
-    }
+    // if (props.fumigant) {
+    //   console.log(props.fumigant);
+    // } else {
+    //   console.log("No fumigant specified");
+    // }
 
     if (props.location) {
       console.log("location lat from mapview " + props.location.lat);
@@ -178,7 +186,9 @@ const NOICards = (props) =>  {
       overflow="auto"
       sx={{ width: "100%", mb: "30px"}}
     >
-      {pesticideData.map((elem, index) => (
+      {pesticideData
+      .slice((page - 1) * itemsPerPage, page * itemsPerPage)
+      .map((elem, index) => (
         <Card key={index} sx={{ display:"flex", width: "80%", borderRadius: "16px", justifyContent: "space-between" }}>
             <Box key={index} sx={{ flexDirection: "column" }}>
 
@@ -233,7 +243,18 @@ const NOICards = (props) =>  {
 
           </CardMedia>
         </Card>
+
       ))}
+      <Pagination
+          count={Math.ceil(pesticideData.length / itemsPerPage)}
+          page={page}
+          onChange={handleChange}
+          defaultPage={1}
+          color="primary"
+          size="large"
+          showFirstButton
+          showLastButton
+        />
     </Stack>
   );
 
