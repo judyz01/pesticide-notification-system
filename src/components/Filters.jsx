@@ -25,7 +25,9 @@ const Filters = (props) => {
 
   return (
     // TODO: Implement filters for mobile view
-    <Box sx={{display:{xs: "none", sm: "block"}, backgroundColor: "#EAEAEA", width: "20%", minWidth: "150px" }}>
+    // <Box sx={{display:{xs: "none", sm: "block"}, backgroundColor: "#EAEAEA", width: "20%", minWidth: "150px" }}>
+    <Box sx={{display: "flex", direction: "column", overflow: "scroll", backgroundColor: "#EAEAEA", width: "20%", display:{ xs: "none" , sm: "none", lg: "block" } }}>
+    
       <Typography align='center' sx={{pt: "45px", fontSize: 21, fontWeight: 600, color: "#126701" }}>
         {t("Filters")}
       </Typography>

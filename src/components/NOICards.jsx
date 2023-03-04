@@ -245,6 +245,7 @@ const NOICards = (props) =>  {
           </CardMedia>
         </Card> 
       )) : 
+      // TODO: Add spanish trnaslation for below
         <Typography sx={{fontSize: 18, fontWeight: 500, color: "#126701"}}>
           No Notices of Intent Found
         </Typography>
