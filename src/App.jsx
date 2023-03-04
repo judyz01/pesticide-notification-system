@@ -7,10 +7,7 @@ import { Route, Routes } from "react-router";
 
 import theme from "./styles/theme";
 
-
 const App = () => {
-
-
   const [location, setLocation] = React.useState();
 
   const set_location = (location) => {

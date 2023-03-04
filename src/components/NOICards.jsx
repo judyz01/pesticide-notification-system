@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Card, CardContent, CardHeader, CardMedia, Skeleton, Stack, Typography } from '@mui/material';
+import { Box, Card, CardContent, CardHeader, CardMedia, Pagination, Skeleton, Stack, Tooltip, Typography } from '@mui/material';
 import { AccessTimeOutlined, LocationOnOutlined, WarningAmberOutlined}  from '@mui/icons-material';
 import { useTranslation } from "react-i18next";
 import axios from 'axios';
@@ -17,10 +17,21 @@ function loadSkeleton() {
 
 const NOICards = (props) =>  {
   const { t } = useTranslation();
+  const TOOLTIP_DISTANCE = t("Tooltip Distance");
+  const TOOLTIP_DATE = t("Tooltip Time/Date");
+  const TOOLTIP_APPLICATION = t("Tooltip Application");
+
   const COVERAGE_UNIT = t("acres");
   const DISTANCE_UNIT = t("miles");
 
   const [pesticideData, setPesticideData] = useState('');
+
+  const itemsPerPage = 10;
+  const [page, setPage] = React.useState(1);
+
+  const handleChange = (event, value) => {
+    setPage(value);
+  };
 
   const convertMilesToMeters = (miles) => {
     return miles * 1609.34;
@@ -83,19 +94,21 @@ const NOICards = (props) =>  {
   };
 
   const update = () => {
+    loadSkeleton();
 
     var stored_coordinates = localStorage.getItem('location');
-    var coordinates = props.location ? props.location : stored_coordinates;
+
+    var coordinates = props.location ? props.location : JSON.parse(stored_coordinates);
 
     var order = getOrderParams(props.order);
+
     var radius = props.radius? props.radius : 5;
 
-    console.log("radius is " + props.radius);
+    console.log("radius is " + radius);
     console.log("order rank is " + order[0]);
     console.log("order param is " + order[1]);
     console.log("location lat is " + coordinates.lat);
     console.log("location lng is " + coordinates.lng);
-
 
     if (coordinates) {
       axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
@@ -125,29 +138,29 @@ const NOICards = (props) =>  {
       // radius defaulted to 5 miles
       // order defaulted to closest distance 
 
-    if (props.radius) {
-      console.log(props.radius);
-    } else {
-      console.log("No radius specified");
-    }
+    // if (props.radius) {
+    //   console.log(props.radius);
+    // } else {
+    //   console.log("No radius specified");
+    // }
 
-    if (props.county) {
-      console.log(props.county);
-    } else {
-      console.log("No county specified");
-    }
+    // if (props.county) {
+    //   console.log(props.county);
+    // } else {
+    //   console.log("No county specified");
+    // }
 
-    if (props.order) {
-      console.log(props.order);
-    } else {
-      console.log("No order specified");
-    }
+    // if (props.order) {
+    //   console.log(props.order);
+    // } else {
+    //   console.log("No order specified");
+    // }
 
-    if (props.fumigant) {
-      console.log(props.fumigant);
-    } else {
-      console.log("No fumigant specified");
-    }
+    // if (props.fumigant) {
+    //   console.log(props.fumigant);
+    // } else {
+    //   console.log("No fumigant specified");
+    // }
 
     if (props.location) {
       console.log("location lat from mapview " + props.location.lat);
@@ -173,7 +186,10 @@ const NOICards = (props) =>  {
       overflow="auto"
       sx={{ width: "100%", mb: "30px"}}
     >
-      {pesticideData.map((elem, index) => (
+      {/* If we don't have any data to show, then the view will show "No NOIs" and pagination will be hidden */}
+      {(pesticideData.length > 0) ? pesticideData
+      .slice((page - 1) * itemsPerPage, page * itemsPerPage)
+      .map((elem, index) => (
         <Card key={index} sx={{ display:"flex", width: "80%", borderRadius: "16px", justifyContent: "space-between" }}>
             <Box key={index} sx={{ flexDirection: "column" }}>
 
@@ -193,15 +209,20 @@ const NOICards = (props) =>  {
               </CardContent>
             </Box>
 
-          <CardMedia sx={{ pt:"35px", pb:"25px", flexDirection: "column", width: "20%", display:{ xs: "none" , m: "block", lg: "block" }}}>
+          <CardMedia sx={{ pt:"35px", pb:"25px", flexDirection: "column", width: "22%", display:{ xs: "none" , lg: "block"}}}>
             <Stack direction="row" alignItems="center" gap={2}>
-              <LocationOnOutlined />
+              <Tooltip title={TOOLTIP_DISTANCE} arrow placement="left">
+                <LocationOnOutlined />
+              </Tooltip>
               <Typography variant="body1">
               {`${parseFloat(elem.distance).toFixed(2)}`} {DISTANCE_UNIT}
               </Typography>
             </Stack>
             <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
-              <AccessTimeOutlined />
+              <Tooltip title={TOOLTIP_DATE}  arrow placement="left">
+                <AccessTimeOutlined />
+              </Tooltip>
+
               <Stack direction="column">
                 <Typography variant="body1">
                   {`${getStandardTime(elem.applic_time)}`} 
@@ -213,15 +234,35 @@ const NOICards = (props) =>  {
               </Stack>
             </Stack>
             <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
-              <WarningAmberOutlined />
+              <Tooltip title={TOOLTIP_APPLICATION}  arrow placement="left">
+                <WarningAmberOutlined />
+              </Tooltip>
               <Typography variant="body1">
               {`${getApplicatorType(elem.aer_grnd_ind)}`}
               </Typography>
             </Stack>
 
           </CardMedia>
-        </Card>
-      ))}
+        </Card> 
+      )) : 
+      // TODO: Add spanish trnaslation for below
+        <Typography sx={{fontSize: 18, fontWeight: 500, color: "#126701"}}>
+          No Notices of Intent Found
+        </Typography>
+      }
+
+      {(pesticideData.length > 0) ?
+        <Pagination
+            count={Math.ceil(pesticideData.length / itemsPerPage)}
+            page={page}
+            onChange={handleChange}
+            defaultPage={1}
+            color="primary"
+            size="large"
+            showFirstButton
+            showLastButton
+          /> : ""
+      }
     </Stack>
   );
 

@@ -31,7 +31,7 @@ const NOIs = (props) => {
 
   return (
 
-    <Box sx={{display: "flex"}}>
+    <Box sx={{display: "flex", minHeight: `calc(100vh - 224px)`}}>
       <Filters
         set_county={set_county}
         set_order={set_order}
