@@ -1,10 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { AppBar, Box, Button, Toolbar } from '@mui/material';
+import { AppBar, Box, Button, Slide, Toolbar, useScrollTrigger } from '@mui/material';
 import { Link } from "react-router-dom";
 import MenuIcon from '@mui/icons-material/Menu';
 
-const Navbar = () => {
+function HideOnScroll(props) {
+  const { children } = props;
+
+  const trigger = useScrollTrigger();
+
+  return (
+    <Slide appear={false} direction="down" in={!trigger}>
+      {children}
+    </Slide>
+  );
+}
+
+const Navbar = (props) => {
   const navItems = ["NOIS", "Resources"];
   const [showButtons, setShowButtons] = useState(true);
   const [showMenu, setShowMenu] = useState(false);
@@ -149,11 +161,14 @@ const Navbar = () => {
   };
 
   return (
+
+    <HideOnScroll {...props}>
       <AppBar sx={{
         backgroundColor: "#FFFFFF",
       }}>
         {displayDesktop()}
       </AppBar>
+    </HideOnScroll>
 
   );
 };
