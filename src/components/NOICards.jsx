@@ -186,7 +186,8 @@ const NOICards = (props) =>  {
       overflow="auto"
       sx={{ width: "100%", mb: "30px"}}
     >
-      {pesticideData
+      {/* If we don't have any data to show, then the view will show "No NOIs" and pagination will be hidden */}
+      {(pesticideData.length > 0) ? pesticideData
       .slice((page - 1) * itemsPerPage, page * itemsPerPage)
       .map((elem, index) => (
         <Card key={index} sx={{ display:"flex", width: "80%", borderRadius: "16px", justifyContent: "space-between" }}>
@@ -242,19 +243,25 @@ const NOICards = (props) =>  {
             </Stack>
 
           </CardMedia>
-        </Card>
+        </Card> 
+      )) : 
+        <Typography sx={{fontSize: 18, fontWeight: 500, color: "#126701"}}>
+          No Notices of Intent Found
+        </Typography>
+      }
 
-      ))}
-      <Pagination
-          count={Math.ceil(pesticideData.length / itemsPerPage)}
-          page={page}
-          onChange={handleChange}
-          defaultPage={1}
-          color="primary"
-          size="large"
-          showFirstButton
-          showLastButton
-        />
+      {(pesticideData.length > 0) ?
+        <Pagination
+            count={Math.ceil(pesticideData.length / itemsPerPage)}
+            page={page}
+            onChange={handleChange}
+            defaultPage={1}
+            color="primary"
+            size="large"
+            showFirstButton
+            showLastButton
+          /> : ""
+      }
     </Stack>
   );
 
