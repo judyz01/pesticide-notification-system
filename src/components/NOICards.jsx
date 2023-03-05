@@ -24,6 +24,9 @@ const NOICards = (props) =>  {
   const COVERAGE_UNIT = t("acres");
   const DISTANCE_UNIT = t("miles");
 
+  const NO_NOIS = t("No NOIs");
+
+
   const [pesticideData, setPesticideData] = useState('');
 
   const itemsPerPage = 10;
@@ -248,7 +251,7 @@ const NOICards = (props) =>  {
       )) : 
       // TODO: Add spanish trnaslation for below
         <Typography sx={{fontSize: 18, fontWeight: 500, color: "#126701"}}>
-          No Notices of Intent Found
+          {NO_NOIS}
         </Typography>
       }
 
