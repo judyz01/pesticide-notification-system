@@ -32,6 +32,9 @@
 
     "Tooltip Distance": "Distancia",
     "Tooltip Time/Date": "Hora y fecha",
-    "Tooltip Application": "Método de aplicación" 
+    "Tooltip Application": "Método de aplicación",
+
+    "No NOIs": "No se encontraron avisos de intención"
+
 
 }

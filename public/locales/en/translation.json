@@ -31,6 +31,8 @@
 
     "Tooltip Distance": "Distance",
     "Tooltip Time/Date": "Time/Date" ,
-    "Tooltip Application": "Application Method" 
+    "Tooltip Application": "Application Method",
+
+    "No NOIs": "No Notices of Intent Found"
 
 }
