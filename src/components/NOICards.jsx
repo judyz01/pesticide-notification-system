@@ -28,6 +28,8 @@ const NOICards = (props) =>  {
 
 
   const [pesticideData, setPesticideData] = useState('');
+  const [pageIndex, setPageIndex] = useState(1);
+
 
   const itemsPerPage = 10;
   const [page, setPage] = React.useState(1);
@@ -98,29 +100,25 @@ const NOICards = (props) =>  {
   };
 
   const update = () => {
-    loadSkeleton();
+    setPageIndex(1);
 
-    var stored_coordinates = localStorage.getItem('location');
-
-    var coordinates = props.location ? props.location : JSON.parse(stored_coordinates);
+    // var stored_coordinates = localStorage.getItem('location');
+    // var coordinates = props.location ? props.location : JSON.parse(stored_coordinates);
+    var coordinates = props.location;
 
     var order = getOrderParams(props.order);
-
     var radius = props.radius? props.radius : 5;
 
-    console.log("radius is " + radius);
-    console.log("order rank is " + order[0]);
-    console.log("order param is " + order[1]);
-    console.log("location lat is " + coordinates.lat);
-    console.log("location lng is " + coordinates.lng);
+    // console.log("radius is " + radius);
+    // console.log("order rank is " + order[0]);
+    // console.log("order param is " + order[1]);
+    // console.log("location lat is " + coordinates.lat);
+    // console.log("location lng is " + coordinates.lng);
 
     if (coordinates) {
       axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
           params: { latitude: coordinates.lat, longitude: coordinates.lng, radius: convertMilesToMeters(radius), order: order[0], orderParam: order[1]},
       })
-      // axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-      //   params: { latitude: 37.511418, longitude: -120.81, radius: convertMilesToMeters(radius), order: order[0], orderParam: order[1]},
-      // })
       .then((response) => {
         setPesticideData(response.data);
         console.log("Pesticide data received for cards");
@@ -137,44 +135,9 @@ const NOICards = (props) =>  {
 
   // These props hold the data from each of the filters - county is array of strings, order is a string, fumigant is boolean, radius is int
   useEffect(() => {
-
-    // Props intially undefined until filters are used:
-      // radius defaulted to 5 miles
-      // order defaulted to closest distance 
-
-    // if (props.radius) {
-    //   console.log(props.radius);
-    // } else {
-    //   console.log("No radius specified");
-    // }
-
-    // if (props.county) {
-    //   console.log(props.county);
-    // } else {
-    //   console.log("No county specified");
-    // }
-
-    // if (props.order) {
-    //   console.log(props.order);
-    // } else {
-    //   console.log("No order specified");
-    // }
-
-    // if (props.fumigant) {
-    //   console.log(props.fumigant);
-    // } else {
-    //   console.log("No fumigant specified");
-    // }
-
-    if (props.location) {
-      console.log("location lat from mapview " + props.location.lat);
-      console.log("location lng from mapview " + props.location.lng);
-
-      localStorage.setItem('location', JSON.stringify(props.location));
-
-    } else {
-      console.log("no location passed from mapview");
-    }
+    // props.location ?
+    //   localStorage.setItem('location', JSON.stringify(props.location))
+    //   : console.log("no location passed from mapview");
 
   }, [props], []);
 
