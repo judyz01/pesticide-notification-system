@@ -149,47 +149,12 @@ Return Value:
 
   app.post('/addTableNOI', async function(req, res) {
     pool = pool || (await createPool());
-    let use_no = req.body.use_no
-    let prodno = req.body.prodno
-    let chem_code = req.body.chem_code
-    let prodchem_pct = req.body.prodchem_pct
-    let lbs_chm_used = req.body.lbs_chm_used
-    let lbs_prd_used = req.body.lbs_prd_used
-    let amt_prd_used = req.body.amt_prd_used
-    let unit_of_meas = req.body.unit_of_meas
-    let acre_planted = req.body.acre_planted
-    let unit_treated = req.body.unit_treated 
-    let applic_cnt = req.body.applic_cnt
-    let applic_dt = req.body.applic_dt
-    let applic_time = req.body.applic_time
-    let county_cd = req.body.county_cd
-    let base_ln_mer = req.body.base_ln_mer
-    let township = req.body.township
-    let tship_dir = req.body.tship_dir
-    let range = req.body.range
-    let range_dir = req.body.range_dir
-    let section = req.body.section
-    let site_loc_id = req.body.site_loc_id
-    let grower_id = req.body.grower_id
-    let license_no = req.body.license_no
-    let planting_seq = req.body.planting_seq
-    let aer_gnd_ind = req.body.aer_gnd_ind
-    let site_code = req.body.site_code
-    let qualify_cd = req.body.qualify_cd
-    let batch_no = req.body.batch_no
-    let document_no = req.body.document_no
-    let summary_cd = req.body.summary_cd
-    let record_id = req.body.record_id
-    let comtrs = req.body.comtrs
-    let error_flag = req.body.error_flag
+    let tablename = 'udc19_50'
     try {
       const noiList = 
         await pool.raw(
-        'INSERT INTO udc19_50(use_no, prodno, chem_code, prodchem_pct, lbs_chm_used, lbs_prd_used, amt_prd_used, unit_of_meas, acre_planted, unit_treated, applic_cnt, applic_dt, applic_time, county_cd, base_ln_mer, township, tship_dir, range, range_dir, section, site_loc_id, grower_id, license_no, planting_seq, aer_gnd_ind,site_code, qualify_cd, batch_no, document_no, summary_cd, record_id, comtrs, error_flag) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-        [use_no, prodno, chem_code, prodchem_pct, lbs_chm_used, lbs_prd_used, amt_prd_used, unit_of_meas,
-          acre_planted, unit_treated, applic_cnt, applic_dt, applic_time, county_cd, base_ln_mer, township, 
-          tship_dir, range, range_dir, section, site_loc_id, grower_id, license_no, planting_seq, aer_gnd_ind,
-          site_code, qualify_cd, batch_no, document_no, summary_cd, record_id, comtrs, error_flag])
+        'INSERT INTO ??(use_no, prodno, chem_code, prodchem_pct, lbs_chm_used, lbs_prd_used, amt_prd_used, unit_of_meas, acre_planted, unit_treated, applic_cnt, applic_dt, applic_time, county_cd, base_ln_mer, township, tship_dir, range, range_dir, section, site_loc_id, grower_id, license_no, planting_seq, aer_gnd_ind,site_code, qualify_cd, batch_no, document_no, summary_cd, record_id, comtrs, error_flag) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+        [tablename, req.body.use_no, req.body.prodno, req.body.chem_code, req.body.prodchem_pct, req.body.lbs_chm_used, req.body.lbs_prd_used, req.body.amt_prd_used, req.body.unit_of_meas, req.body.acre_planted, req.body.unit_treated, req.body.applic_cnt, req.body.applic_dt, req.body.applic_time, req.body.county_cd, req.body.base_ln_mer, req.body.township, req.body.tship_dir, req.body.range, req.body.range_dir, req.body.section, req.body.site_loc_id, req.body.grower_id, req.body.license_no, req.body.planting_seq, req.body.aer_gnd_ind, req.body.site_code, req.body.qualify_cd, req.body.batch_no, req.body.document_no, req.body.summary_cd, req.body.record_id, req.body.comtrs, req.body.error_flag])
       res.status(200).json({message: "Successfully added", status: 200})
     } catch (err) {
       console.error(err)
