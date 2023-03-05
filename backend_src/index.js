@@ -108,6 +108,95 @@ app.get('/findNearbyNOI', async (req, res) => {
   }
 });
 
+/* Endpoint for future use for adding NOI information to 
+the database *reference Pesticide Use Report Data User Guide & Documentation*
+Parameters:
+  req.body.use_no - System assigned sequential number to uniquely identify a pesicide product use record within a year
+  req.body.prodno - System assigned sequential number to uniquely identify a pesticide product
+  req.body.chem_code - Identifies the active ingredient (AI) contained in the applied product
+  req.body.prodchem_pct - The percentage of active ingredient found in the product as shown on the product label
+  req.body.lbs_chm_used - Pounds of the active ingredient (AI) in the applied product
+  req.body.lbs_prd_used - Pounds of product applied
+  req.body.amt_prd_used - Amount of product reported used
+  req.body.unit_of_meas - Refers to the unit of measure in conjunction with the reported AMT_PRD_USED field
+  req.body.acre_planted - Size of field, or other unit
+  req.body.unit_treated - Refers to the type of units planted in conjunction with the reported ACRE_PLANTED field.
+  req.body.applic_cnt - Total number of applications for each product used by an operator performed during the reporting month as noted on a non-production monthly summary report
+  req.body.applic_dt - Date that the pesticide product was applied
+  req.body.applic_time - Time that the pesticide product application was completed
+  req.body.county_cd - County code established by numbering an alphabetized list of California's 58 counties
+  req.body.base_ln_mer - Public Lands Survey (PLS) System Base Line & Meridian for the application location
+  req.body.township - Number of the township in the Public Land Survey System where the application occurred
+  req.body.tship_dir - Public Land Survey System direction from a base line
+  req.body.range - Number of the range within the Public Land Survey System where the application occurred
+  req.body.range_dir - Public Land Survey System direction for the range where an application was reported
+  req.body.section - An area of approximately one square mile (640 acres) within the Public Land Survey System where the pesticide application occurred
+  req.body.site_loc_id - A code assigned by the County Agricultural Commissioner (CAC) on the use permit which indicates a particular location (field) where an application may occur
+  req.body.grower_id - Number assigned to a grower or property operator by the County Agricultural Commissioner
+  req.body.license_no - PCO license number
+  req.body.planting_seq - Number to indicate multiple plantings of the same crop or commodity at the same SITE_LOC_ID
+  req.body.aer_gnd_ind - Indicates whether the product was applied by air, ground, or other equipment
+  req.body.site_code - Indicates the target site to which a pesticide product was applied
+  req.body.qualify_cd - The qualifier code modifies or limits the meaning of the site code upon which the product was applied
+  req.body.batch_no - Sequential number assigned to a file during the download process
+  req.body.document_no - Internal sequential tracking number (non-unique) assigned at the time of data entry
+  req.body.summary_cd - The line number found within the document for most record types
+  req.body.record_id - Identifies the agency that input a use record, and whether the record is for an individual application or is summarized data
+  req.body.comtrs - trs information
+  req.body.error_flag - error flag *reference available through PUR database*
+Return Value:
+  JSON message "Successfully added" */
+
+  app.post('/addTableNOI', async function(req, res) {
+    pool = pool || (await createPool());
+    let use_no = req.body.use_no
+    let prodno = req.body.prodno
+    let chem_code = req.body.chem_code
+    let prodchem_pct = req.body.prodchem_pct
+    let lbs_chm_used = req.body.lbs_chm_used
+    let lbs_prd_used = req.body.lbs_prd_used
+    let amt_prd_used = req.body.amt_prd_used
+    let unit_of_meas = req.body.unit_of_meas
+    let acre_planted = req.body.acre_planted
+    let unit_treated = req.body.unit_treated 
+    let applic_cnt = req.body.applic_cnt
+    let applic_dt = req.body.applic_dt
+    let applic_time = req.body.applic_time
+    let county_cd = req.body.county_cd
+    let base_ln_mer = req.body.base_ln_mer
+    let township = req.body.township
+    let tship_dir = req.body.tship_dir
+    let range = req.body.range
+    let range_dir = req.body.range_dir
+    let section = req.body.section
+    let site_loc_id = req.body.site_loc_id
+    let grower_id = req.body.grower_id
+    let license_no = req.body.license_no
+    let planting_seq = req.body.planting_seq
+    let aer_gnd_ind = req.body.aer_gnd_ind
+    let site_code = req.body.site_code
+    let qualify_cd = req.body.qualify_cd
+    let batch_no = req.body.batch_no
+    let document_no = req.body.document_no
+    let summary_cd = req.body.summary_cd
+    let record_id = req.body.record_id
+    let comtrs = req.body.comtrs
+    let error_flag = req.body.error_flag
+    try {
+      const noiList = 
+        await pool.raw(
+        'INSERT INTO udc19_50(use_no, prodno, chem_code, prodchem_pct, lbs_chm_used, lbs_prd_used, amt_prd_used, unit_of_meas, acre_planted, unit_treated, applic_cnt, applic_dt, applic_time, county_cd, base_ln_mer, township, tship_dir, range, range_dir, section, site_loc_id, grower_id, license_no, planting_seq, aer_gnd_ind,site_code, qualify_cd, batch_no, document_no, summary_cd, record_id, comtrs, error_flag) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+        [use_no, prodno, chem_code, prodchem_pct, lbs_chm_used, lbs_prd_used, amt_prd_used, unit_of_meas,
+          acre_planted, unit_treated, applic_cnt, applic_dt, applic_time, county_cd, base_ln_mer, township, 
+          tship_dir, range, range_dir, section, site_loc_id, grower_id, license_no, planting_seq, aer_gnd_ind,
+          site_code, qualify_cd, batch_no, document_no, summary_cd, record_id, comtrs, error_flag])
+      res.status(200).json({message: "Successfully added", status: 200})
+    } catch (err) {
+      console.error(err)
+      res.status(500).send('Error in request')
+    }
+  });
+
 /**
  * Webhook called by Twilio on receipt of text message which
  * subscribes a user to our SMS notification system, 
