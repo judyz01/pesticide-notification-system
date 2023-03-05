@@ -1,8 +1,9 @@
 'use strict';
 const functions = require('@google-cloud/functions-framework');
 const express = require('express');
+const county_lookup = require('./county_lookup.js');
 const create_unix_socket = require('./create_unix_socket.js');
-const sendNotifications = require('./twilio_functions.js')
+const twilio_functions = require('./twilio_functions.js')
 require('dotenv').config()
 
 const app = express()
@@ -87,38 +88,85 @@ app.get('/', (req, res) => {
 */
 app.get('/findNearbyNOI', async (req, res) => {
   pool = pool || (await createPool());
-  let latitude = req.query.latitude
-  let longitude = req.query.longitude
-  let radius = req.query.radius
-  let orderParam = req.query.orderParam
-  let order = req.query.order
+  let latitude = req.query.latitude;
+  let longitude = req.query.longitude;
+  let radius = req.query.radius;
+  let orderParam = req.query.orderParam;
+  let order = req.query.order;
   try {
     res.set('Access-Control-Allow-Origin', '*');
     if (!orderParam) {
-      const noiList = await pool.raw('SELECT * FROM get_nearby_noi_data(?, ?, ?) ORDER BY applic_dt ?, applic_time ?', [latitude, longitude, radius, pool.raw(order), pool.raw(order)])
-      res.status(200).json(noiList.rows)
+      const noiList = await pool.raw('SELECT * FROM get_nearby_noi_data(?, ?, ?) ORDER BY applic_dt ?, applic_time ?', [latitude, longitude, radius, pool.raw(order), pool.raw(order)]);
+      res.status(200).json(noiList.rows);
     } else {
       const noiList = await pool.raw('SELECT * FROM get_nearby_noi_data(?, ?, ?) ORDER BY ?? ?', [latitude, longitude, radius, orderParam, pool.raw(order)]);
-      res.status(200).json(noiList.rows)
+      res.status(200).json(noiList.rows);
     }
   } catch (err) {
-    console.error(err)
-    res.status(500).send('Error in request')
+    console.error(err);
+    res.status(500).send('Error in request');
   }
 });
+
+/**
+ * Webhook called by Twilio on receipt of text message which
+ * subscribes a user to our SMS notification system, 
+ * and adds user phone number to database.
+ * Parameters:
+ *  req.query.latitude Location's latitude value
+ *  req.query.longitude Location's longitude value
+ *  req.query.radius Radius to search within
+ * Return Value:
+ *  JSON List of nearby NOI's and their relevant information 
+*/
+app.post('/sms/subscribe', async (req, res) => {
+  let tableName = 'subscribers_';
+  let countyNumber = 0;
+
+  // Parse incoming text
+  const tokens = req.body.Body.split(" ");
+  if (tokens[0] == 'SUBSCRIBE' && tokens.length == 2) {
+    countyNumber = county_lookup(tokens[1]);
+  }
+  if (countyNumber != 0) {
+    tableName = tableName+=countyNumber;
+  }
+
+  // Add users to subscription list, and send confirmation text.
+  try {
+    res.set('Access-Control-Allow-Origin', '*');
+    pool = (pool || createPool());
+    const insert = await pool.raw('INSERT INTO ?? (phone_number, language) VALUES (?, ?)', [tableName, req.body.From, 'English']);
+    twilio_functions.sendSubscribeConfirmation(req, res, tokens[1]);
+  } catch (err) {
+    console.error(err);
+    twilio_functions.sendSubscribeError(req, res, err);
+  }
+})
+
+app.delete('/sms/phoneNumbers', async(req, res) => {
+  pool = pool || (await createPool());
+  try {
+    const query = await pool.raw('DELETE FROM subscribers_50');
+    res.status(200).send("it worked");
+  } catch (err) {
+    console.error(err)
+    res.status(500).send(err);
+  }
+})
 
 app.get('/sms/sendNotifications', async (req, res) => {
   pool = pool || (await createPool());
   try {
     //const numbers = await pool.raw('SELECT * FROM subscribers50');
     const numbers = [
-      '+14082072865',
-      '+16262309800',
-      '+12078380638',
+      // '+14082072865',
+      // '+16262309800',
+      // '+12078380638',
       '+14159489392'
     ]
     numbers.forEach(element => {
-      sendNotifications(element)
+      twilio_functions.sendNotifications(element)
     })
     res.status(200).send("Notifications sent")
   } catch (err) {
