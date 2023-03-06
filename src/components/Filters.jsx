@@ -49,8 +49,6 @@ const Filters = (props) => {
           func={get_fumigant}
         />
 
-
-
       </Stack>
     </Box>
   );

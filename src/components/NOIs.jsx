@@ -2,7 +2,6 @@ import * as React from "react";
 
 import { useTranslation } from "react-i18next";
 import { Box, Button, Typography } from '@mui/material';
-import Filters from "./Filters";
 import CloseIcon from '@mui/icons-material/Close';
 
 import { Filters, NOICards }from "./";
