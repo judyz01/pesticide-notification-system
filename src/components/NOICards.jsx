@@ -17,26 +17,22 @@ function loadSkeleton() {
 
 const NOICards = (props) =>  {
   const { t } = useTranslation();
+
   const TOOLTIP_DISTANCE = t("Tooltip Distance");
   const TOOLTIP_DATE = t("Tooltip Time/Date");
   const TOOLTIP_APPLICATION = t("Tooltip Application");
-
   const COVERAGE_UNIT = t("acres");
   const DISTANCE_UNIT = t("miles");
-
   const NO_NOIS = t("No NOIs");
 
-
   const [pesticideData, setPesticideData] = useState('');
-  const [pageIndex, setPageIndex] = useState(1);
-
 
   const itemsPerPage = 10;
   const [page, setPage] = React.useState(1);
 
   const handleChange = (event, value) => {
     setPage(value);
-    window.scroll({top: 0, left: 0, behavior: 'smooth' })
+    window.scroll({top: 0, left: 0, behavior: 'smooth' });
   };
 
   const convertMilesToMeters = (miles) => {
@@ -100,7 +96,6 @@ const NOICards = (props) =>  {
   };
 
   const update = () => {
-    setPageIndex(1);
 
     // var stored_coordinates = localStorage.getItem('location');
     // var coordinates = props.location ? props.location : JSON.parse(stored_coordinates);
@@ -212,7 +207,6 @@ const NOICards = (props) =>  {
           </CardMedia>
         </Card> 
       )) : 
-      // TODO: Add spanish trnaslation for below
         <Typography sx={{fontSize: 18, fontWeight: 500, color: "#126701"}}>
           {NO_NOIS}
         </Typography>

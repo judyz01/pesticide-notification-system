@@ -1,6 +1,7 @@
 /*global google*/
 import * as React from 'react';
 import { Circle, GoogleMap, Marker, MarkerClusterer } from "@react-google-maps/api";
+import { withTranslation } from "react-i18next";
 import { Box } from "@mui/material";
 
 import axios from 'axios';
@@ -12,6 +13,7 @@ import { FormGroup, FormControlLabel, Switch } from '@mui/material';
 var userRadius = 8046.72;
 const DEMO_LOCATION = { lat: 37.511418, lng: -120.81 };
 class MapView extends React.Component {
+
 
   constructor(props) {
     super(props);
@@ -25,22 +27,30 @@ class MapView extends React.Component {
     };
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    var location = this.state.demo ? DEMO_LOCATION : this.state.currentLocation;
-    this.props.func(location);
+  // Icon for user's current location
+  blueDot = {
+    fillColor: "#4285F4",
+    fillOpacity: 1,
+    path: google.maps.SymbolPath.CIRCLE,
+    scale: 8,
+    strokeColor: "#FFFFFF",
+    strokeWeight: 2,
+  };
 
-    if (prevState.demo !== this.state.demo) {
-      axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-        params: { latitude: location.lat, longitude: location.lng, radius: userRadius, order: "DESC", orderParam: "" },
-      })
-      .then(response => 
-        this.setState({ pesticideData: response.data }))
-      .catch(function (error) {
-          console.error(error);
-      });
-    }
-
-  }
+  // Circular radius that surrounds the user's current location
+  options = {
+    strokeColor: '#4285F4',
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    fillColor: '#4285F4',
+    fillOpacity: 0.35,
+    clickable: false,
+    draggable: false,
+    editable: false,
+    visible: true,
+    radius: userRadius,
+    zIndex: 1
+  };
 
   componentDidMount() {
 
@@ -78,14 +88,21 @@ class MapView extends React.Component {
     }
   }
 
-  blueDot = {
-    fillColor: "#4285F4",
-    fillOpacity: 1,
-    path: google.maps.SymbolPath.CIRCLE,
-    scale: 8,
-    strokeColor: "#FFFFFF",
-    strokeWeight: 2,
-  };
+  componentDidUpdate(prevProps, prevState) {
+    var location = this.state.demo ? DEMO_LOCATION : this.state.currentLocation;
+    this.props.func(location);
+
+    if (prevState.demo !== this.state.demo) {
+      axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
+        params: { latitude: location.lat, longitude: location.lng, radius: userRadius, order: "DESC", orderParam: "" },
+      })
+      .then(response => 
+        this.setState({ pesticideData: response.data }))
+      .catch(function (error) {
+          console.error(error);
+      });
+    }
+  }
 
   onMapLoad = map => {
     google.maps.event.addListener(map, "bounds_changed", () => {
@@ -96,29 +113,46 @@ class MapView extends React.Component {
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
   };
 
-  options = {
-    strokeColor: '#4285F4',
-    strokeOpacity: 0.8,
-    strokeWeight: 2,
-    fillColor: '#4285F4',
-    fillOpacity: 0.35,
-    clickable: false,
-    draggable: false,
-    editable: false,
-    visible: true,
-    radius: userRadius,
-    zIndex: 1
-  };
-
   handleChange = (event) => {
     // localStorage.setItem('demo', !this.state.demo);
     this.setState({ demo: !this.state.demo });
   };
 
-  render() {
 
-    console.log("Expected number of markers");
-    console.log(this.state.pesticideData.length);
+  /* 
+  Calculator determines which index (color) the cluster marker is going to be
+    Currently have the index change by increments of 50:
+      0-49: Green
+      50-99: Yellow
+      100-149: Orange
+      150-199: Red
+      200+: Purple
+  */
+  calculator = function(markers) {
+    const INCREMENT = 50;
+    var index = 0;
+    var count = markers.length;
+
+    for (var i=0; i<=count; i+=INCREMENT) {
+      index++;
+    }
+  
+    return {
+      text: count,
+      index: index
+    };
+  };
+
+  clusterStyles = {
+    imagePath:
+      '../images/clusters/m',
+  };
+
+  render() {
+    // console.log("Expected number of markers");
+    // console.log(this.state.pesticideData.length);
+    const { t } = this.props;
+    var setLegend = t('Actual Language') === "en" ? "../images/legend_en.svg" : "../images/legend_sp.svg";
 
     var location = this.state.demo ? DEMO_LOCATION : this.state.currentLocation;
 
@@ -137,7 +171,9 @@ class MapView extends React.Component {
               options={this.options}
             />
 
-            <MarkerClusterer minimumClusterSize={1}>
+            <MarkerClusterer minimumClusterSize={1} calculator={this.calculator} options={this.clusterStyles}>
+            {/* <MarkerClusterer minimumClusterSize={1}> */}
+
               {(clusterer) =>
                 this.state.pesticideData.map((elem) => (
                   <Marker position={ {lat: parseFloat(elem.latitude), lng: parseFloat(elem.longitude)} } 
@@ -149,7 +185,7 @@ class MapView extends React.Component {
 
             <div id="legend">
               <div>
-                <img src="../images/legend.svg"/>
+                <img src={setLegend} alt="map-legend"/>
               </div>
             </div>
           </GoogleMap>
@@ -162,5 +198,5 @@ class MapView extends React.Component {
   }
 }
 
-export default MapView;
+export default withTranslation()(MapView);
 
