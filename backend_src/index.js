@@ -198,17 +198,6 @@ app.post('/sms/subscribe', async (req, res) => {
   }
 })
 
-app.delete('/sms/phoneNumbers', async(req, res) => {
-  pool = pool || (await createPool());
-  try {
-    const query = await pool.raw('DELETE FROM subscribers_50');
-    res.status(200).send("it worked");
-  } catch (err) {
-    console.error(err)
-    res.status(500).send(err);
-  }
-})
-
 app.get('/sms/sendNotifications', async (req, res) => {
   pool = pool || (await createPool());
   try {
