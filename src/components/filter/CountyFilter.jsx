@@ -1,6 +1,7 @@
 import * as React from 'react';
+
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { InputLabel, MenuItem, FormControl, Select } from '@mui/material';
 import { useTranslation } from "react-i18next";
 
 const ITEM_HEIGHT = 48;

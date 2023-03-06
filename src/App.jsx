@@ -1,11 +1,13 @@
 import * as React from "react";
 import { Suspense } from "react";
-import { Navbar, Home, Resources, NOIs, Footer } from './components';
-import { ThemeProvider } from "@mui/material/styles";
+
 import { Box, CssBaseline } from "@mui/material";
+import { ThemeProvider } from "@mui/material/styles";
 import { Route, Routes } from "react-router";
 
+import { Footer, Home, Navbar, NOIs, Resources} from './components';
 import theme from "./styles/theme";
+
 
 const App = () => {
   const [location, setLocation] = React.useState();
@@ -13,7 +15,6 @@ const App = () => {
   const set_location = (location) => {
     setLocation(location);
   }
-
 
   return (
     <Suspense fallback="loading">

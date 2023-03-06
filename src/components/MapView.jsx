@@ -1,20 +1,18 @@
 /*global google*/
 import * as React from 'react';
-import { Circle, GoogleMap, Marker, MarkerClusterer } from "@react-google-maps/api";
-import { withTranslation } from "react-i18next";
-import { Box } from "@mui/material";
 
 import axios from 'axios';
+import { Box } from "@mui/material";
+import { Circle, GoogleMap, Marker, MarkerClusterer } from "@react-google-maps/api";
+import { withTranslation } from "react-i18next";
 
 // Demo imports
-import { FormGroup, FormControlLabel, Switch } from '@mui/material';
+import { FormControlLabel, FormGroup, Switch } from '@mui/material';
 
 // Radius is in meters, currently set to 5 mile radius (8046.72m)
 var userRadius = 8046.72;
 const DEMO_LOCATION = { lat: 37.511418, lng: -120.81 };
 class MapView extends React.Component {
-
-
   constructor(props) {
     super(props);
 
@@ -143,14 +141,13 @@ class MapView extends React.Component {
     };
   };
 
+  // Set custom icons for marker clusters
   clusterStyles = {
     imagePath:
       '../images/clusters/m',
   };
 
   render() {
-    // console.log("Expected number of markers");
-    // console.log(this.state.pesticideData.length);
     const { t } = this.props;
     var setLegend = t('Actual Language') === "en" ? "../images/legend_en.svg" : "../images/legend_sp.svg";
 
