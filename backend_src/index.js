@@ -1,7 +1,7 @@
 'use strict';
 const functions = require('@google-cloud/functions-framework');
 const express = require('express');
-const county_lookup = require('./county_lookup.js');
+const county_functions = require('./county_functions.js');
 const create_unix_socket = require('./create_unix_socket.js');
 const twilio_functions = require('./twilio_functions.js')
 require('dotenv').config()
@@ -167,36 +167,78 @@ Return Value:
  * subscribes a user to our SMS notification system, 
  * and adds user phone number to database.
  * Parameters:
- *  req.query.latitude Location's latitude value
- *  req.query.longitude Location's longitude value
- *  req.query.radius Radius to search within
+ * Body: body of text message received from users
  * Return Value:
  *  JSON List of nearby NOI's and their relevant information 
 */
-app.post('/sms/subscribe', async (req, res) => {
-  let tableName = 'subscribers_';
-  let countyNumber = 0;
-
+app.post('/sms/in', async (req, res) => {
   // Parse incoming text
   const tokens = req.body.Body.split(" ");
-  if (tokens[0] == 'SUBSCRIBE' && tokens.length == 2) {
-    countyNumber = county_lookup(tokens[1]);
-  }
-  if (countyNumber != 0) {
-    tableName = tableName+=countyNumber;
+  const numTokens = tokens.length;
+
+  if (numTokens > 2) {
+    console.error("Error parsing command. Too many arguments.")
+    twilio_functions.sendError(req, res, '0');
+    res.status(500).send("Error parsing command. Too many arguments.")
+    return
   }
 
-  // Add users to subscription list, and send confirmation text.
-  try {
-    res.set('Access-Control-Allow-Origin', '*');
-    pool = (pool || createPool());
-    const insert = await pool.raw('INSERT INTO ?? (phone_number, language) VALUES (?, ?)', [tableName, req.body.From, 'English']);
-    twilio_functions.sendSubscribeConfirmation(req, res, tokens[1]);
-  } catch (err) {
-    console.error(err);
-    twilio_functions.sendSubscribeError(req, res, err);
+  if (numTokens == 2) {
+    handleMultiPartText(req, res, tokens);
   }
-})
+
+  if (numTokens == 1) {
+    handleSinglePartText(req, res, tokens[0]);
+  }
+});
+
+const handleSinglePartText = (req, res, token) => {
+  if (token == 'GUIDE') {
+    twilio_functions.sendMessage(req, res, '0');
+    res.status(200).send("Information successfully sent.");
+  } else if (token == 'START') {
+    twilio_functions.sendMessage(req, res, '1');
+    res.status(200).send("Restart successful.");
+  } else if (token == 'INFO') {
+    // auto opt in words handle here
+    ;
+  } else {
+    twilio_functions.sendError(req, res, '0');
+    res.status(500).send("Error subscribing. Not a valid county number.")
+  }
+}
+
+// Send
+const handleMultiPartText = async (req, res, tokens) => {
+  if (tokens[0] == 'SUBSCRIBE') {
+    let tableName = 'subscribers_';
+    let countyNumber = county_functions.county_lookup(tokens[1]);
+    if (countyNumber != 0) {
+      tableName = tableName+=countyNumber;
+    } else {
+      twilio_functions.sendError(req, res, '42P01')
+      return res.status(500).send("Error subscribing. Not a valid county number.")
+    }
+
+    // Add users to subscription list, and send confirmation text.
+    // Send error message otherwise.
+    try {
+      res.set('Access-Control-Allow-Origin', '*');
+      pool = (pool || createPool());
+      await pool.raw('INSERT INTO ?? (phone_number) VALUES (?)', [tableName, req.body.From])
+      // await pool.raw('INSERT INTO user_preferences (phone_number, language) VALUES (?, ?)' ,[req.body.From, 'English']);
+      twilio_functions.sendSubscribeConfirmation(req, res, tokens[1]);
+      res.status(200).send("Subscription successful.");
+    } catch (err) {
+      console.error(err);
+      twilio_functions.sendError(req, res, err.code);
+      return res.status(500).send("Error subscribing.");
+    }
+  } else {
+    twilio_functions.sendError(req, res, '0')
+    res.status(500).send(`Invalid command ${req.body.Body}`)
+  }
+}
 
 app.get('/sms/sendNotifications', async (req, res) => {
   pool = pool || (await createPool());

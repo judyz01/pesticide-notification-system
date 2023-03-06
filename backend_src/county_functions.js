@@ -1,4 +1,4 @@
-county_lookup_table = {
+const county_lookup_table = {
     "ALAMEDA": 1,
     "ALPINE": 2,
     "AMADOR": 3,
@@ -58,7 +58,15 @@ county_lookup_table = {
     "YOLO": 57,
     "YUBA": 58    
 };
+const available_county_table = [
+    "STANISLAUS"
+];
 
+/**
+ * 
+ * @param {*} countyName in all caps
+ * @returns the county number of a specific county in California if it exists, or 0 otherwise.
+ */
 const county_lookup = (countyName) => {
     const county_num = county_lookup_table[countyName];
     if (county_num) {
@@ -68,4 +76,15 @@ const county_lookup = (countyName) => {
     }
 }
 
-module.exports = county_lookup;
+/**
+ *
+ * @returns Array with all available counties
+ */
+const available_county_lookup = () => {
+    return available_county_table;
+}
+
+module.exports = {
+    county_lookup,
+    available_county_lookup
+}
