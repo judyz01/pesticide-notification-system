@@ -120,17 +120,16 @@ class MapView extends React.Component {
   /* 
   Calculator determines which index (color) the cluster marker is going to be
     Currently have the index change by increments of 50:
-      0-49: Blue
+      0-49: Green
       50-99: Yellow
-      100-149: Red
-      150-199: Pink
+      100-149: Orange
+      150-199: Red
       200+: Purple
   */
   calculator = function(markers) {
-    var index = 0;
     const INCREMENT = 50;
+    var index = 0;
     var count = markers.length;
-    var dv = count;
 
     for (var i=0; i<=count; i+=INCREMENT) {
       index++;
@@ -140,6 +139,11 @@ class MapView extends React.Component {
       text: count,
       index: index
     };
+  };
+
+  clusterStyles = {
+    imagePath:
+      '../images/clusters/m',
   };
 
   render() {
@@ -164,7 +168,9 @@ class MapView extends React.Component {
               options={this.options}
             />
 
-            <MarkerClusterer minimumClusterSize={1} calculator={this.calculator}>
+            <MarkerClusterer minimumClusterSize={1} calculator={this.calculator} options={this.clusterStyles}>
+            {/* <MarkerClusterer minimumClusterSize={1}> */}
+
               {(clusterer) =>
                 this.state.pesticideData.map((elem) => (
                   <Marker position={ {lat: parseFloat(elem.latitude), lng: parseFloat(elem.longitude)} } 
@@ -176,7 +182,7 @@ class MapView extends React.Component {
 
             <div id="legend">
               <div>
-                <img src="../images/legend.svg" alt="map-legend"/>
+                <img src="../images/legend_en.svg" alt="map-legend"/>
               </div>
             </div>
           </GoogleMap>
