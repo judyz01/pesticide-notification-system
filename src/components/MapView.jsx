@@ -25,22 +25,30 @@ class MapView extends React.Component {
     };
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    var location = this.state.demo ? DEMO_LOCATION : this.state.currentLocation;
-    this.props.func(location);
+  // Icon for user's current location
+  blueDot = {
+    fillColor: "#4285F4",
+    fillOpacity: 1,
+    path: google.maps.SymbolPath.CIRCLE,
+    scale: 8,
+    strokeColor: "#FFFFFF",
+    strokeWeight: 2,
+  };
 
-    if (prevState.demo !== this.state.demo) {
-      axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-        params: { latitude: location.lat, longitude: location.lng, radius: userRadius, order: "DESC", orderParam: "" },
-      })
-      .then(response => 
-        this.setState({ pesticideData: response.data }))
-      .catch(function (error) {
-          console.error(error);
-      });
-    }
-
-  }
+  // Circular radius that surrounds the user's current location
+  options = {
+    strokeColor: '#4285F4',
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    fillColor: '#4285F4',
+    fillOpacity: 0.35,
+    clickable: false,
+    draggable: false,
+    editable: false,
+    visible: true,
+    radius: userRadius,
+    zIndex: 1
+  };
 
   componentDidMount() {
 
@@ -78,14 +86,21 @@ class MapView extends React.Component {
     }
   }
 
-  blueDot = {
-    fillColor: "#4285F4",
-    fillOpacity: 1,
-    path: google.maps.SymbolPath.CIRCLE,
-    scale: 8,
-    strokeColor: "#FFFFFF",
-    strokeWeight: 2,
-  };
+  componentDidUpdate(prevProps, prevState) {
+    var location = this.state.demo ? DEMO_LOCATION : this.state.currentLocation;
+    this.props.func(location);
+
+    if (prevState.demo !== this.state.demo) {
+      axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
+        params: { latitude: location.lat, longitude: location.lng, radius: userRadius, order: "DESC", orderParam: "" },
+      })
+      .then(response => 
+        this.setState({ pesticideData: response.data }))
+      .catch(function (error) {
+          console.error(error);
+      });
+    }
+  }
 
   onMapLoad = map => {
     google.maps.event.addListener(map, "bounds_changed", () => {
@@ -96,29 +111,41 @@ class MapView extends React.Component {
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
   };
 
-  options = {
-    strokeColor: '#4285F4',
-    strokeOpacity: 0.8,
-    strokeWeight: 2,
-    fillColor: '#4285F4',
-    fillOpacity: 0.35,
-    clickable: false,
-    draggable: false,
-    editable: false,
-    visible: true,
-    radius: userRadius,
-    zIndex: 1
-  };
-
   handleChange = (event) => {
     // localStorage.setItem('demo', !this.state.demo);
     this.setState({ demo: !this.state.demo });
   };
 
+
+  /* 
+  Calculator determines which index (color) the cluster marker is going to be
+    Currently have the index change by increments of 50:
+      0-49: Blue
+      50-99: Yellow
+      100-149: Red
+      150-199: Pink
+      200+: Purple
+  */
+  calculator = function(markers) {
+    var index = 0;
+    const INCREMENT = 50;
+    var count = markers.length;
+    var dv = count;
+
+    for (var i=0; i<=count; i+=INCREMENT) {
+      index++;
+    }
+  
+    return {
+      text: count,
+      index: index
+    };
+  };
+
   render() {
 
-    console.log("Expected number of markers");
-    console.log(this.state.pesticideData.length);
+    // console.log("Expected number of markers");
+    // console.log(this.state.pesticideData.length);
 
     var location = this.state.demo ? DEMO_LOCATION : this.state.currentLocation;
 
@@ -137,7 +164,7 @@ class MapView extends React.Component {
               options={this.options}
             />
 
-            <MarkerClusterer minimumClusterSize={1}>
+            <MarkerClusterer minimumClusterSize={1} calculator={this.calculator}>
               {(clusterer) =>
                 this.state.pesticideData.map((elem) => (
                   <Marker position={ {lat: parseFloat(elem.latitude), lng: parseFloat(elem.longitude)} } 
@@ -149,7 +176,7 @@ class MapView extends React.Component {
 
             <div id="legend">
               <div>
-                <img src="../images/legend.svg"/>
+                <img src="../images/legend.svg" alt="map-legend"/>
               </div>
             </div>
           </GoogleMap>
