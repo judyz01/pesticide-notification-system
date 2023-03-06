@@ -1,6 +1,7 @@
 /*global google*/
 import * as React from 'react';
 import { Circle, GoogleMap, Marker, MarkerClusterer } from "@react-google-maps/api";
+import { withTranslation } from "react-i18next";
 import { Box } from "@mui/material";
 
 import axios from 'axios';
@@ -12,6 +13,7 @@ import { FormGroup, FormControlLabel, Switch } from '@mui/material';
 var userRadius = 8046.72;
 const DEMO_LOCATION = { lat: 37.511418, lng: -120.81 };
 class MapView extends React.Component {
+
 
   constructor(props) {
     super(props);
@@ -147,9 +149,10 @@ class MapView extends React.Component {
   };
 
   render() {
-
     // console.log("Expected number of markers");
     // console.log(this.state.pesticideData.length);
+    const { t } = this.props;
+    var setLegend = t('Actual Language') === "en" ? "../images/legend_en.svg" : "../images/legend_sp.svg";
 
     var location = this.state.demo ? DEMO_LOCATION : this.state.currentLocation;
 
@@ -182,7 +185,7 @@ class MapView extends React.Component {
 
             <div id="legend">
               <div>
-                <img src="../images/legend_en.svg" alt="map-legend"/>
+                <img src={setLegend} alt="map-legend"/>
               </div>
             </div>
           </GoogleMap>
@@ -195,5 +198,5 @@ class MapView extends React.Component {
   }
 }
 
-export default MapView;
+export default withTranslation()(MapView);
 
