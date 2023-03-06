@@ -1,13 +1,11 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
+
 import { Box, Link, Typography } from '@mui/material';
-import CommunityVoices from "./CommunityVoices";
 import { LoadScript } from "@react-google-maps/api";
+import { useTranslation } from "react-i18next";
 import {Link as RouterLink} from "react-router-dom";
 
-
-import MapView from "./MapView";
-import NOICards from "./NOICards";
+import { CommunityVoices, MapView, NOICards } from './';
 
 const lib = ["places"];
 const key = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { AppBar, Box, Button, Slide, Toolbar, useScrollTrigger } from '@mui/material';
-import { Link } from "react-router-dom";
+
 import MenuIcon from '@mui/icons-material/Menu';
+import { AppBar, Box, Button, Slide, Toolbar, useScrollTrigger } from '@mui/material';
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 function HideOnScroll(props) {
   const { children } = props;
@@ -21,9 +22,11 @@ const Navbar = (props) => {
   const [showButtons, setShowButtons] = useState(true);
   const [showMenu, setShowMenu] = useState(false);
   const [isDesktop, setDesktop] = useState(true);
+
   const { t, i18n } = useTranslation();
   const [language, setLanguage] = useState("sp");
-
+  const HOME = t("Home");
+  const LANGUAGE = t("Language");
 
   useEffect(() => {
     if (window.innerWidth > 599) {
@@ -61,7 +64,6 @@ const Navbar = (props) => {
         flexDirection: {xs: "column", sm: "row"},
         position: "relative", 
         zIndex: 12000 }}>
-        {/* TODO // Redundant Code, any other way to route back to "/" instead of "/Home"? */}
         <Button
           sx={{ 
             pl:4,
@@ -72,7 +74,7 @@ const Navbar = (props) => {
             onClick={() => !isDesktop ? setShowMenu(false): undefined}
             >
             <Link style={{textDecoration: "none", color: "#126701"}} to={`/`}>
-              {t("Home")}
+              {HOME}
             </Link>
         </Button>
         {navItems.map((item) => (
@@ -139,7 +141,7 @@ const Navbar = (props) => {
                 color:"white"}}
               onClick={() => changeLanguage()}
             >
-              {t("Language")}
+              {LANGUAGE}
             </Button>
           </Box>
           <Box sx={{display: { xs: "block", sm: "none" }}}>

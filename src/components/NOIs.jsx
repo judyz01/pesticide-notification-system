@@ -1,13 +1,14 @@
 import * as React from "react";
+
 import { useTranslation } from "react-i18next";
 import { Box, Button, Typography } from '@mui/material';
-import Filters from "./Filters";
 import CloseIcon from '@mui/icons-material/Close';
 
-import NOICards from "./NOICards";
+import { Filters, NOICards }from "./";
 
 const NOIs = (props) => {
   const { t } = useTranslation();
+  const NOI_SEARCH = t("NOISearch");
 
   const [county, setCounty] = React.useState([]);
   const [order, setOrder] = React.useState();
@@ -91,7 +92,7 @@ const NOIs = (props) => {
               color:"white"
               }}
           onClick={() => setShowDrawer(true)}
-         >
+        >
           {t("Filters")}
         </Button>  : 
         <Filters
@@ -103,7 +104,7 @@ const NOIs = (props) => {
       }
       <Box sx={{display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#fdf7ee", flexGrow: 1}}>
         <Typography sx={{mt: "25px", mb: "25px", fontSize: 28, fontWeight: 600, color: "#126701"}}>
-          {t("NOISearch")}
+          {NOI_SEARCH}
         </Typography>
         <NOICards
           county={county}

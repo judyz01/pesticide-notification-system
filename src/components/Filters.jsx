@@ -1,6 +1,8 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
+
 import { Box, Stack, Typography } from '@mui/material';
+import { useTranslation } from "react-i18next";
+
 import { CountyFilter, DateDistanceFilter, FumigantFilter, RadiusFilter } from './filter';
 
 
@@ -46,8 +48,6 @@ const Filters = (props) => {
         <FumigantFilter 
           func={get_fumigant}
         />
-
-
 
       </Stack>
     </Box>
