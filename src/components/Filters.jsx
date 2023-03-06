@@ -1,6 +1,8 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
+
 import { Box, Stack, Typography } from '@mui/material';
+import { useTranslation } from "react-i18next";
+
 import { CountyFilter, DateDistanceFilter, FumigantFilter, RadiusFilter } from './filter';
 
 
@@ -25,7 +27,9 @@ const Filters = (props) => {
 
   return (
     // TODO: Implement filters for mobile view
-    <Box sx={{display:{xs: "none", sm: "block"}, backgroundColor: "#EAEAEA", width: "20%", minWidth: "150px" }}>
+    // <Box sx={{display:{xs: "none", sm: "block"}, backgroundColor: "#EAEAEA", width: "20%", minWidth: "150px" }}>
+    <Box sx={{display: "block", direction: "column", backgroundColor: "#EAEAEA", width:{md: "100%", lg: "20%"}, height:{md:"100%", lg:"auto"}}}>
+    
       <Typography align='center' sx={{pt: "45px", fontSize: 21, fontWeight: 600, color: "#126701" }}>
         {t("Filters")}
       </Typography>
@@ -44,8 +48,6 @@ const Filters = (props) => {
         <FumigantFilter 
           func={get_fumigant}
         />
-
-
 
       </Stack>
     </Box>

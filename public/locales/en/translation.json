@@ -1,4 +1,5 @@
 {
+    "Actual Language": "en",
     "Language": "Español",
     "Title": "Find Nearby Pesticides",
     "NOI": "Notices of Intent",
@@ -27,6 +28,12 @@
     "miles": "miles",
     "Aerial": "Aerial",
     "Ground": "Ground",
-    "Aerial/Ground": "Aerial/Ground"
+    "Aerial/Ground": "Aerial/Ground",
+
+    "Tooltip Distance": "Distance",
+    "Tooltip Time/Date": "Time/Date" ,
+    "Tooltip Application": "Application Method",
+
+    "No NOIs": "No Notices of Intent Found"
 
 }

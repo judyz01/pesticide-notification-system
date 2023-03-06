@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Card, CardContent, CardHeader, CardMedia, Skeleton, Stack, Typography } from '@mui/material';
-import { AccessTimeOutlined, LocationOnOutlined, WarningAmberOutlined}  from '@mui/icons-material';
-import { useTranslation } from "react-i18next";
-import axios from 'axios';
 
+import axios from 'axios';
+import { AccessTimeOutlined, LocationOnOutlined, WarningAmberOutlined}  from '@mui/icons-material';
+import { Box, Card, CardContent, CardHeader, CardMedia, Pagination, Skeleton, Stack, Tooltip, Typography } from '@mui/material';
+import { useTranslation } from "react-i18next";
 
 function loadSkeleton() {
   return [
@@ -17,54 +17,42 @@ function loadSkeleton() {
 
 const NOICards = (props) =>  {
   const { t } = useTranslation();
+
+  const TOOLTIP_DISTANCE = t("Tooltip Distance");
+  const TOOLTIP_DATE = t("Tooltip Time/Date");
+  const TOOLTIP_APPLICATION = t("Tooltip Application");
   const COVERAGE_UNIT = t("acres");
   const DISTANCE_UNIT = t("miles");
+  const NO_NOIS = t("No NOIs");
 
   const [pesticideData, setPesticideData] = useState('');
 
-  const update = () => {
+  const itemsPerPage = 10;
+  const [page, setPage] = React.useState(1);
 
-    // TODO: pass current location to latitude and longitude
-    axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-        params: { latitude: 37.511418, longitude: -120.81, radius: 1609.34, order: "DESC", orderParam: ""},
-    })
-    .then((response) => {
-      setPesticideData(response.data);
-    })
-    .catch(function (error) {
-        console.error(error);
-    });
+  const handleChange = (event, value) => {
+    setPage(value);
+    window.scroll({top: 0, left: 0, behavior: 'smooth' });
   };
 
-  useEffect(update, []);
+  const convertMilesToMeters = (miles) => {
+    return miles * 1609.34;
+  };
 
-
-  // These props hold the data from each of the filters - county is array of strings, order is a string, fumigant is boolean, radius is int
-  useEffect(() => {
-    console.log(props.county);
-    console.log(props.order);
-    console.log(props.fumigant);
-    console.log(props.radius);
-  }, [props]);
-
-  if (!pesticideData) return loadSkeleton();
-
-  // TODO: reverse geocoding apis too costly, need to find better alternative
-  // const findAddress = (elem) => {
-  //   axios.get(`http://nominatim.openstreetmap.org/reverse?format=json`, {
-  //       params: { lat: 54.9824031826, lon: 9.2833114795 },
-  //   })
-  //   .then((response) => {
-  //     const address = response.data.display_name;
-  //     console.log(address)
-  //     return address
-  //   })
-  //   .catch(function (error) {
-  //       console.error(error);
-  //   });
-  // }
-
-  // findAddress();
+  const getOrderParams = (order) => {
+    switch(order) {
+      case 'Most Recent':
+        return ["DESC", ""];
+      case 'Least Recent':
+        return ["ASC", ""];
+      case 'Closest':
+        return ["ASC", "distance"];
+      case 'Furthest':
+        return ["DESC", "distance"];
+      default:
+        return ["ASC", "distance"];
+    }
+  };
 
   const getApplicatorType = (char) => {
     switch(char) {
@@ -77,10 +65,9 @@ const NOICards = (props) =>  {
       default:
         return "N/A";
     }
-  }
+  };
 
   const getStandardTime = (time) => {
-
     // Times that are listed null
     if (!time) {
       return "";
@@ -92,7 +79,6 @@ const NOICards = (props) =>  {
     var amPm = militaryHour > 11 ? 'PM' : 'AM';
     var minutes = militaryTime.substring(3);
 
-
     return standardHour + ":" + minutes + amPm;
   };
 
@@ -101,7 +87,6 @@ const NOICards = (props) =>  {
     if (!date) {
       return "";
     }
-
     var yymmdd_format = date.substring(0, 10);
     var year = yymmdd_format.substring(0, 4);
     var month = parseInt(yymmdd_format.substring(5, 7));
@@ -110,6 +95,48 @@ const NOICards = (props) =>  {
     return month + "/" + day + "/" + year;
   };
 
+  const update = () => {
+
+    // var stored_coordinates = localStorage.getItem('location');
+    // var coordinates = props.location ? props.location : JSON.parse(stored_coordinates);
+    var coordinates = props.location;
+
+    var order = getOrderParams(props.order);
+    var radius = props.radius? props.radius : 5;
+
+    // console.log("radius is " + radius);
+    // console.log("order rank is " + order[0]);
+    // console.log("order param is " + order[1]);
+    // console.log("location lat is " + coordinates.lat);
+    // console.log("location lng is " + coordinates.lng);
+
+    if (coordinates) {
+      axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
+          params: { latitude: coordinates.lat, longitude: coordinates.lng, radius: convertMilesToMeters(radius), order: order[0], orderParam: order[1]},
+      })
+      .then((response) => {
+        setPesticideData(response.data);
+        console.log("Pesticide data received for cards");
+      })
+      .catch(function (error) {
+          console.error(error);
+      });
+    } else {
+      console.log("no location found");
+    }
+  };
+
+  useEffect(update, [props], []);
+
+  // These props hold the data from each of the filters - county is array of strings, order is a string, fumigant is boolean, radius is int
+  useEffect(() => {
+    // props.location ?
+    //   localStorage.setItem('location', JSON.stringify(props.location))
+    //   : console.log("no location passed from mapview");
+
+  }, [props], []);
+
+  if (!pesticideData) return loadSkeleton();
 
   return (
 
@@ -121,7 +148,10 @@ const NOICards = (props) =>  {
       overflow="auto"
       sx={{ width: "100%", mb: "30px"}}
     >
-      {pesticideData.map((elem, index) => (
+      {/* If we don't have any data to show, then the view will show "No NOIs" and pagination will be hidden */}
+      {(pesticideData.length > 0) ? pesticideData
+      .slice((page - 1) * itemsPerPage, page * itemsPerPage)
+      .map((elem, index) => (
         <Card key={index} sx={{ display:"flex", width: "80%", borderRadius: "16px", justifyContent: "space-between" }}>
             <Box key={index} sx={{ flexDirection: "column" }}>
 
@@ -141,15 +171,20 @@ const NOICards = (props) =>  {
               </CardContent>
             </Box>
 
-          <CardMedia sx={{ pt:"35px", pb:"25px", flexDirection: "column", width: "20%", display:{ xs: "none" , m: "block", lg: "block" }}}>
+          <CardMedia sx={{ pt:"35px", pb:"25px", flexDirection: "column", width: "22%", display:{ xs: "none" , lg: "block"}}}>
             <Stack direction="row" alignItems="center" gap={2}>
-              <LocationOnOutlined />
+              <Tooltip title={TOOLTIP_DISTANCE} arrow placement="left">
+                <LocationOnOutlined />
+              </Tooltip>
               <Typography variant="body1">
               {`${parseFloat(elem.distance).toFixed(2)}`} {DISTANCE_UNIT}
               </Typography>
             </Stack>
             <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
-              <AccessTimeOutlined />
+              <Tooltip title={TOOLTIP_DATE}  arrow placement="left">
+                <AccessTimeOutlined />
+              </Tooltip>
+
               <Stack direction="column">
                 <Typography variant="body1">
                   {`${getStandardTime(elem.applic_time)}`} 
@@ -161,15 +196,34 @@ const NOICards = (props) =>  {
               </Stack>
             </Stack>
             <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
-              <WarningAmberOutlined />
+              <Tooltip title={TOOLTIP_APPLICATION}  arrow placement="left">
+                <WarningAmberOutlined />
+              </Tooltip>
               <Typography variant="body1">
               {`${getApplicatorType(elem.aer_grnd_ind)}`}
               </Typography>
             </Stack>
 
           </CardMedia>
-        </Card>
-      ))}
+        </Card> 
+      )) : 
+        <Typography sx={{fontSize: 18, fontWeight: 500, color: "#126701"}}>
+          {NO_NOIS}
+        </Typography>
+      }
+
+      {(pesticideData.length > 0) ?
+        <Pagination
+            count={Math.ceil(pesticideData.length / itemsPerPage)}
+            page={page}
+            onChange={handleChange}
+            defaultPage={1}
+            color="primary"
+            size="large"
+            showFirstButton
+            showLastButton
+          /> : ""
+      }
     </Stack>
   );
 

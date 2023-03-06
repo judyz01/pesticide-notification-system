@@ -1,11 +1,8 @@
 import * as React from 'react';
+
 import { Slider } from '@mui/material';
 
 const radiusMarks = [
-  {
-    value: 1,
-    label: '1 mi.',
-  },
   {
     value: 5,
     label: '5 mi.',
@@ -13,6 +10,10 @@ const radiusMarks = [
   {
     value: 10,
     label: '10 mi.',
+  },
+  {
+    value: 15,
+    label: '15 mi.',
   },
 ];
 
@@ -37,18 +38,16 @@ export default function RadiusFilter(props) {
   }, [radius, props]);
 
   return (
-
-  <Slider
-    defaultValue={1}
-    valueLabelFormat={valueLabelFormat}
-    getAriaValueText={valuetext}
-    step={null}
-    valueLabelDisplay="auto"
-    marks={radiusMarks}
-    min={1}
-    max={10}
-    onChange={handleChange}
-  />
-
+    <Slider
+      defaultValue={1}
+      valueLabelFormat={valueLabelFormat}
+      getAriaValueText={valuetext}
+      step={null}
+      valueLabelDisplay="auto"
+      marks={radiusMarks}
+      min={5}
+      max={15}
+      onChange={handleChange}
+    />
   );
 }

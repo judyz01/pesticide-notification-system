@@ -1,14 +1,11 @@
 import CountyFilter from "./CountyFilter";
-import RadiusFilter from "./RadiusFilter";
-import FumigantFilter from "./FumigantFilter";
 import DateDistanceFilter from "./DateDistanceFilter";
-
-
-
+import FumigantFilter from "./FumigantFilter";
+import RadiusFilter from "./RadiusFilter";
 
 export {
   CountyFilter,
-  RadiusFilter,
-  FumigantFilter,
   DateDistanceFilter,
+  FumigantFilter,
+  RadiusFilter,
 };

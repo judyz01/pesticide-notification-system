@@ -1,6 +1,7 @@
 import * as React from 'react';
+
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { InputLabel, MenuItem, FormControl, Select } from '@mui/material';
 import { useTranslation } from "react-i18next";
 
 
@@ -47,7 +48,6 @@ export default function DateFilter(props) {
   }, [distanceDateOrder, props]);
 
   return (
-
     <FormControl sx={{ m: 1, width: "100%", mt: 3  }}>
       <InputLabel id="order-by-distance-date-label">{INPUT_LABEL}</InputLabel>
       <Select

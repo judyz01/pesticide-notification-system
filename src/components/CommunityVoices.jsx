@@ -1,9 +1,13 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
+
 import { Box } from '@mui/material';
+import { useTranslation } from "react-i18next";
 
 const CommunityVoices = () => {
   const { t } = useTranslation();
+  const USER_1 = t("CommunityUser1");
+  const USER_2 = t("CommunityUser2");
+  const USER_3 = t("CommunityUser3");
 
   return (
     <Box sx={{display: "flex", direction: "column", overflow: "scroll", backgroundColor: "#EAEAEA", width: "20%", display:{ xs: "none" , sm: "none", lg: "block" } }}>
@@ -13,7 +17,7 @@ const CommunityVoices = () => {
 
       <Box sx={{m:"20px"}}>
 
-        "{t("CommunityUser1")}"
+        "{USER_1}"
 
         {/* <Box sx={{mt:"10px"}}>
           - Nyeland interviewee 
@@ -21,7 +25,7 @@ const CommunityVoices = () => {
       </Box>
       <Box sx={{m:"20px"}}>
 
-        "{t("CommunityUser2")}"
+        "{USER_2}"
 
         {/* <Box sx={{mt:"10px"}}>
           User 2
@@ -29,7 +33,7 @@ const CommunityVoices = () => {
       </Box>
       <Box sx={{m:"20px"}}>
 
-        "{t("CommunityUser3")}"
+        "{USER_3}"
 
         {/* <Box sx={{mt:"10px"}}>
           User 3
