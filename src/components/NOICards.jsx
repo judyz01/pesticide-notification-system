@@ -128,8 +128,8 @@ const NOICards = (props) =>  {
       // console.log("radius is " + radius);
       // console.log("order rank is " + order[0]);
       // console.log("order param is " + order[1]);
-      // console.log("location lat is " + coordinates.lat);
-      // console.log("location lng is " + coordinates.lng);
+      console.log("location lat is " + coordinates.lat);
+      console.log("location lng is " + coordinates.lng);
 
       if (coordinates) {
         axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
@@ -152,9 +152,9 @@ const NOICards = (props) =>  {
 
   // These props hold the data from each of the filters - county is array of strings, order is a string, fumigant is boolean, radius is int
   useEffect(() => {
-    // props.location ?
-    //   localStorage.setItem('location', JSON.stringify(props.location))
-    //   : console.log("no location passed from mapview");
+    props.location ?
+      localStorage.setItem('location', JSON.stringify(props.location))
+      : console.log("no location passed from mapview");
 
   }, [props], []);
 
@@ -290,7 +290,7 @@ const NOICards = (props) =>  {
               }
           </Card> 
         )) : 
-          <Typography sx={{fontSize: 18, fontWeight: 500, color: "#126701"}}>
+          <Typography align="center" sx={{width:"80%", fontSize: 18, fontWeight: 500, color: "#126701"}}>
             {NO_NOIS}
           </Typography>
         }
