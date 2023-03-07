@@ -53,9 +53,9 @@ class MapView extends React.Component {
   componentDidMount() {
 
     // Returns as a string, we need to set it to a boolean
-    // const demo_str = localStorage.getItem('demo');
-    // const demo_bool = demo_str === "true" ? true : false;
-    // this.setState({ demo: demo_bool });
+    const demo_str = localStorage.getItem('demo');
+    const demo_bool = demo_str === "true" ? true : false;
+    this.setState({ demo: demo_bool });
 
     if (this.state.demo) {
       axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
@@ -112,7 +112,7 @@ class MapView extends React.Component {
   };
 
   handleChange = (event) => {
-    // localStorage.setItem('demo', !this.state.demo);
+    localStorage.setItem('demo', !this.state.demo);
     this.setState({ demo: !this.state.demo });
   };
 
@@ -169,8 +169,6 @@ class MapView extends React.Component {
             />
 
             <MarkerClusterer minimumClusterSize={1} calculator={this.calculator} options={this.clusterStyles}>
-            {/* <MarkerClusterer minimumClusterSize={1}> */}
-
               {(clusterer) =>
                 this.state.pesticideData.map((elem) => (
                   <Marker position={ {lat: parseFloat(elem.latitude), lng: parseFloat(elem.longitude)} } 

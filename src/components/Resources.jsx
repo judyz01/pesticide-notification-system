@@ -233,7 +233,7 @@ const Resources = () => {
             </Typography>
 
             <Typography sx={{ fontWeight: 600 }}>
-             {t("Help")}
+              {t("Help")}
             </Typography>
             <Typography sx={{ pb:"15px" }}>
               {t("Community Support")}
