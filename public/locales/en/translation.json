@@ -34,6 +34,40 @@
     "Tooltip Time/Date": "Time/Date" ,
     "Tooltip Application": "Application Method",
 
-    "No NOIs": "No Notices of Intent Found"
+    "No NOIs": "No Notices of Intent Found",
 
+    "What To Do": "What To Do In Case Of Pesticide Exposure",
+    "At Home": "At Home",
+    "Leave": "Leave the area immediately!",
+    "Close": "Close your windows and turn off your air conditioning or heater.",
+    "Leave the area": "Leave the area immediately or call 911 if you feel too sick to drive.",
+    "Change": "Change out of your contaminated clothes and shower with warm water and soap.",
+    "If you think": "If you think your clothes were hit by pesticides, put them in a paper bag, then seal inside a plastic bag for testing. Otherwise, wash them separately from other laundry.",
+    "Warn": "Warn your neighbors",
+    "Call": "Call for help",
+    "Ill": "If you feel seriously ill, call 911. Otherwise, call your",
+    "Commissioner": "County Agriculture Commissioner",
+    "Doctor": "See a doctor",
+    "Symptoms": "If you experience any symptoms of pesticide exposure, see a doctor immediately.",
+    "Report": "Report pesticide incident",
+    "Record": "Record everything",
+    "Write": "Write down all of the details of the exposure before you forget anything.",
+    "Organize": "Organize your community",
+    "Talk": "Talk to others who may have been exposed and tell them to report their exposure too. Put pressure on local agencies to make sure that your case is dealt with! Call local community organizations for assistance.",
+    "At Work": "At Work",
+    "Supervisor": "Tell your supervisor immediately!",
+    "Experience": "If you experience any symptoms of pesticide exposure. Your employer has to provide transportation to get you to the doctor immediately.",
+    "Ask": "Ask your supervisor or employer",
+    "Which Pesticide": "Which pesticide you were exposed to and tell the doctor.",
+    "Don't Pay": "You don't have to pay",
+    "Exposed": "For any medical care for pesticide illness if you were exposed to pesticides on the job.",
+    "Remember": "Remember!",
+    "Illegal": "It is illegal to fire workers for reporting pesticide drift or for seeking medical attention if exposed to pesticides.",
+    "Help": "If you need help",
+    "Community Support": "Call a community support organization or a local leader.",
+
+    "Drift": "Report pesticide drift and pesticide exposure each and every time it happens. Follow the links to report incidents in",
+    "Counties": " Counties.",
+    "and": "and"
+    
 }

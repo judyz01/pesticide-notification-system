@@ -3,6 +3,7 @@ import React from "react";
 import { Box, Link, Typography } from '@mui/material';
 
 import { styled } from '@mui/material/styles';
+import { useTranslation } from "react-i18next";
 
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import MuiAccordion from '@mui/material/Accordion';
@@ -16,8 +17,6 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 
-
-
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
 ))(({ theme }) => ({
@@ -28,7 +27,7 @@ const Accordion = styled((props) => (
   '&:before': {
     display: 'none',
   },
-}));
+}))
 
 const AccordionSummary = styled((props) => (
   <MuiAccordionSummary
@@ -58,6 +57,8 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 
 const Resources = () => {
 
+  const { t } = useTranslation();
+
   const [expanded, setExpanded] = React.useState('');
   const [checked, setChecked] = React.useState([]);
 
@@ -84,7 +85,7 @@ const Resources = () => {
     <Box sx={{display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#fdf7ee", flexGrow: 1}}>
       
       <Typography sx={{m:"25px", pl:"25px", fontSize: 28, fontWeight: 600, color: "#126701"}}>
-        What To Do In Case Of Pesticide Exposure
+        {t("What To Do")}
       </Typography>
 
 
@@ -92,22 +93,22 @@ const Resources = () => {
         <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
           <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
             <Typography>
-              At Home
+              {t("At Home")}
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Typography sx={{ fontWeight: 600 }}>
-              Leave the area immediately!
+              {t("Leave")}
             </Typography>
 
             <List sx={{ width: "90%" }}>
               {[0, 1, 2, 3].map((value) => {
                 const labelId = `checkbox-list-label-${value}`;
                 const points = [
-                  "Close your windows and turn off your air conditioning or heater.",
-                  "Leave the area immediately or call 911 if you feel too sick to drive.",
-                  "Change out of your contaminated clothes and shower with warm water and soap.",
-                  "If you think your clothes were hit by pesticides, put them in a paper bag, then seal inside a plastic bag for testing. Otherwise, wash them separately from other laundry."
+                  t("Close"),
+                  t("Leave the area"),
+                  t("Change"),
+                  t("If you think")
                 ]
 
                 return (
@@ -133,31 +134,31 @@ const Resources = () => {
             </List>
 
             <Typography sx={{ fontWeight: 600, pb:"15px"}}>
-              Warn your neighbors
+              {t("Warn")}
             </Typography>
 
             <Typography sx={{ fontWeight: 600 }}>
-              Call for help
+              {t("Call")}
             </Typography>
             <Typography sx={{ pb:"15px" }}>
-              If you feel seriously ill, call 911. Otherwise, call your&nbsp; 
+              {t("Ill")}&nbsp; 
               <Link rel="noopener noreferrer" href="https://www.cdfa.ca.gov/exec/county/countymap/" target="_blank" underline="hover">
-                {"County Agriculture Commissioner"}
+                {t("Commissioner")}
               </Link>.
             </Typography>
 
             <Typography sx={{ fontWeight: 600 }}>
-              See a doctor
+              {t("Doctor")}
             </Typography>
             <Typography sx={{ pb:"15px" }}>
-              If you experience any symptoms of pesticide exposure, see a doctor immediately.
+              {t("Symptoms")}
             </Typography>
 
             <Typography sx={{ fontWeight: 600 }}>
-              Report pesticide incident
+              {t("Report")}
             </Typography>
             <Typography sx={{ pb:"15px" }}>
-              Report pesticide drift and pesticide exposure each and every time it happens. Follow the links to report incidents in&nbsp; 
+              {t("Drift")}&nbsp; 
 
               <Link rel="noopener noreferrer" href="https://ivanfresno.org/report" target="_blank" underline="hover">
                 {"Fresno"}
@@ -170,24 +171,24 @@ const Resources = () => {
               </Link>,&nbsp; 
               <Link rel="noopener noreferrer" href="https://ivantulare.org/" target="_blank" underline="hover">
                 {"Tulare"}
-              </Link>, and&nbsp; 
+              </Link>, {t("and")}&nbsp; 
               <Link rel="noopener noreferrer" href="https://ivan-kings.org/" target="_blank" underline="hover">
                 {"Kings"}
-              </Link> Counties.
+              </Link>{t("Counties")}
             </Typography>
 
             <Typography sx={{ fontWeight: 600 }}>
-              Record everything
+              {t("Record")}
             </Typography>
             <Typography sx={{ pb:"15px" }}>
-              Write down all of the details of the exposure before you forget anything. 
+              {t("Write")} 
             </Typography>
 
             <Typography sx={{ fontWeight: 600 }}>
-              Organize your community
+              {t("Organize")}
             </Typography>
             <Typography sx={{ pb:"15px" }}>
-              Talk to others who may have been exposed and tell them to report their exposure too. Put pressure on local agencies to make sure that your case is dealt with! Call local community organizations for assistance.
+              {t("Talk")}
             </Typography>
           </AccordionDetails>
         </Accordion>
@@ -195,47 +196,47 @@ const Resources = () => {
         <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
           <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
             <Typography>
-              At Work
+              {t("At Work")}
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Typography sx={{ fontWeight: 600, pb:"15px"}}>
-              Tell your supervisor immediately!
+              {t("Supervisor")}
             </Typography>
 
             <Typography sx={{ fontWeight: 600 }}>
-              See a doctor 
+              {t("Doctor")}
             </Typography>
             <Typography sx={{ pb:"15px" }}>
-              If you experience any symptoms of pesticide exposure. Your employer has to provide transportation to get you to the doctor immediately.
+              {t("Experience")}
             </Typography>
 
             <Typography sx={{ fontWeight: 600 }}>
-              Ask your supervisor or employer
+              {t("Ask")}
             </Typography>
             <Typography sx={{ pb:"15px" }}>
-              Which pesticide you were exposed to and tell the doctor.
+              {t("Which Pesticide")}
             </Typography>
 
             <Typography sx={{ fontWeight: 600 }}>
-              You don’t have to pay
+              {t("Don't Pay")}
             </Typography>
             <Typography sx={{ pb:"15px" }}>
-              For any medical care for pesticide illness if you were exposed to pesticides on the job.
+              {t("Exposed")}
             </Typography>
 
             <Typography sx={{ fontWeight: 600 }}>
-              Remember! 
+              {t("Remember")}
             </Typography>
             <Typography sx={{ pb:"15px" }}>
-              It is illegal to fire workers for reporting pesticide drift or for seeking medical attention if exposed to pesticides.
+              {t("Illegal")}
             </Typography>
 
             <Typography sx={{ fontWeight: 600 }}>
-              If you need help
+             {t("Help")}
             </Typography>
             <Typography sx={{ pb:"15px" }}>
-              Call a community support organization or a local leader.
+              {t("Community Support")}
             </Typography>
           </AccordionDetails>
         </Accordion>
