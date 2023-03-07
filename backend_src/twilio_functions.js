@@ -5,8 +5,10 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 const mSID = process.env.MESSAGING_SERVICE_ID;
 const client = require('twilio')(accountSid, authToken);
 
+const county_functions = require('./county_functions')
+
 const messages = {
-    '0': "Available counties: STANISLAUS. Text HALT <COUNTY> to stop receiving notifications about a certain county. Text STOP to stop receiving all messages.",
+    '0': `Available counties: ${county_functions.available_county_table}. Text HALT <COUNTY> to stop receiving messages about a certain county. Text STOP to stop receiving all messages.`,
     '1': "Thank you for allowing the CDPR NOI Notification System to send you information regarding pesticide use. Text GUIDE for more information."
 }
 
@@ -17,11 +19,39 @@ const errorMessages = {
     '42P01': "Notifications for this county are unavailable right now. For a full list of available counties, text GUIDE.",
 }
 
+const optOutKeywords = new Set([
+    "CANCEL",
+    "END",
+    "QUIT",
+    "STOP",
+    "STOPALL",
+    "UNSUBSCRIBE",
+    "START",
+    "UNSTOP",
+    "YES",
+    "HELP",
+    "INFO",
+    "ALTO",
+    "COMENZAR",
+    "AYUDA"
+]);
+
 // Reply to subscription
 const sendSubscribeConfirmation = (req, res, county) => {
     client.messages
         .create({
             body: `Thank you for subscribing to the CDPR NOI Notification System for ${county}.`,
+            messagingServiceSid: mSID,
+            to: req.body.From
+        })
+        .then(message => console.log(message.status));
+}
+
+// Reply to unsubscription
+const sendUnsubscribeConfirmation = (req, res, county) => {
+    client.messages
+        .create({
+            body: `You will no longer receive CDPR NOI Notification messages for ${county}.`,
             messagingServiceSid: mSID,
             to: req.body.From
         })
@@ -67,6 +97,8 @@ const sendNotifications = async (number) => {
 module.exports = {
     sendNotifications,
     sendSubscribeConfirmation,
+    sendUnsubscribeConfirmation,
     sendError,
-    sendMessage
+    sendMessage,
+    optOutKeywords
 }

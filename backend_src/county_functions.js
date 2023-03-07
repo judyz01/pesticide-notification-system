@@ -59,7 +59,8 @@ const county_lookup_table = {
     "YUBA": 58    
 };
 const available_county_table = [
-    "STANISLAUS"
+    "STANISLAUS",
+    // "SACRAMENTO"
 ];
 
 /**
@@ -86,5 +87,5 @@ const available_county_lookup = () => {
 
 module.exports = {
     county_lookup,
-    available_county_lookup
+    available_county_table
 }

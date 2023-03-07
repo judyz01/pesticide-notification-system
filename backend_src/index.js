@@ -147,33 +147,32 @@ Parameters:
 Return Value:
   JSON message "Successfully added" */
 
-  app.post('/addTableNOI', async function(req, res) {
-    pool = pool || (await createPool());
-    let tablename = 'udc19_50'
-    try {
-      const noiList = 
-        await pool.raw(
-        'INSERT INTO ??(use_no, prodno, chem_code, prodchem_pct, lbs_chm_used, lbs_prd_used, amt_prd_used, unit_of_meas, acre_planted, unit_treated, applic_cnt, applic_dt, applic_time, county_cd, base_ln_mer, township, tship_dir, range, range_dir, section, site_loc_id, grower_id, license_no, planting_seq, aer_gnd_ind,site_code, qualify_cd, batch_no, document_no, summary_cd, record_id, comtrs, error_flag) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-        [tablename, req.body.use_no, req.body.prodno, req.body.chem_code, req.body.prodchem_pct, req.body.lbs_chm_used, req.body.lbs_prd_used, req.body.amt_prd_used, req.body.unit_of_meas, req.body.acre_planted, req.body.unit_treated, req.body.applic_cnt, req.body.applic_dt, req.body.applic_time, req.body.county_cd, req.body.base_ln_mer, req.body.township, req.body.tship_dir, req.body.range, req.body.range_dir, req.body.section, req.body.site_loc_id, req.body.grower_id, req.body.license_no, req.body.planting_seq, req.body.aer_gnd_ind, req.body.site_code, req.body.qualify_cd, req.body.batch_no, req.body.document_no, req.body.summary_cd, req.body.record_id, req.body.comtrs, req.body.error_flag])
-      res.status(200).json({message: "Successfully added", status: 200})
-    } catch (err) {
-      console.error(err)
-      res.status(500).send('Error in request')
-    }
-  });
+app.post('/addTableNOI', async function(req, res) {
+  pool = pool || (await createPool());
+  let tablename = 'udc19_50'
+  try {
+    const noiList = 
+      await pool.raw(
+      'INSERT INTO ??(use_no, prodno, chem_code, prodchem_pct, lbs_chm_used, lbs_prd_used, amt_prd_used, unit_of_meas, acre_planted, unit_treated, applic_cnt, applic_dt, applic_time, county_cd, base_ln_mer, township, tship_dir, range, range_dir, section, site_loc_id, grower_id, license_no, planting_seq, aer_gnd_ind,site_code, qualify_cd, batch_no, document_no, summary_cd, record_id, comtrs, error_flag) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+      [tablename, req.body.use_no, req.body.prodno, req.body.chem_code, req.body.prodchem_pct, req.body.lbs_chm_used, req.body.lbs_prd_used, req.body.amt_prd_used, req.body.unit_of_meas, req.body.acre_planted, req.body.unit_treated, req.body.applic_cnt, req.body.applic_dt, req.body.applic_time, req.body.county_cd, req.body.base_ln_mer, req.body.township, req.body.tship_dir, req.body.range, req.body.range_dir, req.body.section, req.body.site_loc_id, req.body.grower_id, req.body.license_no, req.body.planting_seq, req.body.aer_gnd_ind, req.body.site_code, req.body.qualify_cd, req.body.batch_no, req.body.document_no, req.body.summary_cd, req.body.record_id, req.body.comtrs, req.body.error_flag])
+    res.status(200).json({message: "Successfully added", status: 200})
+  } catch (err) {
+    console.error(err)
+    res.status(500).send('Error in request')
+  }
+});
 
 /**
  * Webhook called by Twilio on receipt of text message which
- * subscribes a user to our SMS notification system, 
- * and adds user phone number to database.
+ * handles their commands accordingly.
  * Parameters:
  * Body: body of text message received from users
  * Return Value:
- *  JSON List of nearby NOI's and their relevant information 
+ * Information regarding NOI's, or the NOI Notification System
 */
 app.post('/sms/in', async (req, res) => {
   // Parse incoming text
-  const tokens = req.body.Body.split(" ");
+  const tokens = req.body.Body.toUpperCase().split(" ");
   const numTokens = tokens.length;
 
   if (numTokens > 2) {
@@ -184,40 +183,42 @@ app.post('/sms/in', async (req, res) => {
   }
 
   if (numTokens == 2) {
-    handleMultiPartText(req, res, tokens);
+    handleMultiKeywordText(req, res, tokens);
   }
 
   if (numTokens == 1) {
-    handleSinglePartText(req, res, tokens[0]);
+    handleSingleKeywordText(req, res, tokens[0]);
   }
 });
 
-const handleSinglePartText = (req, res, token) => {
+// Handle text messages with 1 keyword
+const handleSingleKeywordText = (req, res, token) => {
   if (token == 'GUIDE') {
     twilio_functions.sendMessage(req, res, '0');
     res.status(200).send("Information successfully sent.");
   } else if (token == 'START') {
     twilio_functions.sendMessage(req, res, '1');
     res.status(200).send("Restart successful.");
-  } else if (token == 'INFO') {
-    // auto opt in words handle here
-    ;
   } else {
-    twilio_functions.sendError(req, res, '0');
-    res.status(500).send("Error subscribing. Not a valid county number.")
+    // Handle non-default SMS keywords
+    if (!twilio_functions.optOutKeywords.has(token)) {
+      twilio_functions.sendError(req, res, '0');
+      res.status(500).send("Error parsing command. Invalid keyword.")
+    }
   }
 }
 
-// Send
-const handleMultiPartText = async (req, res, tokens) => {
+// Handle text messages with 2 keywords
+const handleMultiKeywordText = async (req, res, tokens) => {
   if (tokens[0] == 'SUBSCRIBE') {
     let tableName = 'subscribers_';
-    let countyNumber = county_functions.county_lookup(tokens[1]);
-    if (countyNumber != 0) {
+    if (new Set(county_functions.available_county_table).has(tokens[1])) {
+      let countyNumber = county_functions.county_lookup(tokens[1]);
       tableName = tableName+=countyNumber;
     } else {
       twilio_functions.sendError(req, res, '42P01')
-      return res.status(500).send("Error subscribing. Not a valid county number.")
+      res.status(500).send("Error subscribing. Not a valid county number.")
+      return
     }
 
     // Add users to subscription list, and send confirmation text.
@@ -225,18 +226,46 @@ const handleMultiPartText = async (req, res, tokens) => {
     try {
       res.set('Access-Control-Allow-Origin', '*');
       pool = (pool || createPool());
+      // Add to users table
+      await pool.raw('INSERT INTO users (phone_number, language) VALUES (?, ?) ON CONFLICT (phone_number) DO UPDATE SET language = ?', [req.body.From, 'en', 'en']);
       await pool.raw('INSERT INTO ?? (phone_number) VALUES (?)', [tableName, req.body.From])
-      // await pool.raw('INSERT INTO user_preferences (phone_number, language) VALUES (?, ?)' ,[req.body.From, 'English']);
       twilio_functions.sendSubscribeConfirmation(req, res, tokens[1]);
       res.status(200).send("Subscription successful.");
     } catch (err) {
       console.error(err);
       twilio_functions.sendError(req, res, err.code);
-      return res.status(500).send("Error subscribing.");
+      res.status(500).send("Error subscribing.");
+      return
+    }
+  } else if (tokens[0] == 'HALT') {
+    let tableName = 'subscribers_';
+    let countyNumber = county_functions.county_lookup(tokens[1]);
+    if (countyNumber != 0) {
+      tableName = tableName+=countyNumber;
+    } else {
+      twilio_functions.sendError(req, res, '42P01')
+      res.status(500).send("Error unsubscribing. Not a valid county number.")
+      return;
+    }
+
+    // Delete users to subscription list, and send confirmation text.
+    // Send error message otherwise.
+    try {
+      res.set('Access-Control-Allow-Origin', '*');
+      pool = (pool || createPool());
+      await pool.raw('DELETE FROM ?? WHERE ??=?', [tableName, 'phone_number', req.body.From])
+      twilio_functions.sendUnsubscribeConfirmation(req, res, tokens[1]);
+      res.status(200).send("Unsubscription successful.");
+    } catch (err) {
+      console.error(err);
+      twilio_functions.sendError(req, res, err.code);
+      res.status(500).send("Error subscribing.");
+      return
     }
   } else {
     twilio_functions.sendError(req, res, '0')
     res.status(500).send(`Invalid command ${req.body.Body}`)
+    return
   }
 }
 
