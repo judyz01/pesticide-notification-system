@@ -55,13 +55,13 @@ const NOIs = (props) => {
     <Box sx={{display: "flex", minHeight: `calc(100vh - 224px)`}}>
 
       {/* Filters for Desktop View, left column that does not have a drawer */}
-      {isDesktop ? 
+      {isDesktop &&
         <Filters
           set_county={set_county}
           set_order={set_order}
           set_fumigant={set_fumigant}
           set_radius={set_radius}
-        />: ""
+        />
       }
 
       <Box sx={{display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#fdf7ee", flexGrow: 1}}>
@@ -69,7 +69,7 @@ const NOIs = (props) => {
           {NOI_SEARCH}
         </Typography>
 
-        { !isDesktop ? 
+        { !isDesktop &&
           <>
             {/* SM+ mobile view, filter button inline with text heading */}
             <Box sx={{display: "flex", display: { xs: 'none', sm: 'block' }, m: "30px", position:"absolute", width: "80%" }}>
@@ -107,7 +107,7 @@ const NOIs = (props) => {
               </Button> 
             </Box> 
 
-          </> : ""
+          </>
         }
 
         {/* Filters for Mobile View, column is a left drawer */}
