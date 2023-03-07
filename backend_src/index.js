@@ -196,9 +196,6 @@ const handleSingleKeywordText = (req, res, token) => {
   if (token == 'GUIDE') {
     twilio_functions.sendMessage(req, res, '0');
     res.status(200).send("Information successfully sent.");
-  } else if (token == 'START') {
-    twilio_functions.sendMessage(req, res, '1');
-    res.status(200).send("Restart successful.");
   } else {
     // Handle non-default SMS keywords
     if (!twilio_functions.optOutKeywords.has(token)) {
