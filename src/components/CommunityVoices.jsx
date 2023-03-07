@@ -10,7 +10,7 @@ const CommunityVoices = () => {
   const USER_3 = t("CommunityUser3");
 
   return (
-    <Box sx={{display: "flex", direction: "column", overflow: "scroll", backgroundColor: "#EAEAEA", width: "20%", display:{ xs: "none" , sm: "none", lg: "block" } }}>
+    <Box sx={{display: "flex", direction: "column", backgroundColor: "#EAEAEA", width: "20%", display:{ xs: "none" , sm: "none", lg: "block" } }}>
       <Box sx={{pt: "45px", pl: "20px", fontSize: 21, fontWeight: 600, color: "#126701" }}>
         {t("Community Voices")}
       </Box>

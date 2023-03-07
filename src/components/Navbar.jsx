@@ -4,6 +4,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar, Box, Button, Slide, Toolbar, useScrollTrigger } from '@mui/material';
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import ClickAwayListener from '@mui/material/ClickAwayListener';
 
 function HideOnScroll(props) {
   const { children } = props;
@@ -98,6 +99,7 @@ const Navbar = (props) => {
 
   const renderMenu = () => {
     return(
+      <ClickAwayListener onClickAway={() => setShowMenu(false)}>
       <Box sx={{
         display: "block", 
         position: "absolute",
@@ -108,6 +110,7 @@ const Navbar = (props) => {
         zIndex: 12000 }}>
           {renderButtons()}
       </Box>
+      </ClickAwayListener>
     );
   };
 
@@ -146,12 +149,11 @@ const Navbar = (props) => {
           </Box>
           <Box sx={{display: { xs: "block", sm: "none" }}}>
             <Button 
-            sx={{float:"right"}}
-            startIcon={<MenuIcon sx={{width:"30px", height:"30px"}}/>} 
-            onClick={() => {
-              showMenu ? setShowMenu(false) : setShowMenu(true); 
-            }}
-            />
+              sx={{float:"right", minWidth:"0px"}}
+              onClick={() => setShowMenu(!showMenu)}
+            >
+              <MenuIcon sx={{width:"30px", height:"30px"}}/>
+            </Button> 
           </Box>
         {showButtons ? renderButtons() : undefined}
         {showMenu ? renderMenu() : undefined}

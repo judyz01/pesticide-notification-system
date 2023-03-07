@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
 import { AccessTimeOutlined, LocationOnOutlined, WarningAmberOutlined}  from '@mui/icons-material';
-import { Box, Card, CardContent, CardHeader, CardMedia, Pagination, Skeleton, Stack, Tooltip, Typography } from '@mui/material';
+import { Box, Card, CardContent, CardHeader, CardMedia, createTheme, Pagination, Skeleton, Stack, Tooltip, Typography, Button, Drawer } from '@mui/material';
 import { useTranslation } from "react-i18next";
 
 function loadSkeleton() {
@@ -26,6 +26,22 @@ const NOICards = (props) =>  {
   const NO_NOIS = t("No NOIs");
 
   const [pesticideData, setPesticideData] = useState('');
+  const [isDesktop, setDesktop] = React.useState(true);
+  const [isXSMobile, setXSMobile] = React.useState(true);
+
+  React.useEffect(() => {
+
+    window.innerWidth > 900 ? setDesktop(true) : setDesktop(false);
+    window.innerWidth <= 660 ? setXSMobile(true) : setXSMobile(false);
+
+    const updateMedia = () => {
+      window.innerWidth > 900 ? setDesktop(true) : setDesktop(false);
+      window.innerWidth <= 660 ? setXSMobile(true) : setXSMobile(false);
+    };
+  
+    window.addEventListener('resize', updateMedia);
+    return () => window.removeEventListener('resize', updateMedia);
+  }, []);
 
   const itemsPerPage = 10;
   const [page, setPage] = React.useState(1);
@@ -97,33 +113,39 @@ const NOICards = (props) =>  {
 
   const update = () => {
 
-    // var stored_coordinates = localStorage.getItem('location');
-    // var coordinates = props.location ? props.location : JSON.parse(stored_coordinates);
-    var coordinates = props.location;
+    if(!props.dontRefresh)
+    {
+      setPesticideData('');
+      setPage(1);
 
-    var order = getOrderParams(props.order);
-    var radius = props.radius? props.radius : 5;
+      // var stored_coordinates = localStorage.getItem('location');
+      // var coordinates = props.location ? props.location : JSON.parse(stored_coordinates);
+      var coordinates = props.location;
 
-    // console.log("radius is " + radius);
-    // console.log("order rank is " + order[0]);
-    // console.log("order param is " + order[1]);
-    // console.log("location lat is " + coordinates.lat);
-    // console.log("location lng is " + coordinates.lng);
+      var order = getOrderParams(props.order);
+      var radius = props.radius? props.radius : 5;
 
-    if (coordinates) {
-      axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-          params: { latitude: coordinates.lat, longitude: coordinates.lng, radius: convertMilesToMeters(radius), order: order[0], orderParam: order[1]},
-      })
-      .then((response) => {
-        setPesticideData(response.data);
-        console.log("Pesticide data received for cards");
-      })
-      .catch(function (error) {
-          console.error(error);
-      });
-    } else {
-      console.log("no location found");
-    }
+      // console.log("radius is " + radius);
+      // console.log("order rank is " + order[0]);
+      // console.log("order param is " + order[1]);
+      // console.log("location lat is " + coordinates.lat);
+      // console.log("location lng is " + coordinates.lng);
+
+      if (coordinates) {
+        axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
+            params: { latitude: coordinates.lat, longitude: coordinates.lng, radius: convertMilesToMeters(radius), order: order[0], orderParam: order[1]},
+        })
+        .then((response) => {
+          setPesticideData(response.data);
+          console.log("Pesticide data received for cards");
+        })
+        .catch(function (error) {
+            console.error(error);
+        });
+      } else {
+        console.log("no location found");
+      }
+    };
   };
 
   useEffect(update, [props], []);
@@ -136,95 +158,157 @@ const NOICards = (props) =>  {
 
   }, [props], []);
 
-  if (!pesticideData) return loadSkeleton();
+  const iconMedia = (elem) => {
+    return(
+      <>
+        <Stack direction="row" alignItems="center" gap={2}>
+          <Tooltip title={TOOLTIP_DISTANCE} arrow placement="left">
+            <LocationOnOutlined />
+          </Tooltip>
+          <Typography variant="body1">
+          {`${parseFloat(elem.distance).toFixed(2)}`} {DISTANCE_UNIT}
+          </Typography>
+        </Stack>
+        <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
+          <Tooltip title={TOOLTIP_DATE}  arrow placement="left">
+            <AccessTimeOutlined />
+          </Tooltip>
 
-  return (
+          <Stack direction="column">
 
-    <Stack
-      spacing="20px"
-      direction="column"
-      justifyContent="flex-start"
-      alignItems="center"
-      overflow="auto"
-      sx={{ width: "100%", mb: "30px"}}
-    >
-      {/* If we don't have any data to show, then the view will show "No NOIs" and pagination will be hidden */}
-      {(pesticideData.length > 0) ? pesticideData
-      .slice((page - 1) * itemsPerPage, page * itemsPerPage)
-      .map((elem, index) => (
-        <Card key={index} sx={{ display:"flex", width: "80%", borderRadius: "16px", justifyContent: "space-between" }}>
-            <Box key={index} sx={{ flexDirection: "column" }}>
-
-                <CardHeader
-                  title={`${elem.product_name}`}
-                  sx={{pb:0}}
-                />
-              
-              <CardContent>
-                <Typography variant="h11" color="#A5ADBB">
-                  Address: {`${elem.latitude}`}, {`${elem.longitude}`}
-                </Typography>
-
-                <Typography color="#A5ADBB">
-                  Coverage: {`${elem.acre_treated}`} {`${COVERAGE_UNIT}`}
-                </Typography>
-              </CardContent>
-            </Box>
-
-          <CardMedia sx={{ pt:"35px", pb:"25px", flexDirection: "column", width: "22%", display:{ xs: "none" , lg: "block"}}}>
-            <Stack direction="row" alignItems="center" gap={2}>
-              <Tooltip title={TOOLTIP_DISTANCE} arrow placement="left">
-                <LocationOnOutlined />
-              </Tooltip>
+            {/* Desktop View: time & date formatted vertically */}
+            { isDesktop &&
+              <>
               <Typography variant="body1">
-              {`${parseFloat(elem.distance).toFixed(2)}`} {DISTANCE_UNIT}
+                {`${getStandardTime(elem.applic_time)}`}
               </Typography>
-            </Stack>
-            <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
-              <Tooltip title={TOOLTIP_DATE}  arrow placement="left">
-                <AccessTimeOutlined />
-              </Tooltip>
+              <Typography>
+                {`${reformatDate(elem.applic_dt)}`} 
+              </Typography>
+              </>
+            }
 
-              <Stack direction="column">
+            {/* 
+              Mobile View: 
+                XS+: time & date formatted horizontally
+                XS or below: time & date formatted vertically
+            */}
+            { !isDesktop &&
+              (!isXSMobile ? 
+                // XS+
                 <Typography variant="body1">
-                  {`${getStandardTime(elem.applic_time)}`} 
+                  {`${getStandardTime(elem.applic_time)}`}, &nbsp; {`${reformatDate(elem.applic_dt)}`} 
+                </Typography>
+              :
+                // XS or below
+                <>
+                <Typography variant="body1">
+                  {`${getStandardTime(elem.applic_time)}`}
                 </Typography>
                 <Typography>
                   {`${reformatDate(elem.applic_dt)}`} 
                 </Typography>
+                </>
+              )
+            }
+          </Stack>
+        </Stack>
+        <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
+          <Tooltip title={TOOLTIP_APPLICATION}  arrow placement="left">
+            <WarningAmberOutlined />
+          </Tooltip>
+          <Typography variant="body1">
+          {`${getApplicatorType(elem.aer_grnd_ind)}`}
+          </Typography>
+        </Stack>
+      </>
+    );
+  }
 
-              </Stack>
-            </Stack>
-            <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
-              <Tooltip title={TOOLTIP_APPLICATION}  arrow placement="left">
-                <WarningAmberOutlined />
-              </Tooltip>
-              <Typography variant="body1">
-              {`${getApplicatorType(elem.aer_grnd_ind)}`}
-              </Typography>
-            </Stack>
+  if (!pesticideData) return loadSkeleton();
 
-          </CardMedia>
-        </Card> 
-      )) : 
-        <Typography sx={{fontSize: 18, fontWeight: 500, color: "#126701"}}>
-          {NO_NOIS}
-        </Typography>
-      }
+  return (
+    <>
+      {/* NOICards format is in a column */}
+      <Stack
+        spacing="20px"
+        direction="column"
+        justifyContent="flex-start"
+        alignItems="center"
+        overflow="auto"
+        sx={{ width: "100%", mb: "30px"}}
+      >
+        {/* If we don't have any data to show, then the view will show "No NOIs" and pagination will be hidden */}
+        {(pesticideData.length > 0) ? pesticideData
+        .slice((page - 1) * itemsPerPage, page * itemsPerPage)
+        .map((elem, index) => (
+          <Card key={index} sx={{ display:"flex", width: "80%", borderRadius: "16px", justifyContent: "space-between", flexDirection:{ sm:"column", md:"row"} }}>
+              <Box key={index} sx={{ flexDirection: "column" }}>
+                  <CardHeader
+                    title={`${elem.product_name}`}
+                    sx={{pb:0}}
+                  />
 
-      {(pesticideData.length > 0) ?
-        <Pagination
-            count={Math.ceil(pesticideData.length / itemsPerPage)}
-            page={page}
-            onChange={handleChange}
-            defaultPage={1}
-            color="primary"
-            size="large"
-            showFirstButton
-            showLastButton
-          /> : ""
-      }
-    </Stack>
+                {/* 
+                  Mobile view: icons are shown sandwiched in between CardHeader and CardContent 
+                    XS+: icons formatted horizontally
+                    XS or below: icons formatted vertically
+                */}
+                {!isDesktop &&
+                  (!isXSMobile ? 
+                    // XS+
+                    <CardMedia sx={{ pl:"20px", pt:"10px", flexDirection: "row", width: "80%", minWidth: "520px", justifyContent:"space-between"}}>
+                      <Stack direction="row" gap={3}>
+                        {iconMedia(elem) }
+                      </Stack>
+                    </CardMedia>
+
+                  :
+                    // XS or below
+                    <CardMedia sx={{ p:"20px", flexDirection: "column", width: "80%", justifyContent:"space-between"}}>
+                      {iconMedia(elem) }
+                    </CardMedia>
+                  )
+                }
+
+                <CardContent>
+                  <Typography variant="h11" color="#A5ADBB">
+                    Address: {`${elem.latitude}`}, {`${elem.longitude}`}
+                  </Typography>
+
+                  <Typography color="#A5ADBB">
+                    Coverage: {`${elem.acre_treated}`} {`${COVERAGE_UNIT}`}
+                  </Typography>
+                </CardContent>
+              </Box>
+
+              {/* Desktop View: Icons shows on right side of the card, vertically */}
+              {isDesktop && 
+              <CardMedia sx={{ pt:"35px", pb:"25px", flexDirection: "column", width: "22%", display: "block"}}>
+                  {iconMedia(elem)}
+              </CardMedia>
+              }
+          </Card> 
+        )) : 
+          <Typography sx={{fontSize: 18, fontWeight: 500, color: "#126701"}}>
+            {NO_NOIS}
+          </Typography>
+        }
+
+        {(pesticideData.length > 0) &&
+          <Pagination
+              count={Math.ceil(pesticideData.length / itemsPerPage)}
+              page={page}
+              onChange={handleChange}
+              defaultPage={1}
+              color="primary"
+              size="large"
+              showFirstButton
+              showLastButton
+            />
+        }
+      </Stack>
+    </>
   );
 
 }
