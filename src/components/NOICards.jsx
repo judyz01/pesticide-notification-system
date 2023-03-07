@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
 import { AccessTimeOutlined, LocationOnOutlined, WarningAmberOutlined}  from '@mui/icons-material';
-import { Box, Card, CardContent, CardHeader, CardMedia, Pagination, Skeleton, Stack, Tooltip, Typography, Button, Drawer } from '@mui/material';
+import { Box, Card, CardContent, CardHeader, CardMedia, createTheme, Pagination, Skeleton, Stack, Tooltip, Typography, Button, Drawer } from '@mui/material';
 import { useTranslation } from "react-i18next";
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 function loadSkeleton() {
   return [
@@ -28,22 +27,18 @@ const NOICards = (props) =>  {
 
   const [pesticideData, setPesticideData] = useState('');
   const [isDesktop, setDesktop] = React.useState(true);
-  const [drawer, setDrawer] = React.useState(false);
+  const [isXSMobile, setXSMobile] = React.useState(true);
 
   React.useEffect(() => {
-    if (window.innerWidth > 1000) {
-      setDesktop(true);
-    } else {
-      setDesktop(false);
-    }
+
+    window.innerWidth > 900 ? setDesktop(true) : setDesktop(false);
+    window.innerWidth <= 660 ? setXSMobile(true) : setXSMobile(false);
 
     const updateMedia = () => {
-      if (window.innerWidth > 1000) {
-        setDesktop(true);
-      } else {
-        setDesktop(false);
-      }
+      window.innerWidth > 900 ? setDesktop(true) : setDesktop(false);
+      window.innerWidth <= 660 ? setXSMobile(true) : setXSMobile(false);
     };
+  
     window.addEventListener('resize', updateMedia);
     return () => window.removeEventListener('resize', updateMedia);
   }, []);
@@ -163,41 +158,70 @@ const NOICards = (props) =>  {
 
   }, [props], []);
 
-  const cardMedia = (elem) => {
+  const iconMedia = (elem) => {
     return(
-      <CardMedia sx={{ pt:"35px", pb:"25px", flexDirection: "column", width: "22%", display: "block"}}>
-                <Stack direction="row" alignItems="center" gap={2}>
-                  <Tooltip title={TOOLTIP_DISTANCE} arrow placement="left">
-                    <LocationOnOutlined />
-                  </Tooltip>
-                  <Typography variant="body1">
-                  {`${parseFloat(elem.distance).toFixed(2)}`} {DISTANCE_UNIT}
-                  </Typography>
-                </Stack>
-                <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
-                  <Tooltip title={TOOLTIP_DATE}  arrow placement="left">
-                    <AccessTimeOutlined />
-                  </Tooltip>
+      <>
+        <Stack direction="row" alignItems="center" gap={2}>
+          <Tooltip title={TOOLTIP_DISTANCE} arrow placement="left">
+            <LocationOnOutlined />
+          </Tooltip>
+          <Typography variant="body1">
+          {`${parseFloat(elem.distance).toFixed(2)}`} {DISTANCE_UNIT}
+          </Typography>
+        </Stack>
+        <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
+          <Tooltip title={TOOLTIP_DATE}  arrow placement="left">
+            <AccessTimeOutlined />
+          </Tooltip>
 
-                  <Stack direction="column">
-                    <Typography variant="body1">
-                      {`${getStandardTime(elem.applic_time)}`} 
-                    </Typography>
-                    <Typography>
-                      {`${reformatDate(elem.applic_dt)}`} 
-                    </Typography>
+          <Stack direction="column">
 
-                  </Stack>
-                </Stack>
-                <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
-                  <Tooltip title={TOOLTIP_APPLICATION}  arrow placement="left">
-                    <WarningAmberOutlined />
-                  </Tooltip>
-                  <Typography variant="body1">
-                  {`${getApplicatorType(elem.aer_grnd_ind)}`}
-                  </Typography>
-                </Stack>
-              </CardMedia>
+            {/* Desktop View: time & date formatted vertically */}
+            { isDesktop &&
+              <>
+              <Typography variant="body1">
+                {`${getStandardTime(elem.applic_time)}`}
+              </Typography>
+              <Typography>
+                {`${reformatDate(elem.applic_dt)}`} 
+              </Typography>
+              </>
+            }
+
+            {/* 
+              Mobile View: 
+                XS+: time & date formatted horizontally
+                XS or below: time & date formatted vertically
+            */}
+            { !isDesktop &&
+              (!isXSMobile ? 
+                // XS+
+                <Typography variant="body1">
+                  {`${getStandardTime(elem.applic_time)}`}, &nbsp; {`${reformatDate(elem.applic_dt)}`} 
+                </Typography>
+              :
+                // XS or below
+                <>
+                <Typography variant="body1">
+                  {`${getStandardTime(elem.applic_time)}`}
+                </Typography>
+                <Typography>
+                  {`${reformatDate(elem.applic_dt)}`} 
+                </Typography>
+                </>
+              )
+            }
+          </Stack>
+        </Stack>
+        <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
+          <Tooltip title={TOOLTIP_APPLICATION}  arrow placement="left">
+            <WarningAmberOutlined />
+          </Tooltip>
+          <Typography variant="body1">
+          {`${getApplicatorType(elem.aer_grnd_ind)}`}
+          </Typography>
+        </Stack>
+      </>
     );
   }
 
@@ -205,18 +229,7 @@ const NOICards = (props) =>  {
 
   return (
     <>
-      <Drawer
-        anchor={"right"}
-        open={drawer}
-        PaperProps={{
-          sx:{ backgroundColor: "#EAEAEA", justifyContent: "center", width:"150px"}
-        }}
-        onClose={() => {
-          setDrawer(false);
-        }}
-      > 
-        {cardMedia(drawer)}
-      </Drawer>
+      {/* NOICards format is in a column */}
       <Stack
         spacing="20px"
         direction="column"
@@ -229,13 +242,35 @@ const NOICards = (props) =>  {
         {(pesticideData.length > 0) ? pesticideData
         .slice((page - 1) * itemsPerPage, page * itemsPerPage)
         .map((elem, index) => (
-          <Card key={index} sx={{ display:"flex", width: "80%", borderRadius: "16px", justifyContent: "space-between", flexDirection:{xs:"column", sm:"row"} }}>
+          <Card key={index} sx={{ display:"flex", width: "80%", borderRadius: "16px", justifyContent: "space-between", flexDirection:{ sm:"column", md:"row"} }}>
               <Box key={index} sx={{ flexDirection: "column" }}>
                   <CardHeader
                     title={`${elem.product_name}`}
                     sx={{pb:0}}
                   />
-                
+
+                {/* 
+                  Mobile view: icons are shown sandwiched in between CardHeader and CardContent 
+                    XS+: icons formatted horizontally
+                    XS or below: icons formatted vertically
+                */}
+                {!isDesktop &&
+                  (!isXSMobile ? 
+                    // XS+
+                    <CardMedia sx={{ pl:"20px", pt:"10px", flexDirection: "row", width: "80%", minWidth: "520px", justifyContent:"space-between"}}>
+                      <Stack direction="row" gap={3}>
+                        {iconMedia(elem) }
+                      </Stack>
+                    </CardMedia>
+
+                  :
+                    // XS or below
+                    <CardMedia sx={{ p:"20px", flexDirection: "column", width: "80%", justifyContent:"space-between"}}>
+                      {iconMedia(elem) }
+                    </CardMedia>
+                  )
+                }
+
                 <CardContent>
                   <Typography variant="h11" color="#A5ADBB">
                     Address: {`${elem.latitude}`}, {`${elem.longitude}`}
@@ -246,12 +281,13 @@ const NOICards = (props) =>  {
                   </Typography>
                 </CardContent>
               </Box>
-              {!isDesktop ?   
-                <Button 
-                  startIcon={<MoreHorizIcon sx={{width:"20px", height:"20px"}}/>} 
-                  onClick={() => setDrawer(elem)}
-                /> :
-                cardMedia(elem)}
+
+              {/* Desktop View: Icons shows on right side of the card, vertically */}
+              {isDesktop && 
+              <CardMedia sx={{ pt:"35px", pb:"25px", flexDirection: "column", width: "22%", display: "block"}}>
+                  {iconMedia(elem)}
+              </CardMedia>
+              }
           </Card> 
         )) : 
           <Typography sx={{fontSize: 18, fontWeight: 500, color: "#126701"}}>
@@ -259,7 +295,7 @@ const NOICards = (props) =>  {
           </Typography>
         }
 
-        {(pesticideData.length > 0) ?
+        {(pesticideData.length > 0) &&
           <Pagination
               count={Math.ceil(pesticideData.length / itemsPerPage)}
               page={page}
@@ -269,7 +305,7 @@ const NOICards = (props) =>  {
               size="large"
               showFirstButton
               showLastButton
-            /> : ""
+            />
         }
       </Stack>
     </>
