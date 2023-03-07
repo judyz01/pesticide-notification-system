@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
 import { AccessTimeOutlined, LocationOnOutlined, WarningAmberOutlined}  from '@mui/icons-material';
-import { Box, Card, CardContent, CardHeader, CardMedia, createTheme, Pagination, Skeleton, Stack, Tooltip, Typography, Button, Drawer } from '@mui/material';
+import { Box, Card, CardContent, CardHeader, CardMedia, Pagination, Skeleton, Stack, Tooltip, Typography } from '@mui/material';
 import { useTranslation } from "react-i18next";
 
 function loadSkeleton() {
@@ -118,9 +118,9 @@ const NOICards = (props) =>  {
       setPesticideData('');
       setPage(1);
 
-      // var stored_coordinates = localStorage.getItem('location');
-      // var coordinates = props.location ? props.location : JSON.parse(stored_coordinates);
-      var coordinates = props.location;
+      var stored_coordinates = localStorage.getItem('location');
+      var check_coordinates_exist = props.location ? props.location : JSON.parse(stored_coordinates);
+      var coordinates = check_coordinates_exist ? check_coordinates_exist : { lat: 38.53709139783189, lng: -121.75506664377548 };
 
       var order = getOrderParams(props.order);
       var radius = props.radius? props.radius : 5;
