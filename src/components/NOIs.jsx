@@ -1,8 +1,7 @@
 import * as React from "react";
 
 import { useTranslation } from "react-i18next";
-import { Box, Button, Typography } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { Box, Button, Typography, Drawer } from '@mui/material';
 
 import { Filters, NOICards }from "./";
 
@@ -16,6 +15,7 @@ const NOIs = (props) => {
   const [radius, setRadius] = React.useState();
   const [isDesktop, setDesktop] = React.useState(true);
   const [showDrawer, setShowDrawer] = React.useState(false);
+  const [dontRefresh, setDontRefresh] = React.useState(false);
 
   React.useEffect(() => {
     if (window.innerWidth > 1199) {
@@ -35,32 +35,6 @@ const NOIs = (props) => {
     return () => window.removeEventListener('resize', updateMedia);
   }, []);
 
-  const filterDrawer = () => {
-    return(
-      <Box sx={{ 
-        position: "absolute",
-        width:"200px",
-        top:"100px",
-        boxShadow: 5,
-        backgroundColor:"#EAEAEA",
-        pb: "20px",
-        zIndex: 1000 }}
-        >
-          <Button 
-            sx={{zIndex: 1100, position: 'absolute', top:"25px", left:"150px"}}
-            startIcon={<CloseIcon sx={{width:"20px", height:"20px"}}/>} 
-            onClick={() => setShowDrawer(false)}
-          />
-          <Filters
-            set_county={set_county}
-            set_order={set_order}
-            set_fumigant={set_fumigant}
-            set_radius={set_radius}
-          />
-      </Box>
-    );
-  };
-
   const set_county = (county) => {
     setCounty(county);
   }
@@ -79,8 +53,6 @@ const NOIs = (props) => {
 
   return (
     <Box sx={{display: "flex", minHeight: `calc(100vh - 224px)`}}>
-      
-      {showDrawer && !isDesktop && filterDrawer()}
       {!isDesktop ? 
         <Button sx={{ 
               display: "flex",
@@ -91,10 +63,14 @@ const NOIs = (props) => {
               backgroundColor:"#F79407", 
               color:"white"
               }}
-          onClick={() => setShowDrawer(true)}
+          onClick={() => {
+            setShowDrawer(true);
+            setDontRefresh(true);
+          }}
         >
           {t("Filters")}
-        </Button>  : 
+        </Button> 
+         : 
         <Filters
           set_county={set_county}
           set_order={set_order}
@@ -102,6 +78,28 @@ const NOIs = (props) => {
           set_radius={set_radius}
         />
       }
+      {!isDesktop &&
+      <Drawer
+        anchor={"left"}
+        open={showDrawer}
+        PaperProps={{
+          sx:{width:"300px", backgroundColor: "#EAEAEA"}
+        }}
+        onClose={() => {
+          setShowDrawer(false);
+          setDontRefresh(false);
+        }}
+       > 
+        <Filters
+          set_county={set_county}
+          set_order={set_order}
+          set_fumigant={set_fumigant}
+          set_radius={set_radius}
+        />
+      </Drawer>
+
+      }
+   
       <Box sx={{display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#fdf7ee", flexGrow: 1}}>
         <Typography sx={{mt: "25px", mb: "25px", fontSize: 28, fontWeight: 600, color: "#126701"}}>
           {NOI_SEARCH}
@@ -112,6 +110,7 @@ const NOIs = (props) => {
           fumigant={fumigant}
           radius={radius}
           location={props.location}
+          dontRefresh={dontRefresh}
         />
       </Box>
     </Box>
