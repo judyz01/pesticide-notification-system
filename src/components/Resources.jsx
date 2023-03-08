@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Box, Button, Link, Stack, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, CardHeader, CardMedia, Link, Stack, Typography } from '@mui/material';
 
 import { styled } from '@mui/material/styles';
 import { useTranslation } from "react-i18next";
@@ -82,9 +82,38 @@ const Resources = () => {
   return (
 
     <Box sx={{display: "flex", flexDirection: "column", alignItems:"center", backgroundColor: "#fdf7ee", minHeight: `calc(100vh - 224px)`}}>
-      
+
+      <Card sx={{ mb:"30px", mt:"30px", borderRadius: "16px", border: "1px solid #126701", width:"30%",  minWidth: "275px", maxWidth:"400px" }}>
+          <CardHeader 
+            title={"For Real Time Notifications"}
+            sx={{ textAlign: "center", pb:"0" }}/>
+
+          <CardContent sx={{ textAlign: "center" }}>
+            <Stack direction="column" alignItems="center" gap={2} sx={{pt:"5px"}}>
+                <Typography variant="h6">
+                  Text "SUBSCRIBE STANISLAUS" to
+                </Typography>
+
+                <Typography variant="h7" sx={{fontSize: 18, fontWeight: 500}}>
+                  English: &nbsp; 
+                  <Link href="sms:+18449652649">
+                  +1 (844) 965-2649 
+                  </Link>
+                </Typography>
+
+                <Typography variant="h7" sx={{fontSize: 18, fontWeight: 500}}>
+                  Spanish: &nbsp; 
+                  <Link href="sms:+18888233850">
+                  +1 (888) 823-3850 
+                  </Link>
+                </Typography>
+            </Stack>
+
+          </CardContent>
+      </Card>
+
       <Typography align="center" sx={{m:"25px", fontSize: 28, fontWeight: 600, color: "#126701"}}>
-        {t("What To Do")}
+          {t("What To Do")}
       </Typography>
 
 
