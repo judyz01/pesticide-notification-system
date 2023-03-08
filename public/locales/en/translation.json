@@ -1,5 +1,4 @@
 {
-    "Actual Language": "en",
     "Language": "Español",
     "Title": "Find Nearby Pesticides",
     "NOI": "Notices of Intent",
@@ -68,6 +67,10 @@
 
     "Drift": "Report pesticide drift and pesticide exposure each and every time it happens. Follow the links to report incidents in",
     "Counties": " Counties.",
-    "and": "and"
+    "and": "and",
+
+    "Pesticide Exposure Guide": "Pesticide Exposure Guide",
+    "San Joaquin Valley": "San Joaquin Valley and Inland Empire",
+    "California Coast": "California Coast"
     
 }
