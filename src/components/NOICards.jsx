@@ -118,6 +118,8 @@ const NOICards = (props) =>  {
       setPesticideData('');
       setPage(1);
 
+      console.log("UPDATING");
+
       var stored_coordinates = localStorage.getItem('location');
       var check_coordinates_exist = props.location ? props.location : JSON.parse(stored_coordinates);
       var coordinates = check_coordinates_exist ? check_coordinates_exist : { lat: 38.53709139783189, lng: -121.75506664377548 };
@@ -128,8 +130,8 @@ const NOICards = (props) =>  {
       // console.log("radius is " + radius);
       // console.log("order rank is " + order[0]);
       // console.log("order param is " + order[1]);
-      console.log("location lat is " + coordinates.lat);
-      console.log("location lng is " + coordinates.lng);
+      // console.log("location lat is " + coordinates.lat);
+      // console.log("location lng is " + coordinates.lng);
 
       if (coordinates) {
         axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
@@ -137,6 +139,11 @@ const NOICards = (props) =>  {
         })
         .then((response) => {
           setPesticideData(response.data);
+
+            if (props.fumigant === true) {
+              const filteredData = pesticideData.filter(elem => elem.fumigant_sw === 'X');
+              setPesticideData(filteredData);
+            }
           console.log("Pesticide data received for cards");
         })
         .catch(function (error) {
@@ -155,6 +162,9 @@ const NOICards = (props) =>  {
     props.location ?
       localStorage.setItem('location', JSON.stringify(props.location))
       : console.log("no location passed from mapview");
+
+
+    props.fumigant ? console.log("FUMIGANT TRUE") : console.log("FUMIGANT False")
 
   }, [props], []);
 
@@ -279,6 +289,7 @@ const NOICards = (props) =>  {
                   <Typography color="#A5ADBB">
                     Coverage: {`${elem.acre_treated}`} {`${COVERAGE_UNIT}`}
                   </Typography>
+                  Fumigant: {`${elem.fumigant_sw}`}
                 </CardContent>
               </Box>
 
