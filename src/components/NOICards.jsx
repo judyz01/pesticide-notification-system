@@ -127,7 +127,7 @@ const NOICards = (props) =>  {
       var order = getOrderParams(props.order);
       var radius = props.radius? props.radius : 5;
 
-      // console.log("radius is " + radius);
+      console.log("radius is " + radius);
       // console.log("order rank is " + order[0]);
       // console.log("order param is " + order[1]);
       // console.log("location lat is " + coordinates.lat);
@@ -138,12 +138,13 @@ const NOICards = (props) =>  {
             params: { latitude: coordinates.lat, longitude: coordinates.lng, radius: convertMilesToMeters(radius), order: order[0], orderParam: order[1]},
         })
         .then((response) => {
-          setPesticideData(response.data);
-
-            if (props.fumigant === true) {
-              const filteredData = pesticideData.filter(elem => elem.fumigant_sw === 'X');
-              setPesticideData(filteredData);
-            }
+          if (props.fumigant === true) {
+            const filteredData = response.data.filter(elem => elem.fumigant_sw === 'X');
+            console.log(filteredData);
+            setPesticideData(filteredData);
+          } else {
+            setPesticideData(response.data);
+          }
           console.log("Pesticide data received for cards");
         })
         .catch(function (error) {
