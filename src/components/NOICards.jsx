@@ -290,7 +290,10 @@ const NOICards = (props) =>  {
                   <Typography color="#A5ADBB">
                     Coverage: {`${elem.acre_treated}`} {`${COVERAGE_UNIT}`}
                   </Typography>
-                  Fumigant: {`${elem.fumigant_sw}`}
+
+                  <Typography color="#A5ADBB">
+                    Fumigant: {`${elem.fumigant_sw === 'X' ? "Yes" : "No"}`}
+                  </Typography>
                 </CardContent>
               </Box>
 
