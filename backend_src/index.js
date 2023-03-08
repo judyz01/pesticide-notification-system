@@ -257,8 +257,9 @@ const handleMultiKeywordText = async (req, res, tokens) => {
     try {
       res.set('Access-Control-Allow-Origin', '*');
       pool = (pool || createPool());
+      const lng = req.headers['accept-language']
       // Add to users table
-      await pool.raw('INSERT INTO users (phone_number, language) VALUES (?, ?) ON CONFLICT (phone_number) DO UPDATE SET language = ?', [req.body.From, 'en', 'en']);
+      await pool.raw('INSERT INTO users (phone_number, language) VALUES (?, ?) ON CONFLICT (phone_number) DO UPDATE SET language = ?', [req.body.From, lng, lng]);
       await pool.raw('INSERT INTO ?? (phone_number) VALUES (?)', [tableName, req.body.From])
       twilio_functions.sendSubscribeConfirmation(req, res, tokens[1]);
       res.status(200).send("Subscription successful.");
