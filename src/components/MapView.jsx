@@ -170,8 +170,8 @@ class MapView extends React.Component {
 
             <MarkerClusterer minimumClusterSize={1} calculator={this.calculator} options={this.clusterStyles}>
               {(clusterer) =>
-                this.state.pesticideData.map((elem) => (
-                  <Marker position={ {lat: parseFloat(elem.latitude), lng: parseFloat(elem.longitude)} } 
+                this.state.pesticideData.map((elem, idx) => (
+                  <Marker key={idx} position={ {lat: parseFloat(elem.latitude), lng: parseFloat(elem.longitude)} } 
                           clusterer={clusterer} />
                 ))
               }
