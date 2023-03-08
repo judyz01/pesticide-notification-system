@@ -72,9 +72,12 @@
 
     "Pesticide Exposure Guide": "Guía de Exposición a Pesticidas",
     "San Joaquin Valley": "El Valle de San Joaquín y Inland Empire",
-    "California Coast": "La región costera de California"
+    "California Coast": "La región costera de California",
 
-
+    "Text": "Envía un mensaje de texto \"SUSCRIBE STANISLAUS\" a",
+    "English": "Inglés",
+    "Spanish": "Español",
+    "Real Time": "Para Notificaciones en Tiempo Real"
 
 
 }
