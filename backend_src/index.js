@@ -1,6 +1,10 @@
 'use strict';
 const functions = require('@google-cloud/functions-framework');
 const express = require('express');
+const i18next = require('i18next');
+const Backend = require('i18next-fs-backend');
+const middleware = require('i18next-http-middleware');
+
 const county_functions = require('./county_functions.js');
 const create_unix_socket = require('./create_unix_socket.js');
 const twilio_functions = require('./twilio_functions.js')
@@ -162,6 +166,21 @@ app.post('/addTableNOI', async function(req, res) {
   }
 });
 
+// Middleware to parse which language of messaging service messaging service to use
+app.use('/sms/in', (req, res, next) => {
+  req.headers['accept-language'] = req.path.slice(1);
+  next();
+});
+
+// Add internationalization to SMS Notification Service
+i18next.use(Backend).use(middleware.LanguageDetector).init({
+  fallbackLng: 'en',
+  backend: {
+    loadPath: './locales/{{lng}}/translation.json'
+  },
+});
+app.use(middleware.handle(i18next));
+
 /**
  * Webhook called by Twilio on receipt of text message which
  * handles their commands accordingly.
@@ -170,14 +189,14 @@ app.post('/addTableNOI', async function(req, res) {
  * Return Value:
  * Information regarding NOI's, or the NOI Notification System
 */
-app.post('/sms/in', async (req, res) => {
+app.post('/sms/in/:lng', async (req, res) => {
   // Parse incoming text
   const tokens = req.body.Body.toUpperCase().split(" ");
   const numTokens = tokens.length;
 
   if (numTokens > 2) {
     console.error("Error parsing command. Too many arguments.")
-    twilio_functions.sendError(req, res, '0');
+    twilio_functions.sendError(req, res, 'excess_keyword');
     res.status(500).send("Error parsing command. Too many arguments.")
     return
   }
@@ -194,12 +213,12 @@ app.post('/sms/in', async (req, res) => {
 // Handle text messages with 1 keyword
 const handleSingleKeywordText = (req, res, token) => {
   if (token == 'GUIDE') {
-    twilio_functions.sendMessage(req, res, '0');
+    twilio_functions.sendGuide(req, res);
     res.status(200).send("Information successfully sent.");
   } else {
     // Handle non-default SMS keywords
     if (!twilio_functions.optOutKeywords.has(token)) {
-      twilio_functions.sendError(req, res, '0');
+      twilio_functions.sendError(req, res, 'invalid_keyword');
       res.status(500).send("Error parsing command. Invalid keyword.")
     }
   }
@@ -213,7 +232,7 @@ const handleMultiKeywordText = async (req, res, tokens) => {
       let countyNumber = county_functions.county_lookup(tokens[1]);
       tableName = tableName+=countyNumber;
     } else {
-      twilio_functions.sendError(req, res, '42P01')
+      twilio_functions.sendError(req, res, 'invalid_county')
       res.status(500).send("Error subscribing. Not a valid county number.")
       return
     }
@@ -240,7 +259,7 @@ const handleMultiKeywordText = async (req, res, tokens) => {
     if (countyNumber != 0) {
       tableName = tableName+=countyNumber;
     } else {
-      twilio_functions.sendError(req, res, '42P01')
+      twilio_functions.sendError(req, res, 'invalid_county')
       res.status(500).send("Error unsubscribing. Not a valid county number.")
       return;
     }
@@ -260,7 +279,7 @@ const handleMultiKeywordText = async (req, res, tokens) => {
       return
     }
   } else {
-    twilio_functions.sendError(req, res, '0')
+    twilio_functions.sendError(req, res, "invalid_keyword")
     res.status(500).send(`Invalid command ${req.body.Body}`)
     return
   }

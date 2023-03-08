@@ -77,14 +77,6 @@ const county_lookup = (countyName) => {
     }
 }
 
-/**
- *
- * @returns Array with all available counties
- */
-const available_county_lookup = () => {
-    return available_county_table;
-}
-
 module.exports = {
     county_lookup,
     available_county_table
