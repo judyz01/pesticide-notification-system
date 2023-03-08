@@ -141,7 +141,16 @@ const Navbar = (props) => {
                 float: "right", 
                 variant:"contained", 
                 backgroundColor:"#F79407", 
-                color:"white"}}
+                color:"white",
+                "&:hover": {
+                  backgroundColor: "#126701",
+                  "@media (hover: none)": {
+                    backgroundColor: "#F79407",
+                    "&:active": {
+                      backgroundColor: "#126701"
+                    }
+                  }}
+                }}
               onClick={() => changeLanguage()}
             >
               {LANGUAGE}
