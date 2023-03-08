@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Box, Link, Typography } from '@mui/material';
+import { Box, Button, Link, Stack, Typography } from '@mui/material';
 
 import { styled } from '@mui/material/styles';
 import { useTranslation } from "react-i18next";
@@ -57,7 +57,7 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 
 const Resources = () => {
 
-  const { t } = useTranslation();
+  const { t, i18n} = useTranslation();
 
   const [expanded, setExpanded] = React.useState('');
   const [checked, setChecked] = React.useState([]);
@@ -80,11 +80,10 @@ const Resources = () => {
   };
 
   return (
-    <Box sx={{display: "flex", minHeight: `calc(100vh - 224px)`}}>
 
-    <Box sx={{display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#fdf7ee", flexGrow: 1}}>
+    <Box sx={{display: "flex", flexDirection: "column", alignItems:"center", backgroundColor: "#fdf7ee", minHeight: `calc(100vh - 224px)`}}>
       
-      <Typography sx={{m:"25px", pl:"25px", fontSize: 28, fontWeight: 600, color: "#126701"}}>
+      <Typography align="center" sx={{m:"25px", fontSize: 28, fontWeight: 600, color: "#126701"}}>
         {t("What To Do")}
       </Typography>
 
@@ -242,8 +241,60 @@ const Resources = () => {
         </Accordion>
       </Box>
 
+
+      <Box sx={{ width:"80%", pt:"25px", display: "flex", flexDirection: "column", alignItems:"center"}}>
+        <Typography align="center" sx={{ fontSize: 24, fontWeight: 600, color: "#126701" }}>
+          {t("Pesticide Exposure Guide")}
+        </Typography>
+        
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={3} justifyContent="center" alignItems="center">
+            <Box 
+              component="img"
+              sx={{
+                width: "40%",
+                minWidth: "280px",
+                maxWidth: "450px",
+                height: "auto",
+                pt: "20px",
+                mb: "30px" 
+              }}
+              alt="pesticide-exposure-guide"
+              src="../images/pesticide_exposure.jpeg">
+            </Box>
+
+            <Stack direction="column" justifyContent="center" alignItems="center" spacing={5} sx={{pb:"30px"}}>
+              <Button 
+                rel="noopener noreferrer" 
+                href=
+                { i18n.language === "en" ?      
+                "https://www.pesticidereform.org/wp-content/uploads/2021/05/202104CPRDriftGuides-Inland_ENGsm.pdf"
+                :
+                "https://www.pesticidereform.org/wp-content/uploads/2021/05/202104CPRDriftGuides-Inland_ESPsm.pdf"
+                }
+                target="_blank" 
+                variant="outlined">
+
+                {t("San Joaquin Valley")}
+              </Button>
+
+              <Button 
+                rel="noopener noreferrer" 
+                href=
+                { i18n.language === "en" ?      
+                "https://www.pesticidereform.org/wp-content/uploads/2021/06/202104CPRDriftGuides-Coast_ENGsm.pdf"
+                :
+                "https://www.pesticidereform.org/wp-content/uploads/2021/05/202104CPRDriftGuides-Coast_ESPsm.pdf"
+                }
+                target="_blank" 
+                variant="outlined">
+
+                {t("California")}
+              </Button>
+            </Stack>
+          </Stack>
+
+      </Box>
     </Box>
-  </Box>
 
   );
 };

@@ -148,8 +148,8 @@ class MapView extends React.Component {
   };
 
   render() {
-    const { t } = this.props;
-    var setLegend = t('Actual Language') === "en" ? "../images/legend_en.svg" : "../images/legend_sp.svg";
+    const { i18n} = this.props;
+    var setLegend = i18n.language === "en" ? "../images/legend_en.svg" : "../images/legend_sp.svg";
 
     var location = this.state.demo ? DEMO_LOCATION : this.state.currentLocation;
 
