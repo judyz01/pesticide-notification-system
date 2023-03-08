@@ -3,6 +3,7 @@ const dotenv = require('dotenv').config();
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const mSID = process.env.MESSAGING_SERVICE_ID;
+const mSIDSp = process.env.MESSAGING_SERVICE_ID_SPANISH;
 const client = require('twilio')(accountSid, authToken);
 
 const county_functions = require('./county_functions')
@@ -12,11 +13,9 @@ const messages = {
     '1': "Thank you for allowing the CDPR NOI Notification System to send you information regarding pesticide use. Text GUIDE for more information."
 }
 
-const errorMessages = {
-    '0': "Try again. Text SUBSCRIBE <COUNTY> to receive information about pesticide use in your area. For a full list of available counties, text GUIDE.",
-    '1': "Too many commands. Text SUBSCRIBE <COUNTY> to receive information about pesticide use in your area. For a full list of available counties, text GUIDE.",
-    '23505': "You've already subscribed to this county. For a full list of available counties, text GUIDE.",
-    '42P01': "Notifications for this county are unavailable right now. For a full list of available counties, text GUIDE.",
+const errorCodes = {
+    '23505': "repeat_subscription",
+    '42P01': "invalid_county",
 }
 
 const optOutKeywords = new Set([
@@ -40,8 +39,8 @@ const optOutKeywords = new Set([
 const sendSubscribeConfirmation = (req, res, county) => {
     client.messages
         .create({
-            body: `Thank you for subscribing to the CDPR NOI Notification System for ${county}.`,
-            messagingServiceSid: mSID,
+            body: req.t("successful_subscription", {county: county}),
+            messagingServiceSid: req.headers['accept-language'] == 'en' ? mSID: mSIDSp,
             to: req.body.From
         })
         .then(message => console.log(message.status));
@@ -51,18 +50,18 @@ const sendSubscribeConfirmation = (req, res, county) => {
 const sendUnsubscribeConfirmation = (req, res, county) => {
     client.messages
         .create({
-            body: `You will no longer receive CDPR NOI Notification messages for ${county}.`,
-            messagingServiceSid: mSID,
+            body: req.t("successful_unsubscription", {county: county}),
+            messagingServiceSid: req.headers['accept-language'] == 'en' ? mSID: mSIDSp,
             to: req.body.From
         })
         .then(message => console.log(message.status));
 }
 
-const sendMessage = (req, res, messageNumber) => {
+const sendGuide = (req, res) => {
     client.messages
         .create({
-            body: messages[messageNumber],
-            messagingServiceSid: mSID,
+            body: req.t("guide", {available_counties: `${county_functions.available_county_table}`}),
+            messagingServiceSid: req.headers['accept-language'] == 'en' ? mSID: mSIDSp,
             to: req.body.From
         })
         .then(message => console.log(message.status));
@@ -75,11 +74,10 @@ const sendMessage = (req, res, messageNumber) => {
  * @param {*} err 
  */
 const sendError = async (req, res, err) => {
-    const message = errorMessages[err]
     client.messages
         .create({
-            body: message,
-            messagingServiceSid: mSID,
+            body: req.t(err),
+            messagingServiceSid: req.headers['accept-language'] == 'en' ? mSID: mSIDSp,
             to: req.body.From
         })
         .then(message => console.log(message.status));
@@ -100,6 +98,6 @@ module.exports = {
     sendSubscribeConfirmation,
     sendUnsubscribeConfirmation,
     sendError,
-    sendMessage,
+    sendGuide,
     optOutKeywords
 }
