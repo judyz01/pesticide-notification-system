@@ -154,12 +154,27 @@ Return Value:
 app.post('/addTableNOI', async function(req, res) {
   pool = pool || (await createPool());
   let tablename = 'udc19_50'
+  let restricted = 'restricted_products'
+  let preset_link = 'https://apps.cdpr.ca.gov/cgi-bin/label/label.pl?typ=pir&prodno='
   try {
     const noiList = 
       await pool.raw(
       'INSERT INTO ??(use_no, prodno, chem_code, prodchem_pct, lbs_chm_used, lbs_prd_used, amt_prd_used, unit_of_meas, acre_planted, unit_treated, applic_cnt, applic_dt, applic_time, county_cd, base_ln_mer, township, tship_dir, range, range_dir, section, site_loc_id, grower_id, license_no, planting_seq, aer_gnd_ind,site_code, qualify_cd, batch_no, document_no, summary_cd, record_id, comtrs, error_flag) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
       [tablename, req.body.use_no, req.body.prodno, req.body.chem_code, req.body.prodchem_pct, req.body.lbs_chm_used, req.body.lbs_prd_used, req.body.amt_prd_used, req.body.unit_of_meas, req.body.acre_planted, req.body.unit_treated, req.body.applic_cnt, req.body.applic_dt, req.body.applic_time, req.body.county_cd, req.body.base_ln_mer, req.body.township, req.body.tship_dir, req.body.range, req.body.range_dir, req.body.section, req.body.site_loc_id, req.body.grower_id, req.body.license_no, req.body.planting_seq, req.body.aer_gnd_ind, req.body.site_code, req.body.qualify_cd, req.body.batch_no, req.body.document_no, req.body.summary_cd, req.body.record_id, req.body.comtrs, req.body.error_flag])
-    res.status(200).json({message: "Successfully added", status: 200})
+    const lookup = 
+        await pool.raw(
+          'SELECT * FROM ?? WHERE prodno = ? AND fumigant_sw = ?',
+          [restricted, req.body.prodno, 'X']
+        )
+    try {
+      preset_link += req.body.prodno
+      twilio_functions.sendNotifications(+16262309800, 
+                                          lookup.rows[0].product_name, 
+                                          preset_link)
+      res.status(200),json({message:'NOI successfully added', notification:'SENT'})
+    } catch (err) {
+      res.status(200).json({message:'NOI successfully added', notification:'NONE'})
+    }
   } catch (err) {
     console.error(err)
     res.status(500).send('Error in request')
@@ -293,7 +308,7 @@ app.get('/sms/sendNotifications', async (req, res) => {
       // '+14082072865',
       // '+16262309800',
       // '+12078380638',
-      '+14159489392'
+      // '+14159489392'
     ]
     numbers.forEach(element => {
       twilio_functions.sendNotifications(element)

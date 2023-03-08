@@ -83,11 +83,12 @@ const sendError = async (req, res, err) => {
         .then(message => console.log(message.status));
 }
 
-const sendNotifications = async (number) => {
+const sendNotifications = async (number, Chemical_name, link) => {
     client.messages
         .create({
-            body: '[Chemical Name] was sprayed in your county. Click here [link] to find out more.',
+            body: `${Chemical_name} was sprayed in your county. Click here [link] to find out more.`,
             messagingServiceSid: mSID,
+            from: +18449652649,
             to: number
         })
         .then(message => console.log(message.sid))
