@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 
 import MenuIcon from '@mui/icons-material/Menu';
-import { AppBar, Box, Button, Slide, Toolbar, useScrollTrigger } from '@mui/material';
+import { AppBar, Box, Button, ClickAwayListener, Slide, Toolbar, useScrollTrigger } from '@mui/material';
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import ClickAwayListener from '@mui/material/ClickAwayListener';
+
 
 function HideOnScroll(props) {
   const { children } = props;
@@ -30,7 +30,7 @@ const Navbar = (props) => {
   const LANGUAGE = t("Language");
 
   useEffect(() => {
-    if (window.innerWidth > 599) {
+    if (window.innerWidth >= 600) {
       setShowButtons(true);
       setDesktop(true);
       setShowMenu(false);
@@ -40,7 +40,7 @@ const Navbar = (props) => {
     }
 
     const updateMedia = () => {
-      if (window.innerWidth > 599) {
+      if (window.innerWidth >= 600) {
         setShowButtons(true);
         setDesktop(true);
         setShowMenu(false);
@@ -100,16 +100,16 @@ const Navbar = (props) => {
   const renderMenu = () => {
     return(
       <ClickAwayListener onClickAway={() => setShowMenu(false)}>
-      <Box sx={{
-        display: "block", 
-        position: "absolute",
-        top: "119px",
-        right: "0px",
-        backgroundColor: "#FFFFFF",
-        boxShadow: 5,
-        zIndex: 12000 }}>
-          {renderButtons()}
-      </Box>
+        <Box sx={{
+          display: "block", 
+          position: "absolute",
+          top: "119px",
+          right: "0px",
+          backgroundColor: "#FFFFFF",
+          boxShadow: 5,
+          zIndex: 12000 }}>
+            {renderButtons()}
+        </Box>
       </ClickAwayListener>
     );
   };
@@ -135,22 +135,22 @@ const Navbar = (props) => {
 
         <Box sx={{ display: "flex", flexDirection: "column"}}>
           
-          <Box sx={{m:"20px", display: { xs: "block", sm: "block" } }}>
+          <Box sx={{pr:"10px", m:"20px", display: { xs: "block", sm: "block" } }}>
             <Button 
-              sx={{
-                float: "right", 
-                variant:"contained", 
-                backgroundColor:"#F79407", 
-                color:"white",
-                "&:hover": {
-                  backgroundColor: "#126701",
-                  "@media (hover: none)": {
-                    backgroundColor: "#F79407",
-                    "&:active": {
-                      backgroundColor: "#126701"
-                    }
+                sx={{
+                  float: "right", 
+                  variant:"contained", 
+                  backgroundColor:"#F79407", 
+                  color:"white",
+                  "&:hover": {
+                    backgroundColor: "#126701",
+                    "@media (hover: none)": {
+                      backgroundColor: "#F79407",
+                      "&:active": {
+                        backgroundColor: "#126701"
+                      }
+                    }}
                   }}
-                }}
               onClick={() => changeLanguage()}
             >
               {LANGUAGE}
@@ -158,23 +158,21 @@ const Navbar = (props) => {
           </Box>
           <Box sx={{display: { xs: "block", sm: "none" }}}>
             <Button 
-              sx={{float:"right", minWidth:"0px"}}
+              sx={{pr:"25px", float:"right", minWidth:"0px"}}
               onClick={() => setShowMenu(!showMenu)}
             >
-              <MenuIcon sx={{width:"30px", height:"30px"}}/>
+              <MenuIcon sx={{ width:"30px", height:"30px"}}/>
             </Button> 
           </Box>
         {showButtons ? renderButtons() : undefined}
         {showMenu ? renderMenu() : undefined}
 
         </Box>
-
       </Toolbar>
     );
   };
 
   return (
-
     <HideOnScroll {...props}>
       <AppBar sx={{
         backgroundColor: "#FFFFFF",
@@ -182,7 +180,6 @@ const Navbar = (props) => {
         {displayDesktop()}
       </AppBar>
     </HideOnScroll>
-
   );
 };
 
