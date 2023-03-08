@@ -158,6 +158,7 @@ app.post('/addTableNOI', async function(req, res, next) {
   let restricted = 'restricted_products'
   let preset_link = 'https://apps.cdpr.ca.gov/cgi-bin/label/label.pl?typ=pir&prodno='
   try {
+    res.set('Access-Control-Allow-Origin', '*');
     const noiList = 
       await pool.raw(
       'INSERT INTO ??(use_no, prodno, chem_code, prodchem_pct, lbs_chm_used, lbs_prd_used, amt_prd_used, unit_of_meas, acre_planted, unit_treated, applic_cnt, applic_dt, applic_time, county_cd, base_ln_mer, township, tship_dir, range, range_dir, section, site_loc_id, grower_id, license_no, planting_seq, aer_gnd_ind,site_code, qualify_cd, batch_no, document_no, summary_cd, record_id, comtrs, error_flag) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
@@ -175,7 +176,7 @@ app.post('/addTableNOI', async function(req, res, next) {
     }
   } catch (err) {
     console.error(err)
-    res.status(500).send('Error in request')
+    return res.status(500).send('Error in request')
   }
   next();
 });
@@ -195,7 +196,7 @@ app.post('/addTableNOI', async (req, res, next) => {
   }
   const plssData = await axios.get(`https://gis.blm.gov/arcgis/rest/services/Cadastral/BLM_Natl_PLSS_CadNSDI/MapServer/exts/CadastralSpecialServices/GetLatLon?trs=CA+${meridians[base_ln_mer]}+T${township}${tship_dir}+R${range}${range_dir}+SEC+${section}&returnalllevels=false&f=pjson`);
   if (plssData.data.status == 'fail') {
-    res.status(500).send("Could not find land parcel with that TLSS data.");
+    return res.status(500).send("Could not find land parcel with that TLSS data.");
   }
   const coordinates = plssData.data.coordinates[0];
   req.lat = coordinates.lat;
@@ -206,7 +207,7 @@ app.post('/addTableNOI', async (req, res, next) => {
     const noiList = await pool.raw('INSERT INTO coordinates VALUES (?, ?, ?)', [req.body.use_no, req.lat, req.lon]);
   } catch (err) {
     console.error(err);
-    res.status(500).send(err);
+    return res.status(500).send(err);
   }
   next();
 })
