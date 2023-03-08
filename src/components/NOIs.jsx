@@ -17,6 +17,12 @@ const NOIs = (props) => {
   const [showDrawer, setShowDrawer] = React.useState(false);
   const [dontRefresh, setDontRefresh] = React.useState(false);
 
+  const [currentCounty, setCurrentCounty] = React.useState([]);
+  const [currentOrder, setCurrentOrder] = React.useState('');
+  const [currentFumigant, setCurrentFumigant] = React.useState(false);
+  const [currentRadius, setCurrentRadius] = React.useState();
+
+
   React.useEffect(() => {
     if (window.innerWidth > 1199) {
       setDesktop(true);
@@ -37,18 +43,22 @@ const NOIs = (props) => {
 
   const set_county = (county) => {
     setCounty(county);
+    setCurrentCounty(county);
   }
 
   const set_order = (order) => {
     setOrder(order);
+    setCurrentOrder(order);
   }
 
   const set_fumigant = (fumigant) => {
     setFumigant(fumigant);
+    setCurrentFumigant(fumigant);
   }
 
   const set_radius = (radius) => {
     setRadius(radius);
+    setCurrentRadius(radius);
   }
 
   return (
@@ -61,6 +71,10 @@ const NOIs = (props) => {
           set_order={set_order}
           set_fumigant={set_fumigant}
           set_radius={set_radius}
+          currentCounty={currentCounty}
+          currentOrder={currentOrder}
+          currentFumigant={currentFumigant}
+          currentRadius={currentRadius}
         />
       }
 
@@ -111,7 +125,6 @@ const NOIs = (props) => {
         }
 
         {/* Filters for Mobile View, column is a left drawer */}
-        {!isDesktop &&
           <Drawer
             anchor={"left"}
             open={showDrawer}
@@ -128,9 +141,13 @@ const NOIs = (props) => {
               set_order={set_order}
               set_fumigant={set_fumigant}
               set_radius={set_radius}
+              currentCounty={currentCounty}
+              currentOrder={currentOrder}
+              currentFumigant={currentFumigant}
+              currentRadius={currentRadius}
             />
           </Drawer>
-        }
+        
 
         <NOICards
           county={county}

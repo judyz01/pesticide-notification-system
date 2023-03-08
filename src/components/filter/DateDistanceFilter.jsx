@@ -37,7 +37,7 @@ export default function DateFilter(props) {
   const INPUT_LABEL = t("Date/Distance");
 
   const theme = useTheme();
-  const [distanceDateOrder, setDistanceDateOrder] = React.useState('');
+  const [distanceDateOrder, setDistanceDateOrder] = React.useState(props.currentOrder);
 
   const handleChange = (event) => {
     setDistanceDateOrder(event.target.value);

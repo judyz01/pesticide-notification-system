@@ -27,7 +27,7 @@ function valueLabelFormat(value) {
 
 export default function RadiusFilter(props) {
 
-  const [radius, setRadius] = React.useState();
+  const [radius, setRadius] = React.useState(props.currentRadius);
 
   const handleChange = (event) => {
     setRadius(event.target.value);
@@ -39,7 +39,7 @@ export default function RadiusFilter(props) {
 
   return (
     <Slider
-      defaultValue={1}
+      defaultValue={radius}
       valueLabelFormat={valueLabelFormat}
       getAriaValueText={valuetext}
       step={null}

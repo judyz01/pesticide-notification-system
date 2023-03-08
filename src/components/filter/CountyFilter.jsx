@@ -87,7 +87,7 @@ function getStyles(name, countyName, theme) {
 
 export default function CountyDropdown(props) {
   const theme = useTheme();
-  const [countyName, setcountyName] = React.useState([]);
+  const [countyName, setcountyName] = React.useState(props.currentCounty);
 
   const { t } = useTranslation();
   const COUNTY_LABEL = t("County");

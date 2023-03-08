@@ -7,7 +7,7 @@ export default function FumigantFilter(props) {
   const { t } = useTranslation();
   const FUMIGANT_LABEL = t("Fumigant");
 
-  const [checked, setChecked] = React.useState(false);
+  const [checked, setChecked] = React.useState(props.currentFumigant);
 
   const handleChange = (event) => {
     setChecked(event.target.checked);

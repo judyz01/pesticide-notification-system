@@ -25,6 +25,9 @@ const Filters = (props) => {
     props.set_radius(radius);
   }
 
+  console.log(props.currentRadius);
+  console.log(props.currentOrder);
+
   return (
     // TODO: Implement filters for mobile view
     // <Box sx={{display:{xs: "none", sm: "block"}, backgroundColor: "#EAEAEA", width: "20%", minWidth: "150px" }}>
@@ -38,15 +41,19 @@ const Filters = (props) => {
 
         <RadiusFilter 
           func={get_radius}
+          currentRadius={props.currentRadius}
         />
         <CountyFilter 
           func={get_county}
+          currentCounty={props.currentCounty}
         />
         <DateDistanceFilter 
           func={get_order}
+          currentOrder={props.currentOrder}
         />
         <FumigantFilter 
           func={get_fumigant}
+          currentFumigant={props.currentFumigant}
         />
 
       </Stack>
