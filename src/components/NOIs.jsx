@@ -20,7 +20,7 @@ const NOIs = (props) => {
   const [currentCounty, setCurrentCounty] = React.useState([]);
   const [currentOrder, setCurrentOrder] = React.useState('');
   const [currentFumigant, setCurrentFumigant] = React.useState(false);
-  const [currentRadius, setCurrentRadius] = React.useState();
+  const [currentRadius, setCurrentRadius] = React.useState(5);
 
 
   React.useEffect(() => {
