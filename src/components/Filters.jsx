@@ -25,9 +25,6 @@ const Filters = (props) => {
     props.set_radius(radius);
   }
 
-  console.log(props.currentRadius);
-  console.log(props.currentOrder);
-
   return (
     <Box sx={{display: "block", direction: "column", backgroundColor: "#EAEAEA", width:{md: "100%", lg: "20%"}, height:{lg:"auto"}}}>
     
