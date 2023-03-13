@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { useTranslation } from "react-i18next";
-import { Box, Button, Drawer, Stack, Typography } from '@mui/material';
+import { Box, Button, Drawer, Typography } from '@mui/material';
 
 import { Filters, NOICards }from "./";
 
@@ -87,7 +87,7 @@ const NOIs = (props) => {
         { !isDesktop &&
           <>
             {/* SM+ mobile view, filter button inline with text heading */}
-            <Box sx={{display: "flex", display: { xs: 'none', sm: 'block' }, m: "30px", position:"absolute", width: "80%" }}>
+            <Box display="flex" sx={{ display: { xs: 'none', sm: 'block' }, m: "30px", position:"absolute", width: "80%" }}>
               <Button sx={{ 
                   display: "flex",
                   height: "20px",
@@ -105,7 +105,7 @@ const NOIs = (props) => {
             </Box> 
 
             {/* XS Mobile view, filter button not inline with text heading as it'll overlap */}
-            <Box sx={{display: "flex", display: { xs: 'block', sm: 'none' }, mb: "30px", width: "80%" }}>
+            <Box display="flex" sx={{ display: { xs: 'block', sm: 'none' }, mb: "30px", width: "80%" }}>
               <Button sx={{ 
                   display: "flex",
                   height: "20px",
