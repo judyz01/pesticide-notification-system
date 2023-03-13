@@ -143,11 +143,11 @@ const Navbar = (props) => {
                   backgroundColor:"#F79407", 
                   color:"white",
                   "&:hover": {
-                    backgroundColor: "#126701",
+                    backgroundColor: "#f78307",
                     "@media (hover: none)": {
                       backgroundColor: "#F79407",
                       "&:active": {
-                        backgroundColor: "#126701"
+                        backgroundColor: "#f78307"
                       }
                     }}
                   }}

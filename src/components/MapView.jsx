@@ -154,7 +154,7 @@ class MapView extends React.Component {
     var location = this.state.demo ? DEMO_LOCATION : this.state.currentLocation;
 
     return (
-      <Box sx={{ mt: "25px", height:"542px", width:"80%", display: { xs: "block", sm: "block" } }}>
+      <Box sx={{ mt: "25px", height:"575px", width:"80%", display: { xs: "block", sm: "block" } }}>
           <GoogleMap
             center={location}
             zoom={12}
