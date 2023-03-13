@@ -43,8 +43,6 @@ export default function RadiusFilter(props) {
   const theme = useTheme();
   const [radius, setRadius] = React.useState(props.currentRadius);
 
-  console.log("props current radius " + props.currentRadius);
-
   const handleChange = (event) => {
     setRadius(event.target.value);
   };
