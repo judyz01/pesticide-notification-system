@@ -25,7 +25,7 @@ const NOICards = (props) =>  {
   const DISTANCE_UNIT = t("miles");
   const NO_NOIS = t("No NOIs");
 
-  const [pesticideData, setPesticideData] = useState('');
+  const [pesticideData, setPesticideData] = useState([]);
   const [isDesktop, setDesktop] = React.useState(true);
   const [isXSMobile, setXSMobile] = React.useState(true);
 
@@ -138,6 +138,7 @@ const NOICards = (props) =>  {
             params: { latitude: coordinates.lat, longitude: coordinates.lng, radius: convertMilesToMeters(radius), order: order[0], orderParam: order[1]},
         })
         .then((response) => {
+          // TODO: Add checkboxes for aerial/ground indicators and filter out here
           if (props.fumigant === true) {
             const filteredData = response.data.filter(elem => elem.fumigant_sw === 'X');
             console.log(filteredData);
@@ -253,8 +254,9 @@ const NOICards = (props) =>  {
         {(pesticideData.length > 0) ? pesticideData
         .slice((page - 1) * itemsPerPage, page * itemsPerPage)
         .map((elem, index) => (
+
           <Card key={index} sx={{ display:"flex", width: "80%", borderRadius: "16px", justifyContent: "space-between", flexDirection:{ sm:"column", md:"row"} }}>
-              <Box key={index} sx={{ flexDirection: "column" }}>
+              <Box sx={{ flexDirection: "column" }}>
                   <CardHeader
                     title={`${elem.product_name}`}
                     sx={{pb:0}}
@@ -311,7 +313,7 @@ const NOICards = (props) =>  {
         }
 
         {(pesticideData.length > 0) &&
-          <Pagination
+          <Pagination 
               count={Math.ceil(pesticideData.length / itemsPerPage)}
               page={page}
               onChange={handleChange}

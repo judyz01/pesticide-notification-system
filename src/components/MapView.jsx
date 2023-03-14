@@ -102,6 +102,24 @@ class MapView extends React.Component {
     }
   }
 
+// clearMarkers() {
+  //   for (let i = 0; i < markers.length; i++) {
+  //     if (markers[i]) {
+  //       markers[i].setMap(null);
+  //     }
+  //   }
+  
+  //   markers = [];
+  // }
+
+  // clearResults() {
+  //   const results = document.getElementById("results");
+  
+  //   while (results.childNodes[0]) {
+  //     results.removeChild(results.childNodes[0]);
+  //   }
+  // }
+
   onMapLoad = map => {
     google.maps.event.addListener(map, "bounds_changed", () => {
       this.setState({ bounds: map.getBounds() });
@@ -109,6 +127,36 @@ class MapView extends React.Component {
 
     const legend = document.getElementById("legend");
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
+
+    const search = {
+      radius: userRadius,
+      location: this.state.demo ? DEMO_LOCATION : this.state.currentLocation,
+      bounds: map.getBounds(),
+      types: ["library|park|primary_school|secondary_school"],
+    };
+
+    let places = new google.maps.places.PlacesService(map);
+
+    places.nearbySearch(search, (results, status, pagination) => {
+      console.log(status);
+
+      if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+        // clearResults();
+        // clearMarkers();
+
+        for (let i = 0; i < results.length; i++) {
+          const markerIcon = "../images/highlight_marker.png"
+
+          this.state.markers[i] = new google.maps.Marker({
+            position: results[i].geometry.location,
+            animation: google.maps.Animation.DROP,
+            icon: markerIcon,
+          });
+
+          this.state.markers[i].setMap(map);
+        }
+      }
+    });
   };
 
   handleChange = (event) => {
@@ -148,7 +196,7 @@ class MapView extends React.Component {
   };
 
   render() {
-    const { i18n} = this.props;
+    const { i18n } = this.props;
     var setLegend = i18n.language === "en" ? "../images/legend_en.svg" : "../images/legend_sp.svg";
 
     var location = this.state.demo ? DEMO_LOCATION : this.state.currentLocation;
