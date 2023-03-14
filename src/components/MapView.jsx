@@ -128,35 +128,42 @@ class MapView extends React.Component {
     const legend = document.getElementById("legend");
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
 
-    const search = {
-      radius: userRadius,
-      location: this.state.demo ? DEMO_LOCATION : this.state.currentLocation,
-      bounds: map.getBounds(),
-      types: ["library|park|primary_school|secondary_school"],
-    };
+    var search_types = ["primary_school", "secondary_school", "park", "university", "library"];
 
-    let places = new google.maps.places.PlacesService(map);
+    for (var i = 0; i < search_types.length; i++) {
 
-    places.nearbySearch(search, (results, status, pagination) => {
-      console.log(status);
+      const search = {
+        radius: userRadius,
+        location: this.state.demo ? DEMO_LOCATION : this.state.currentLocation,
+        bounds: map.getBounds(),
+        types: [search_types[i]],
+      };
 
-      if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-        // clearResults();
-        // clearMarkers();
+      console.log(search.types);
 
-        for (let i = 0; i < results.length; i++) {
-          const markerIcon = "../images/highlight_marker.png"
+      let places = new google.maps.places.PlacesService(map);
 
-          this.state.markers[i] = new google.maps.Marker({
-            position: results[i].geometry.location,
-            animation: google.maps.Animation.DROP,
-            icon: markerIcon,
-          });
+      places.nearbySearch(search, (results, status, pagination) => {
+        console.log(status);
 
-          this.state.markers[i].setMap(map);
+        if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+          // clearResults();
+          // clearMarkers();
+
+          for (let i = 0; i < results.length; i++) {
+            const markerIcon = "../images/highlight_marker.png"
+
+            this.state.markers[i] = new google.maps.Marker({
+              position: results[i].geometry.location,
+              animation: google.maps.Animation.DROP,
+              icon: markerIcon,
+            });
+
+            this.state.markers[i].setMap(map);
+          }
         }
-      }
-    });
+      });
+    }
   };
 
   handleChange = (event) => {
