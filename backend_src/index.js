@@ -237,7 +237,7 @@ app.use(middleware.handle(i18next));
 */
 app.post('/sms/in/:lng', async (req, res) => {
   // Parse incoming text
-  const tokens = req.body.Body.toUpperCase().split(" ");
+  const tokens = req.body.Body.trim().replace(/\s+/g, ' ').toUpperCase().split(" ");
   const numTokens = tokens.length;
 
   if (numTokens > 2) {
