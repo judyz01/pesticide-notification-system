@@ -1,5 +1,4 @@
 {
-    "Actual Language": "sp",
     "Language": "English",
     "Title": "Encuentre Pesticidas Cercanos",
     "NOI": "Avisos de Intención",
@@ -16,6 +15,8 @@
     "NOISearch": "NOIs Buscar",
     "Filters": "Filtros",
     "County": "Seleccionar Condado",
+
+    "Set Radius": "Establecer Radio",
 
     "Date/Distance": "Ordenar por",
     "Most Recent": "Más reciente",
@@ -69,5 +70,16 @@
 
     "Drift": "Informe la deriva de pesticidas y la exposición a pesticidas cada vez que suceda. Siga los enlaces para informar incidentes en los condados de",
     "Counties": ".",
-    "and": ""
+    "and": "",
+
+    "Pesticide Exposure Guide": "Guía de Exposición a Pesticidas",
+    "San Joaquin Valley": "El Valle de San Joaquín y Inland Empire",
+    "California Coast": "La región costera de California",
+
+    "Text": "Envía un mensaje de texto \"SUSCRIBE STANISLAUS\" a",
+    "English": "Inglés",
+    "Spanish": "Español",
+    "Real Time": "Para Notificaciones en Tiempo Real"
+
+
 }

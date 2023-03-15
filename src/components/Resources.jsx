@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Box, Link, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, CardHeader, CardMedia, Link, Stack, Typography } from '@mui/material';
 
 import { styled } from '@mui/material/styles';
 import { useTranslation } from "react-i18next";
@@ -57,7 +57,7 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 
 const Resources = () => {
 
-  const { t } = useTranslation();
+  const { t, i18n} = useTranslation();
 
   const [expanded, setExpanded] = React.useState('');
   const [checked, setChecked] = React.useState([]);
@@ -80,12 +80,40 @@ const Resources = () => {
   };
 
   return (
-    <Box sx={{display: "flex", minHeight: `calc(100vh - 224px)`}}>
 
-    <Box sx={{display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#fdf7ee", flexGrow: 1}}>
-      
-      <Typography sx={{m:"25px", pl:"25px", fontSize: 28, fontWeight: 600, color: "#126701"}}>
-        {t("What To Do")}
+    <Box sx={{display: "flex", flexDirection: "column", alignItems:"center", backgroundColor: "#fdf7ee", minHeight: `calc(100vh - 224px)`}}>
+
+      <Card sx={{ mb:"30px", mt:"30px", borderRadius: "16px", border: "1px solid #126701", width:"38%",  minWidth: "275px", maxWidth:"550px" }}>
+          <CardHeader 
+            title={t("Real Time")}
+            sx={{ textAlign: "center", pb:"0" }}/>
+
+          <CardContent sx={{ textAlign: "center" }}>
+            <Stack direction="column" alignItems="center" gap={2} sx={{pt:"5px"}}>
+                <Typography variant="h6">
+                  {t("Text")}
+                </Typography>
+
+                <Typography variant="h7" sx={{fontSize: 18, fontWeight: 500}}>
+                  {t("English")} &nbsp; 
+                  <Link href="sms:+18449652649">
+                  +1 (844) 965-2649 
+                  </Link>
+                </Typography>
+
+                <Typography variant="h7" sx={{fontSize: 18, fontWeight: 500}}>
+                  {t("Spanish")} &nbsp; 
+                  <Link href="sms:+18888233850">
+                  +1 (888) 823-3850 
+                  </Link>
+                </Typography>
+            </Stack>
+
+          </CardContent>
+      </Card>
+
+      <Typography align="center" sx={{m:"25px", fontSize: 28, fontWeight: 600, color: "#126701"}}>
+          {t("What To Do")}
       </Typography>
 
 
@@ -242,8 +270,60 @@ const Resources = () => {
         </Accordion>
       </Box>
 
+
+      <Box sx={{ width:"80%", pt:"25px", display: "flex", flexDirection: "column", alignItems:"center"}}>
+        <Typography align="center" sx={{ fontSize: 24, fontWeight: 600, color: "#126701" }}>
+          {t("Pesticide Exposure Guide")}
+        </Typography>
+        
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={3} justifyContent="center" alignItems="center">
+            <Box 
+              component="img"
+              sx={{
+                width: "40%",
+                minWidth: "280px",
+                maxWidth: "450px",
+                height: "auto",
+                pt: "20px",
+                mb: "30px" 
+              }}
+              alt="pesticide-exposure-guide"
+              src="../images/pesticide_exposure.jpeg">
+            </Box>
+
+            <Stack direction="column" justifyContent="center" alignItems="center" spacing={5} sx={{pb:"30px"}}>
+              <Button 
+                rel="noopener noreferrer" 
+                href=
+                { i18n.language === "en" ?      
+                "https://www.pesticidereform.org/wp-content/uploads/2021/05/202104CPRDriftGuides-Inland_ENGsm.pdf"
+                :
+                "https://www.pesticidereform.org/wp-content/uploads/2021/05/202104CPRDriftGuides-Inland_ESPsm.pdf"
+                }
+                target="_blank" 
+                variant="outlined">
+
+                {t("San Joaquin Valley")}
+              </Button>
+
+              <Button 
+                rel="noopener noreferrer" 
+                href=
+                { i18n.language === "en" ?      
+                "https://www.pesticidereform.org/wp-content/uploads/2021/06/202104CPRDriftGuides-Coast_ENGsm.pdf"
+                :
+                "https://www.pesticidereform.org/wp-content/uploads/2021/05/202104CPRDriftGuides-Coast_ESPsm.pdf"
+                }
+                target="_blank" 
+                variant="outlined">
+
+                {t("California")}
+              </Button>
+            </Stack>
+          </Stack>
+
+      </Box>
     </Box>
-  </Box>
 
   );
 };

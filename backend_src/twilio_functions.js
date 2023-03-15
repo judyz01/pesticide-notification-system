@@ -1,4 +1,5 @@
 const dotenv = require('dotenv').config();
+const i18next = require('i18next');
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -83,16 +84,16 @@ const sendError = async (req, res, err) => {
         .then(message => console.log(message.status));
 }
 
-const sendNotifications = async (number, Chemical_name, link) => {
+const sendNotifications = async (i18next, number, Chemical_name, link, language, lat, lon) => {
     client.messages
         .create({
-            body: `${Chemical_name} was sprayed in your county. Click here [link] to find out more.`,
-            messagingServiceSid: mSID,
-            from: +18449652649,
+            body: i18next.t("notification", {chemical_name: Chemical_name, link: link, lat: lat, lon: lon}),
+            messagingServiceSid: language == 'en' ? mSID : mSIDSp,
             to: number
         })
         .then(message => console.log(message.sid))
 }
+
 module.exports = {
     sendNotifications,
     sendSubscribeConfirmation,

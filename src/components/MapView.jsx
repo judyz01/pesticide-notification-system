@@ -148,13 +148,13 @@ class MapView extends React.Component {
   };
 
   render() {
-    const { t } = this.props;
-    var setLegend = t('Actual Language') === "en" ? "../images/legend_en.svg" : "../images/legend_sp.svg";
+    const { i18n} = this.props;
+    var setLegend = i18n.language === "en" ? "../images/legend_en.svg" : "../images/legend_sp.svg";
 
     var location = this.state.demo ? DEMO_LOCATION : this.state.currentLocation;
 
     return (
-      <Box sx={{ mt: "25px", height:"542px", width:"80%", display: { xs: "block", sm: "block" } }}>
+      <Box sx={{ mt: "25px", height:"575px", width:"80%", display: { xs: "block", sm: "block" } }}>
           <GoogleMap
             center={location}
             zoom={12}
@@ -170,8 +170,8 @@ class MapView extends React.Component {
 
             <MarkerClusterer minimumClusterSize={1} calculator={this.calculator} options={this.clusterStyles}>
               {(clusterer) =>
-                this.state.pesticideData.map((elem) => (
-                  <Marker position={ {lat: parseFloat(elem.latitude), lng: parseFloat(elem.longitude)} } 
+                this.state.pesticideData.map((elem, idx) => (
+                  <Marker key={idx} position={ {lat: parseFloat(elem.latitude), lng: parseFloat(elem.longitude)} } 
                           clusterer={clusterer} />
                 ))
               }

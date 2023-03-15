@@ -1,4 +1,5 @@
 {
+    "notification": "[{{chemical_name}}] was sprayed in your county. Click here {{link}} to find out more. Location: {{lat}}, {{lon}}",
     "guide": "Available counties: {{available_counties}}. Text SUBSCRIBE <COUNTY> to start receiving notifications about pesticides in that county, and text HALT <COUNTY> to stop. Text STOP to stop receiving all messages.",
     "successful_subscription": "Thank you for subscribing to the CDPR NOI Notification System for {{county}}.",
     "successful_unsubscription": "You will no longer receive CDPR NOI Notification messages for {{county}}.",

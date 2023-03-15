@@ -23,8 +23,10 @@
   "homepage": "https://github.com/judyz01/pesticide-notification-system/tree/backend#readme",
   "dependencies": {
     "@google-cloud/functions-framework": "^3.1.3",
+    "axios": "^1.3.4",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "i18n": "^0.15.1",
     "i18next": "^22.4.11",
     "i18next-fs-backend": "^2.1.1",
     "i18next-http-middleware": "^3.3.0",

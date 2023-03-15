@@ -1,6 +1,19 @@
 import * as React from 'react';
 
-import { Slider } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { useTranslation } from "react-i18next";
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
 const radiusMarks = [
   {
@@ -17,16 +30,17 @@ const radiusMarks = [
   },
 ];
 
-function valuetext(value) {
-  return `${value}`;
-}
-
-function valueLabelFormat(value) {
-  return value;
+function getStyles(theme) {
+  return {
+    fontWeight: theme.typography.fontWeightRegular
+  };
 }
 
 export default function RadiusFilter(props) {
+  const { t } = useTranslation();
+  const RADIUS_LABEL = t("Set Radius");
 
+  const theme = useTheme();
   const [radius, setRadius] = React.useState(props.currentRadius);
 
   const handleChange = (event) => {
@@ -38,16 +52,27 @@ export default function RadiusFilter(props) {
   }, [radius, props]);
 
   return (
-    <Slider
-      defaultValue={radius}
-      valueLabelFormat={valueLabelFormat}
-      getAriaValueText={valuetext}
-      step={null}
-      valueLabelDisplay="auto"
-      marks={radiusMarks}
-      min={5}
-      max={15}
-      onChange={handleChange}
-    />
+    <FormControl sx={{ width: "100%", mt: 2  }}>
+      <InputLabel id="order-by-radius-label">{RADIUS_LABEL}</InputLabel>
+      <Select
+        labelId="order-by-radius-label"
+        id="order-by-radius"
+        value={radius}
+        label={RADIUS_LABEL}
+        onChange={handleChange}
+        MenuProps={MenuProps}
+        inputProps={{ 'aria-label': 'Without label' }}
+      >
+        {radiusMarks.map((name) => (
+          <MenuItem
+            key={name.label}
+            value={name.value}
+            style={getStyles(theme)}
+          >
+            {name.label}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 }

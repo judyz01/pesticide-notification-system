@@ -1,6 +1,7 @@
 'use strict';
 const functions = require('@google-cloud/functions-framework');
 const express = require('express');
+const axios = require('axios');
 const i18next = require('i18next');
 const Backend = require('i18next-fs-backend');
 const middleware = require('i18next-http-middleware');
@@ -151,35 +152,65 @@ Parameters:
 Return Value:
   JSON message "Successfully added" */
 
-app.post('/addTableNOI', async function(req, res) {
+app.post('/addTableNOI', async function(req, res, next) {
   pool = pool || (await createPool());
   let tablename = 'udc19_50'
   let restricted = 'restricted_products'
   let preset_link = 'https://apps.cdpr.ca.gov/cgi-bin/label/label.pl?typ=pir&prodno='
   try {
+    res.set('Access-Control-Allow-Origin', '*');
     const noiList = 
       await pool.raw(
       'INSERT INTO ??(use_no, prodno, chem_code, prodchem_pct, lbs_chm_used, lbs_prd_used, amt_prd_used, unit_of_meas, acre_planted, unit_treated, applic_cnt, applic_dt, applic_time, county_cd, base_ln_mer, township, tship_dir, range, range_dir, section, site_loc_id, grower_id, license_no, planting_seq, aer_gnd_ind,site_code, qualify_cd, batch_no, document_no, summary_cd, record_id, comtrs, error_flag) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
       [tablename, req.body.use_no, req.body.prodno, req.body.chem_code, req.body.prodchem_pct, req.body.lbs_chm_used, req.body.lbs_prd_used, req.body.amt_prd_used, req.body.unit_of_meas, req.body.acre_planted, req.body.unit_treated, req.body.applic_cnt, req.body.applic_dt, req.body.applic_time, req.body.county_cd, req.body.base_ln_mer, req.body.township, req.body.tship_dir, req.body.range, req.body.range_dir, req.body.section, req.body.site_loc_id, req.body.grower_id, req.body.license_no, req.body.planting_seq, req.body.aer_gnd_ind, req.body.site_code, req.body.qualify_cd, req.body.batch_no, req.body.document_no, req.body.summary_cd, req.body.record_id, req.body.comtrs, req.body.error_flag])
-    const lookup = 
-        await pool.raw(
-          'SELECT * FROM ?? WHERE prodno = ? AND fumigant_sw = ?',
+
+      
+    const lookup = await pool.raw(
+        'SELECT * FROM ?? WHERE prodno = ? AND fumigant_sw = ?',
           [restricted, req.body.prodno, 'X']
-        )
-    try {
-      preset_link += req.body.prodno
-      twilio_functions.sendNotifications(+16262309800, 
-                                          lookup.rows[0].product_name, 
-                                          preset_link)
-      res.status(200),json({message:'NOI successfully added', notification:'SENT'})
-    } catch (err) {
-      res.status(200).json({message:'NOI successfully added', notification:'NONE'})
+      )
+    if (lookup.rows[0]) {
+      req.product_name = lookup.rows[0].product_name
+    } else {
+      return res.status(200).send("NOI Table updated. Not a fumigant, so no immediate text notification.");
     }
   } catch (err) {
     console.error(err)
-    res.status(500).send('Error in request')
+    return res.status(500).send('Error in request')
   }
+  next();
 });
+
+// Get lat and lon of new noi, add to table, then pass along to final step: send notif
+app.post('/addTableNOI', async (req, res, next) => {
+  const base_ln_mer = req.body.base_ln_mer
+  const township = req.body.township
+  const tship_dir = req.body.tship_dir
+  const range = req.body.range
+  const range_dir = req.body.range_dir
+  const section = req.body.section
+  const meridians = {
+    "S": 27,
+    "H": 15,
+    "M": 21
+  }
+  const plssData = await axios.get(`https://gis.blm.gov/arcgis/rest/services/Cadastral/BLM_Natl_PLSS_CadNSDI/MapServer/exts/CadastralSpecialServices/GetLatLon?trs=CA+${meridians[base_ln_mer]}+T${township}${tship_dir}+R${range}${range_dir}+SEC+${section}&returnalllevels=false&f=pjson`);
+  if (plssData.data.status == 'fail') {
+    return res.status(500).send("Could not find land parcel with that TLSS data.");
+  }
+  const coordinates = plssData.data.coordinates[0];
+  req.lat = coordinates.lat;
+  req.lon = coordinates.lon;
+  try {
+    res.set('Access-Control-Allow-Origin', '*');
+    pool = pool || (await createPool());
+    const noiList = await pool.raw('INSERT INTO coordinates VALUES (?, ?, ?)', [req.body.use_no, req.lat, req.lon]);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send(err);
+  }
+  next();
+})
 
 // Middleware to parse which language of messaging service messaging service to use
 app.use('/sms/in', (req, res, next) => {
@@ -206,7 +237,7 @@ app.use(middleware.handle(i18next));
 */
 app.post('/sms/in/:lng', async (req, res) => {
   // Parse incoming text
-  const tokens = req.body.Body.toUpperCase().split(" ");
+  const tokens = req.body.Body.trim().replace(/\s+/g, ' ').toUpperCase().split(" ");
   const numTokens = tokens.length;
 
   if (numTokens > 2) {
@@ -301,24 +332,29 @@ const handleMultiKeywordText = async (req, res, tokens) => {
   }
 }
 
-app.get('/sms/sendNotifications', async (req, res) => {
+app.post('/addTableNOI', async (req, res) => {
   pool = pool || (await createPool());
+  const countyNumber = 50;
+  const tableName = 'subscribers_' + countyNumber;
   try {
-    //const numbers = await pool.raw('SELECT * FROM subscribers50');
-    const numbers = [
-      // '+14082072865',
-      // '+16262309800',
-      // '+12078380638',
-      // '+14159489392'
-    ]
-    numbers.forEach(element => {
-      twilio_functions.sendNotifications(element)
-    })
+    res.set('Access-Control-Allow-Origin', '*');
+    const users = await pool.raw('SELECT users.phone_number, language FROM ?? INNER JOIN users ON ??.phone_number = users.phone_number', [tableName, tableName]);
+
+    users.rows.forEach(element => {
+      i18next.changeLanguage(element.language).then(() => {
+        twilio_functions.sendNotifications(i18next, element.phone_number, req.product_name, 'link', element.language, req.lat, req.lon)
+      })
+    });
+
     res.status(200).send("Notifications sent")
   } catch (err) {
     console.error(err)
     res.status(500).send('Error sending notifications')
   }
 });
+
+app.use((req, res) => {
+  res.status(404).send("Unable to locate resource. Please try again.");
+})
 
 functions.http('api', app);

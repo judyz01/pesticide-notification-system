@@ -1,4 +1,5 @@
 {
+    "notification": "[{{chemical_name}}] fue rociado en su condado. Haga clic aquí {{link}} para obtener más información. Ubicación: {{lat}}, {{lon}}",
     "guide": "Condados disponibles: {{available_counties}}. Envíe SUBSCRIBE <CONDADO> para comenzar a recibir notificaciones sobre pesticidas en ese condado y HALT <CONDADO> para dejar de hacerlo. Envía STOP para dejar de recibir todos los mensajes.",
     "successful_subscription": "Gracias por suscribirse al Sistema de Notificación de NOI de CDPR para {{county}}.",
     "successful_unsubscription": "Ya no recibirá mensajes de notificación de NOI de CDPR para {{county}}.",
