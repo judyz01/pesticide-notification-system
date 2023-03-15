@@ -3,7 +3,7 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Box, Button, Drawer, Typography } from '@mui/material';
 
-import { Filters, NOICards }from "./";
+import { Filters, NOICards } from "./";
 
 const NOIs = (props) => {
   const { t } = useTranslation();
@@ -11,8 +11,10 @@ const NOIs = (props) => {
 
   const [county, setCounty] = React.useState([]);
   const [order, setOrder] = React.useState();
-  const [fumigant, setFumigant] = React.useState();
   const [radius, setRadius] = React.useState();
+  const [fumigant, setFumigant] = React.useState();
+  const [aerial, setAerial] = React.useState();
+  const [ground, setGround] = React.useState();
 
   const [isDesktop, setDesktop] = React.useState(true);
   const [showDrawer, setShowDrawer] = React.useState(false);
@@ -20,8 +22,10 @@ const NOIs = (props) => {
 
   const [currentCounty, setCurrentCounty] = React.useState([]);
   const [currentOrder, setCurrentOrder] = React.useState('');
-  const [currentFumigant, setCurrentFumigant] = React.useState(false);
   const [currentRadius, setCurrentRadius] = React.useState(5);
+  const [currentFumigant, setCurrentFumigant] = React.useState(false);
+  const [currentAerial, setCurrentAerial] = React.useState(false);
+  const [currentGround, setCurrentGround] = React.useState(false);
 
 
   React.useEffect(() => {
@@ -52,14 +56,24 @@ const NOIs = (props) => {
     setCurrentOrder(order);
   }
 
+  const set_radius = (radius) => {
+    setRadius(radius);
+    setCurrentRadius(radius);
+  }
+
   const set_fumigant = (fumigant) => {
     setFumigant(fumigant);
     setCurrentFumigant(fumigant);
   }
 
-  const set_radius = (radius) => {
-    setRadius(radius);
-    setCurrentRadius(radius);
+  const set_aerial = (aerial) => {
+    setAerial(aerial);
+    setCurrentAerial(aerial);
+  }
+
+  const set_ground = (ground) => {
+    setGround(ground);
+    setCurrentGround(ground);
   }
 
   return (
@@ -70,12 +84,17 @@ const NOIs = (props) => {
         <Filters
           set_county={set_county}
           set_order={set_order}
-          set_fumigant={set_fumigant}
           set_radius={set_radius}
+          set_fumigant={set_fumigant}
+          set_aerial={set_aerial}
+          set_ground={set_ground}
+
           currentCounty={currentCounty}
           currentOrder={currentOrder}
-          currentFumigant={currentFumigant}
           currentRadius={currentRadius}
+          currentFumigant={currentFumigant}
+          currentAerial={currentAerial}
+          currentGround={currentGround}
         />
       }
 
@@ -140,12 +159,17 @@ const NOIs = (props) => {
             <Filters
               set_county={set_county}
               set_order={set_order}
-              set_fumigant={set_fumigant}
               set_radius={set_radius}
+              set_fumigant={set_fumigant}
+              set_aerial={set_aerial}
+              set_ground={set_ground}
+
               currentCounty={currentCounty}
               currentOrder={currentOrder}
-              currentFumigant={currentFumigant}
               currentRadius={currentRadius}
+              currentFumigant={currentFumigant}
+              currentAerial={currentAerial}
+              currentGround={currentGround}
             />
           </Drawer>
         
@@ -153,8 +177,10 @@ const NOIs = (props) => {
         <NOICards
           county={county}
           order={order}
-          fumigant={fumigant}
           radius={radius}
+          fumigant={fumigant}
+          aerial={aerial}
+          ground={ground}
           location={props.location}
           dontRefresh={dontRefresh}
         />

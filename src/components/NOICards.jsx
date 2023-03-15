@@ -166,7 +166,12 @@ const NOICards = (props) =>  {
       : console.log("no location passed from mapview");
 
 
-    props.fumigant ? console.log("FUMIGANT TRUE") : console.log("FUMIGANT False")
+    // props.fumigant ? console.log("FUMIGANT TRUE") : console.log("FUMIGANT False")
+
+    console.log("Fumigant " + props.fumigant);
+    console.log("Aerial " + props.aerial);
+    console.log("Ground " + props.ground);
+
 
   }, [props], []);
 
