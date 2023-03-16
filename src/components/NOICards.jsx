@@ -83,6 +83,19 @@ const NOICards = (props) =>  {
     }
   };
 
+  const getApplicatorCharacter = (str) => {
+    switch(str) {
+      case 'Aerial':
+        return 'A';
+      case 'Ground':
+        return 'B';
+      case 'Aerial/Ground':
+        return 'C';
+      default:
+        return "N/A";
+    }
+  };
+
   const getStandardTime = (time) => {
     // Times that are listed null
     if (!time) {
@@ -143,18 +156,10 @@ const NOICards = (props) =>  {
             const filteredData = response.data.filter(elem => elem.fumigant_sw === 'X');
             console.log("Fumigant " + filteredData);
             setPesticideData(filteredData);
-          // } else if ((props.aerial === true) && (props.ground === true)) {
-          //   const filteredData = response.data.filter(elem => elem.aer_grnd_ind === 'C');
-          //   console.log("Aerial/Ground " + filteredData);
-          //   setPesticideData(filteredData);
-          // } else if (props.aerial === true) {
-          //   const filteredData = response.data.filter(elem => elem.aer_grnd_ind === 'A');
-          //   console.log("Aerial " + filteredData);
-          //   setPesticideData(filteredData);
-          // } else if (props.ground === true) {
-          //   const filteredData = response.data.filter(elem => elem.aer_grnd_ind === 'B');
-          //   console.log("Ground " + filteredData);
-          //   setPesticideData(filteredData);
+          } else if (props.aerialGround) {
+            const filteredData = response.data.filter(elem => elem.aer_grnd_ind === getApplicatorCharacter(props.aerialGround));
+            console.log("Aerial/Ground " + filteredData);
+            setPesticideData(filteredData);
           } else {
             setPesticideData(response.data);
           }
@@ -176,9 +181,6 @@ const NOICards = (props) =>  {
     props.location ?
       localStorage.setItem('location', JSON.stringify(props.location))
       : console.log("no location passed from mapview");
-
-
-    // props.fumigant ? console.log("FUMIGANT TRUE") : console.log("FUMIGANT False")
 
     console.log("Fumigant " + props.fumigant);
     console.log("Aerial/Ground " + props.aerialGround);

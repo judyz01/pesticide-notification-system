@@ -50,14 +50,13 @@ const Filters = (props) => {
           func={get_order}
           currentOrder={props.currentOrder}
         />
-        <FumigantFilter 
-          func={get_fumigant}
-          currentFumigant={props.currentFumigant}
-        />
-
         <AerialGroundFilter 
           func={get_aerial_ground}
           currentAerialGround={props.currentAerialGround}
+        />
+        <FumigantFilter 
+          func={get_fumigant}
+          currentFumigant={props.currentFumigant}
         />
 
       </Stack>

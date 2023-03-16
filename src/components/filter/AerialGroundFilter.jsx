@@ -33,7 +33,7 @@ function getStyles(name, aerialGroundOrder, theme) {
 
 export default function DateFilter(props) {
   const { t } = useTranslation();
-  const INPUT_LABEL = t("Order by Applicant");
+  const INPUT_LABEL = t("Applicant Type");
 
   const theme = useTheme();
   const [aerialGroundOrder, setAerialGroundOrder] = React.useState(props.currentAerialGround);
