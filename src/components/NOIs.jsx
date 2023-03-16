@@ -139,6 +139,7 @@ const NOIs = (props) => {
         }
 
         {/* Filters for Mobile View, column is a left drawer */}
+        {!isDesktop &&
           <Drawer
             anchor={"left"}
             open={showDrawer}
@@ -164,7 +165,7 @@ const NOIs = (props) => {
               currentAerialGround={currentAerialGround}
             />
           </Drawer>
-        
+        }
 
         <NOICards
           county={county}
