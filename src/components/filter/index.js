@@ -1,15 +1,13 @@
-import AerialFilter from "./AerialFilter";
+import AerialGroundFilter from "./AerialGroundFilter";
 import CountyFilter from "./CountyFilter";
 import DateDistanceFilter from "./DateDistanceFilter";
 import FumigantFilter from "./FumigantFilter";
-import GroundFilter from "./GroundFilter";
 import RadiusFilter from "./RadiusFilter";
 
 export {
-  AerialFilter,
+  AerialGroundFilter,
   CountyFilter,
   DateDistanceFilter,
   FumigantFilter,
-  GroundFilter,
   RadiusFilter,
 };

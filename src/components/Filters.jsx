@@ -3,7 +3,7 @@ import React from "react";
 import { Box, Stack, Typography } from '@mui/material';
 import { useTranslation } from "react-i18next";
 
-import { AerialFilter, CountyFilter, DateDistanceFilter, FumigantFilter, GroundFilter, RadiusFilter } from './filter';
+import { AerialGroundFilter, CountyFilter, DateDistanceFilter, FumigantFilter, RadiusFilter } from './filter';
 
 
 const Filters = (props) => {
@@ -25,12 +25,8 @@ const Filters = (props) => {
     props.set_radius(radius);
   }
 
-  const get_aerial = (aerial) => {
-    props.set_aerial(aerial);
-  }
-
-  const get_ground = (ground) => {
-    props.set_ground(ground);
+  const get_aerial_ground = (aerialGround) => {
+    props.set_aerial_ground(aerialGround);
   }
 
   return (
@@ -59,14 +55,9 @@ const Filters = (props) => {
           currentFumigant={props.currentFumigant}
         />
 
-        <AerialFilter 
-          func={get_aerial}
-          currentAerial={props.currentAerial}
-        />
-
-        <GroundFilter
-          func={get_ground}
-          currentGround={props.currentGround}
+        <AerialGroundFilter 
+          func={get_aerial_ground}
+          currentAerialGround={props.currentAerialGround}
         />
 
       </Stack>

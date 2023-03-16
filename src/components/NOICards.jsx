@@ -141,8 +141,20 @@ const NOICards = (props) =>  {
           // TODO: Add checkboxes for aerial/ground indicators and filter out here
           if (props.fumigant === true) {
             const filteredData = response.data.filter(elem => elem.fumigant_sw === 'X');
-            console.log(filteredData);
+            console.log("Fumigant " + filteredData);
             setPesticideData(filteredData);
+          // } else if ((props.aerial === true) && (props.ground === true)) {
+          //   const filteredData = response.data.filter(elem => elem.aer_grnd_ind === 'C');
+          //   console.log("Aerial/Ground " + filteredData);
+          //   setPesticideData(filteredData);
+          // } else if (props.aerial === true) {
+          //   const filteredData = response.data.filter(elem => elem.aer_grnd_ind === 'A');
+          //   console.log("Aerial " + filteredData);
+          //   setPesticideData(filteredData);
+          // } else if (props.ground === true) {
+          //   const filteredData = response.data.filter(elem => elem.aer_grnd_ind === 'B');
+          //   console.log("Ground " + filteredData);
+          //   setPesticideData(filteredData);
           } else {
             setPesticideData(response.data);
           }
@@ -169,8 +181,7 @@ const NOICards = (props) =>  {
     // props.fumigant ? console.log("FUMIGANT TRUE") : console.log("FUMIGANT False")
 
     console.log("Fumigant " + props.fumigant);
-    console.log("Aerial " + props.aerial);
-    console.log("Ground " + props.ground);
+    console.log("Aerial/Ground " + props.aerialGround);
 
 
   }, [props], []);
