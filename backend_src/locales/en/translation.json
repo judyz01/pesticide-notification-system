@@ -1,8 +1,8 @@
 {
     "notification": "[{{chemical_name}}] was sprayed in your county. Click here {{link}} to find out more. Location: {{lat}}, {{lon}}",
     "guide": "Available counties: {{available_counties}}. Text SUBSCRIBE <COUNTY> to start receiving notifications about pesticides in that county, and text HALT <COUNTY> to stop. Text STOP to stop receiving all messages.",
-    "successful_subscription": "Thank you for subscribing to the CDPR NOI Notification System for {{county}}.",
-    "successful_unsubscription": "You will no longer receive CDPR NOI Notification messages for {{county}}.",
+    "successful_subscription": "Thank you for subscribing to the CDPR NOI Notification System for {{county}}. For more info, text GUIDE.",
+    "successful_unsubscription": "You will no longer receive CDPR NOI Notification messages for {{county}}. For more info, text GUIDE.",
 
     "parse_error": "Error parsing command. Too many arguments.",
     "invalid_keyword": "Try again. Text SUBSCRIBE <COUNTY> to receive information about pesticide use in your area. For a full list of available counties, text GUIDE.",

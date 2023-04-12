@@ -1,8 +1,8 @@
 {
     "notification": "[{{chemical_name}}] fue rociado en su condado. Haga clic aquí {{link}} para obtener más información. Ubicación: {{lat}}, {{lon}}",
     "guide": "Condados disponibles: {{available_counties}}. Envíe SUBSCRIBE <CONDADO> para comenzar a recibir notificaciones sobre pesticidas en ese condado y HALT <CONDADO> para dejar de hacerlo. Envía STOP para dejar de recibir todos los mensajes.",
-    "successful_subscription": "Gracias por suscribirse al Sistema de Notificación de NOI de CDPR para {{county}}.",
-    "successful_unsubscription": "Ya no recibirá mensajes de notificación de NOI de CDPR para {{county}}.",
+    "successful_subscription": "Gracias por suscribirse al Sistema de Notificación de NOI de CDPR para {{county}}. Para obtener más información, envíe un mensaje de texto a GUIDE.",
+    "successful_unsubscription": "Ya no recibirá mensajes de notificación de NOI de CDPR para {{county}}. Para obtener más información, envíe un mensaje de texto a GUIDE.",
 
     "parse_error": "Error parsing command. Too many arguments.",
     "invalid_keyword": "Intentar otra vez. Envíe SUBSCRIBE <CONDADO> para recibir información sobre el uso de pesticidas en su área. Para obtener una lista completa de los condados disponibles, envíe un mensaje de texto con GUIDE.",

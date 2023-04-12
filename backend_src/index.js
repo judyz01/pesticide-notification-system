@@ -332,18 +332,28 @@ const handleMultiKeywordText = async (req, res, tokens) => {
   }
 }
 
+// Add an NOI to our database, and send notifications about this new application
 app.post('/addTableNOI', async (req, res) => {
   pool = pool || (await createPool());
   const countyNumber = 50;
   const tableName = 'subscribers_' + countyNumber;
   try {
     res.set('Access-Control-Allow-Origin', '*');
+
+    // Retrieve subscriber info in the format {phone_number, language}
     const users = await pool.raw('SELECT users.phone_number, language FROM ?? INNER JOIN users ON ??.phone_number = users.phone_number', [tableName, tableName]);
 
+    // Fixed translation t functions
+    const en = i18next.getFixedT('en', null);
+    const sp = i18next.getFixedT('sp', null);
+
+    // Send a notification to every user subscribed
     users.rows.forEach(element => {
-      i18next.changeLanguage(element.language).then(() => {
-        twilio_functions.sendNotifications(i18next, element.phone_number, req.product_name, 'link', element.language, req.lat, req.lon)
-      })
+      if (element.language === 'en') {
+        twilio_functions.sendNotifications(en, element.phone_number, req.product_name, 'link', element.language, req.lat, req.lon)
+      } else {
+        twilio_functions.sendNotifications(sp, element.phone_number, req.product_name, 'link', element.language, req.lat, req.lon)
+      }
     });
 
     res.status(200).send("Notifications sent")
