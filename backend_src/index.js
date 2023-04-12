@@ -224,6 +224,7 @@ i18next.use(Backend).use(middleware.LanguageDetector).init({
   backend: {
     loadPath: './locales/{{lng}}/translation.json'
   },
+  preload: ['en', 'sp']
 });
 app.use(middleware.handle(i18next));
 
@@ -272,7 +273,7 @@ const handleSingleKeywordText = (req, res, token) => {
 
 // Handle text messages with 2 keywords
 const handleMultiKeywordText = async (req, res, tokens) => {
-  if (tokens[0] == 'SUBSCRIBE') {
+  if (tokens[0] == 'SUB') {
     let tableName = 'subscribers_';
     if (new Set(county_functions.available_county_table).has(tokens[1])) {
       let countyNumber = county_functions.county_lookup(tokens[1]);
@@ -343,17 +344,9 @@ app.post('/addTableNOI', async (req, res) => {
     // Retrieve subscriber info in the format {phone_number, language}
     const users = await pool.raw('SELECT users.phone_number, language FROM ?? INNER JOIN users ON ??.phone_number = users.phone_number', [tableName, tableName]);
 
-    // Fixed translation t functions
-    const en = i18next.getFixedT('en', null);
-    const sp = i18next.getFixedT('sp', null);
-
     // Send a notification to every user subscribed
     users.rows.forEach(element => {
-      if (element.language === 'en') {
-        twilio_functions.sendNotifications(en, element.phone_number, req.product_name, 'link', element.language, req.lat, req.lon)
-      } else {
-        twilio_functions.sendNotifications(sp, element.phone_number, req.product_name, 'link', element.language, req.lat, req.lon)
-      }
+      twilio_functions.sendNotifications(i18next, element.phone_number, req.product_name, 'link', element.language, req.lat, req.lon)
     });
 
     res.status(200).send("Notifications sent")

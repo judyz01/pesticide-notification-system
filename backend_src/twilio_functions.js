@@ -84,10 +84,10 @@ const sendError = async (req, res, err) => {
         .then(message => console.log(message.status));
 }
 
-const sendNotifications = async (translationFunction, number, Chemical_name, link, language, lat, lon) => {
+const sendNotifications = async (i18next, number, Chemical_name, link, language, lat, lon) => {
     client.messages
         .create({
-            body: translationFunction("notification", {chemical_name: Chemical_name, link: link, lat: lat, lon: lon}),
+            body: i18next.t("notification", {chemical_name: Chemical_name, link: link, lat: lat, lon: lon, lng: language}),
             messagingServiceSid: language == 'en' ? mSID : mSIDSp,
             to: number
         })
