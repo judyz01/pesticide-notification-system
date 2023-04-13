@@ -154,11 +154,15 @@ Return Value:
 
 app.post('/addTableNOI', async function(req, res, next) {
   pool = pool || (await createPool());
-  let tablename = 'udc19_50'
+  let tablename = 'noi_'
   let restricted = 'restricted_products'
   let preset_link = 'https://apps.cdpr.ca.gov/cgi-bin/label/label.pl?typ=pir&prodno='
   try {
     res.set('Access-Control-Allow-Origin', '*');
+
+    tablename = tablename + req.body.county_cd.toString().padStart(2, 0);
+    console.log(tablename);
+
     const noiList = 
       await pool.raw(
       'INSERT INTO ??(use_no, prodno, chem_code, prodchem_pct, lbs_chm_used, lbs_prd_used, amt_prd_used, unit_of_meas, acre_planted, unit_treated, applic_cnt, applic_dt, applic_time, county_cd, base_ln_mer, township, tship_dir, range, range_dir, section, site_loc_id, grower_id, license_no, planting_seq, aer_gnd_ind,site_code, qualify_cd, batch_no, document_no, summary_cd, record_id, comtrs, error_flag) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
@@ -336,7 +340,7 @@ const handleMultiKeywordText = async (req, res, tokens) => {
 // Add an NOI to our database, and send notifications about this new application
 app.post('/addTableNOI', async (req, res) => {
   pool = pool || (await createPool());
-  const countyNumber = 50;
+  const countyNumber = req.body.county_cd.toString().padStart(2, 0);
   const tableName = 'subscribers_' + countyNumber;
   try {
     res.set('Access-Control-Allow-Origin', '*');
