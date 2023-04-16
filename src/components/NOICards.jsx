@@ -131,8 +131,6 @@ const NOICards = (props) =>  {
       setPesticideData('');
       setPage(1);
 
-      console.log("UPDATING");
-
       var stored_coordinates = localStorage.getItem('location');
       var check_coordinates_exist = props.location ? props.location : JSON.parse(stored_coordinates);
       var coordinates = check_coordinates_exist ? check_coordinates_exist : { lat: 38.53709139783189, lng: -121.75506664377548 };
@@ -140,7 +138,7 @@ const NOICards = (props) =>  {
       var order = getOrderParams(props.order);
       var radius = props.radius? props.radius : 5;
 
-      console.log("radius is " + radius);
+      // console.log("radius is " + radius);
       // console.log("order rank is " + order[0]);
       // console.log("order param is " + order[1]);
       // console.log("location lat is " + coordinates.lat);
@@ -154,11 +152,11 @@ const NOICards = (props) =>  {
           // TODO: Add checkboxes for aerial/ground indicators and filter out here
           if (props.fumigant === true) {
             const filteredData = response.data.filter(elem => elem.fumigant_sw === 'X');
-            console.log("Fumigant " + filteredData);
+            // console.log("Fumigant " + filteredData);
             setPesticideData(filteredData);
           } else if (props.aerialGround) {
             const filteredData = response.data.filter(elem => elem.aer_grnd_ind === getApplicatorCharacter(props.aerialGround));
-            console.log("Aerial/Ground " + filteredData);
+            // console.log("Aerial/Ground " + filteredData);
             setPesticideData(filteredData);
           } else {
             setPesticideData(response.data);

@@ -3,7 +3,7 @@ import * as React from 'react';
 
 import axios from 'axios';
 import { Box } from "@mui/material";
-import { Circle, GoogleMap, Marker, MarkerClusterer } from "@react-google-maps/api";
+import { Circle, GoogleMap, Marker, MarkerClusterer, StandaloneSearchBox } from "@react-google-maps/api";
 import { withTranslation } from "react-i18next";
 
 // Demo imports
@@ -90,7 +90,15 @@ class MapView extends React.Component {
     var location = this.state.demo ? DEMO_LOCATION : this.state.currentLocation;
     this.props.func(location);
 
-    if (prevState.demo !== this.state.demo) {
+    console.log("LOCATION UPDATED");
+    console.log(location);
+
+    if (prevState.currentLocation !== this.state.currentLocation) {
+      console.log("LOCATION SEARCHING");
+
+      // Resets pesticide data
+      this.setState({ pesticideData: [] });
+
       axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
         params: { latitude: location.lat, longitude: location.lng, radius: userRadius, order: "DESC", orderParam: "" },
       })
@@ -102,7 +110,7 @@ class MapView extends React.Component {
     }
   }
 
-// clearMarkers() {
+  // clearMarkers() {
   //   for (let i = 0; i < markers.length; i++) {
   //     if (markers[i]) {
   //       markers[i].setMap(null);
@@ -120,16 +128,23 @@ class MapView extends React.Component {
   //   }
   // }
 
+
+
   onMapLoad = map => {
     google.maps.event.addListener(map, "bounds_changed", () => {
+      // console.log(map.getBounds());
       this.setState({ bounds: map.getBounds() });
     });
 
     const legend = document.getElementById("legend");
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
 
+    
+
     var search_types = ["primary_school", "secondary_school", "park", "university", "library"];
 
+    // Google Places API does not allow you to search for multiple places types at the same time, 
+    // so the search_types are called separately through multiple requests
     for (var i = 0; i < search_types.length; i++) {
 
       const search = {
@@ -206,43 +221,94 @@ class MapView extends React.Component {
     const { i18n } = this.props;
     var setLegend = i18n.language === "en" ? "../images/legend_en.svg" : "../images/legend_sp.svg";
 
+    const onLoad = (ref) => {
+      this.searchBox = ref;
+      console.log("search bar intiated");
+    }
+    const onPlacesChanged = () => {
+      console.log("Places changed to:");
+      console.log(this.searchBox.getPlaces());
+      var placesInfo = this.searchBox.getPlaces();
+
+      console.log("places id: " + placesInfo[0].place_id);
+
+      axios.get(`https://maps.googleapis.com/maps/api/geocode/json?`, {
+        params: { place_id: placesInfo[0].place_id, key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY },
+      })
+      .then(response => {
+        var coordinates = response.data.results[0].geometry.location;
+        var lat = coordinates.lat;
+        var lng = coordinates.lng;
+  
+        this.setState({ currentLocation: { lat, lng } });
+      })
+      .catch(function (error) {
+          console.error(error);
+      });
+      
+
+    };
+
     var location = this.state.demo ? DEMO_LOCATION : this.state.currentLocation;
 
     return (
       <Box sx={{ mt: "25px", height:"575px", width:"80%", display: { xs: "block", sm: "block" } }}>
-          <GoogleMap
-            center={location}
-            zoom={12}
-            onLoad={map => this.onMapLoad(map)}
-            mapContainerStyle={{ height: "100%", width: "100%" }}
+        <Box sx={{pb:"25px"}}>
+          <StandaloneSearchBox
+            onLoad={onLoad}
+            onPlacesChanged={onPlacesChanged}
           >
-
-            <Marker icon={this.blueDot} position={location} />
-            <Circle
-              center={location}
-              options={this.options}
+            <input
+              type="text"
+              placeholder="Enter Address"
+              style={{
+                boxSizing: `border-box`,
+                border: `1px solid transparent`,
+                width: `240px`,
+                height: `32px`,
+                borderRadius: `3px`,
+                boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
+                fontSize: `16px`,
+                outline: `none`,
+                textOverflow: `ellipses`
+              }}
             />
+          </StandaloneSearchBox>
 
-            <MarkerClusterer minimumClusterSize={1} calculator={this.calculator} options={this.clusterStyles}>
-              {(clusterer) =>
-                this.state.pesticideData.map((elem, idx) => (
-                  <Marker key={idx} position={ {lat: parseFloat(elem.latitude), lng: parseFloat(elem.longitude)} } 
-                          clusterer={clusterer} />
-                ))
-              }
-            </MarkerClusterer>
+        </Box>
+          <GoogleMap
+          center={location}
+          zoom={12}
+          onLoad={map => this.onMapLoad(map)}
+          mapContainerStyle={{ height: "100%", width: "100%" }}
+        >
+
+          <Marker icon={this.blueDot} position={location} />
+          <Circle
+            center={location}
+            options={this.options}
+          />
+
+          <MarkerClusterer minimumClusterSize={1} calculator={this.calculator} options={this.clusterStyles}>
+            {(clusterer) =>
+              this.state.pesticideData.map((elem, idx) => (
+                <Marker key={idx} position={ {lat: parseFloat(elem.latitude), lng: parseFloat(elem.longitude)} } 
+                        clusterer={clusterer} />
+              ))
+            }
+          </MarkerClusterer>
 
 
-            <div id="legend">
-              <div>
-                <img src={setLegend} alt="map-legend"/>
-              </div>
+          <div id="legend">
+            <div>
+              <img src={setLegend} alt="map-legend"/>
             </div>
-          </GoogleMap>
+          </div>
+        </GoogleMap>
 
-          <FormGroup>
-            <FormControlLabel onChange={this.handleChange} control={<Switch checked={this.state.demo} />} label="Demo" />
-          </FormGroup>
+        <FormGroup>
+          <FormControlLabel onChange={this.handleChange} control={<Switch checked={this.state.demo} />} label="Demo" />
+        </FormGroup>
       </Box>
     );
   }
