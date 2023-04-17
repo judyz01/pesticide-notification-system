@@ -70,8 +70,6 @@ const NOIs = (props) => {
     setCurrentAerialGround(aerial_ground);
   }
 
-
-
   return (
     <Box sx={{display: "flex", minHeight: `calc(100vh - 224px)`}}>
 
