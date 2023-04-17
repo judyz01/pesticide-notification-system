@@ -3,7 +3,7 @@ import * as React from 'react';
 
 import axios from 'axios';
 import { Box } from "@mui/material";
-import { Circle, GoogleMap, Marker, MarkerClusterer, StandaloneSearchBox } from "@react-google-maps/api";
+import { Circle, GoogleMap, Marker, MarkerClusterer, StandaloneSearchBox, useGoogleMap } from "@react-google-maps/api";
 import { withTranslation } from "react-i18next";
 
 // Demo imports
@@ -90,13 +90,14 @@ class MapView extends React.Component {
     var location = this.state.demo ? DEMO_LOCATION : this.state.currentLocation;
     this.props.func(location);
 
-    console.log("LOCATION UPDATED");
-    console.log(location);
+    // console.log("LOCATION UPDATED");
+    // console.log(location);
 
     if (prevState.currentLocation !== this.state.currentLocation) {
       console.log("LOCATION SEARCHING");
 
-      // Resets pesticide data
+
+      // Reset pesticide data
       this.setState({ pesticideData: [] });
 
       axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
@@ -110,25 +111,6 @@ class MapView extends React.Component {
     }
   }
 
-  // clearMarkers() {
-  //   for (let i = 0; i < markers.length; i++) {
-  //     if (markers[i]) {
-  //       markers[i].setMap(null);
-  //     }
-  //   }
-  
-  //   markers = [];
-  // }
-
-  // clearResults() {
-  //   const results = document.getElementById("results");
-  
-  //   while (results.childNodes[0]) {
-  //     results.removeChild(results.childNodes[0]);
-  //   }
-  // }
-
-
 
   onMapLoad = map => {
     google.maps.event.addListener(map, "bounds_changed", () => {
@@ -138,8 +120,6 @@ class MapView extends React.Component {
 
     const legend = document.getElementById("legend");
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
-
-    
 
     var search_types = ["primary_school", "secondary_school", "park", "university", "library"];
 
@@ -159,11 +139,22 @@ class MapView extends React.Component {
       let places = new google.maps.places.PlacesService(map);
 
       places.nearbySearch(search, (results, status, pagination) => {
-        console.log(status);
+        console.log("searching nearby locations");
 
         if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-          // clearResults();
-          // clearMarkers();
+
+          // const results = document.getElementById("results");
+          // while (results.childNodes[0]) {
+          //   results.removeChild(results.childNodes[0]);
+          // }
+
+          for (let i = 0; i < this.state.markers.length; i++) {
+            if (this.state.markers[i]) {
+              this.state.markers[i].setMap(null);
+            }
+          }
+        
+          this.state.markers = [];
 
           for (let i = 0; i < results.length; i++) {
             const markerIcon = "../images/highlight_marker.png"
@@ -179,7 +170,12 @@ class MapView extends React.Component {
         }
       });
     }
+
   };
+
+  // boundsChanged = (map) => {
+    
+  // };
 
   handleChange = (event) => {
     localStorage.setItem('demo', !this.state.demo);
@@ -225,9 +221,10 @@ class MapView extends React.Component {
       this.searchBox = ref;
       console.log("search bar intiated");
     }
+
     const onPlacesChanged = () => {
-      console.log("Places changed to:");
-      console.log(this.searchBox.getPlaces());
+      // console.log("Places changed to:");
+      // console.log(this.searchBox.getPlaces());
       var placesInfo = this.searchBox.getPlaces();
 
       console.log("places id: " + placesInfo[0].place_id);
@@ -252,8 +249,8 @@ class MapView extends React.Component {
     var location = this.state.demo ? DEMO_LOCATION : this.state.currentLocation;
 
     return (
-      <Box sx={{ mt: "25px", height:"575px", width:"80%", display: { xs: "block", sm: "block" } }}>
-        <Box sx={{pb:"25px"}}>
+      <Box sx={{ mt: "15px", height:"575px", width:"80%", display: { xs: "block", sm: "block" } }}>
+        <Box sx={{pb:"15px"}}>
           <StandaloneSearchBox
             onLoad={onLoad}
             onPlacesChanged={onPlacesChanged}
@@ -264,7 +261,7 @@ class MapView extends React.Component {
               style={{
                 boxSizing: `border-box`,
                 border: `1px solid transparent`,
-                width: `240px`,
+                width: '150px',
                 height: `32px`,
                 borderRadius: `3px`,
                 boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
@@ -280,6 +277,7 @@ class MapView extends React.Component {
           center={location}
           zoom={12}
           onLoad={map => this.onMapLoad(map)}
+          // onBoundsChanged={map => this.boundsChanged(map)}
           mapContainerStyle={{ height: "100%", width: "100%" }}
         >
 

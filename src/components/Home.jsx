@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Box, Link, Typography } from '@mui/material';
+import { Box, Button, Link, Typography } from '@mui/material';
 import { LoadScript } from "@react-google-maps/api";
 import { useTranslation } from "react-i18next";
 import {Link as RouterLink} from "react-router-dom";
@@ -36,12 +36,40 @@ const Home = (props) => {
             {t("Title")}
         </Typography>
 
+
+        <Box display="flex" width="80%" sx={{ justifyContent: "right", mb: "-50px", position:"relative"}}>
+          <Button sx={{ 
+              display: "flex",
+              height: "32px",
+              p: "16px",
+              variant:"contained", 
+              backgroundColor:"#d0342c", 
+              color:"white",
+              "&:hover": {
+                backgroundColor: "#d0342c",
+                "@media (hover: none)": {
+                  backgroundColor: "#d0342c",
+                  "&:active": {
+                    backgroundColor: "#d0342c"
+                  }
+                }}
+              }}
+          >
+            <Link style={{textDecoration: "none", color: "white"}} component={RouterLink} to={`/Resources`}>
+                HELP
+            </Link>
+          </Button> 
+        </Box> 
+
+
         <LoadScript 
           googleMapsApiKey={key} 
           libraries={lib}
           loadingElement={Loading}>
           <MapView func={get_location}/>
+
         </LoadScript>
+
         
         <Box sx={{m: "30px", pt: "60px", display: "flex", justifyContent: "space-between", width: "80%" }}>
           <Typography sx={{ pt: "15px", fontSize: 21, fontWeight: 600, color: "#126701" }}>
