@@ -92,9 +92,6 @@ class MapView extends React.Component {
     var location = this.state.demo ? DEMO_LOCATION : this.state.currentLocation;
     this.props.func(location);
 
-    // console.log("LOCATION UPDATED");
-    // console.log(location);
-
     if (prevState.currentLocation !== this.state.currentLocation) {
       console.log("LOCATION SEARCHING");
 
@@ -116,7 +113,6 @@ class MapView extends React.Component {
 
   onMapLoad = map => {
     google.maps.event.addListener(map, "bounds_changed", () => {
-      // console.log(map.getBounds());
       this.setState({ bounds: map.getBounds() });
     });
 
@@ -175,10 +171,6 @@ class MapView extends React.Component {
 
   };
 
-  // boundsChanged = (map) => {
-    
-  // };
-
   handleChange = (event) => {
     localStorage.setItem('demo', !this.state.demo);
     this.setState({ demo: !this.state.demo });
@@ -225,8 +217,6 @@ class MapView extends React.Component {
     }
 
     const onPlacesChanged = () => {
-      // console.log("Places changed to:");
-      // console.log(this.searchBox.getPlaces());
       var placesInfo = this.searchBox.getPlaces();
 
       console.log("places id: " + placesInfo[0].place_id);

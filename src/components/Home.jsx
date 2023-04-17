@@ -36,32 +36,6 @@ const Home = (props) => {
             {t("Title")}
         </Typography>
 
-
-        {/* <Box display="flex" width="80%" sx={{ zIndex:1, justifyContent: "right", mb: "-50px", position:"relative"}}>
-          <Button sx={{ 
-              display: "flex",
-              height: "32px",
-              p: "16px",
-              variant:"contained", 
-              backgroundColor:"#d0342c", 
-              color:"white",
-              "&:hover": {
-                backgroundColor: "#d0342c",
-                "@media (hover: none)": {
-                  backgroundColor: "#d0342c",
-                  "&:active": {
-                    backgroundColor: "#d0342c"
-                  }
-                }}
-              }}
-          >
-            <Link style={{textDecoration: "none", color: "white"}} component={RouterLink} to={`/Resources`}>
-                HELP
-            </Link>
-          </Button> 
-        </Box>  */}
-
-
         <LoadScript 
           googleMapsApiKey={key} 
           libraries={lib}
