@@ -2,9 +2,11 @@
 import * as React from 'react';
 
 import axios from 'axios';
-import { Box } from "@mui/material";
-import { Circle, GoogleMap, Marker, MarkerClusterer, StandaloneSearchBox, useGoogleMap } from "@react-google-maps/api";
+import { Box, Button, Link, Stack } from "@mui/material";
+import { Circle, GoogleMap, Marker, MarkerClusterer, StandaloneSearchBox } from "@react-google-maps/api";
+import {Link as RouterLink} from "react-router-dom";
 import { withTranslation } from "react-i18next";
+
 
 // Demo imports
 import { FormControlLabel, FormGroup, Switch } from '@mui/material';
@@ -250,7 +252,13 @@ class MapView extends React.Component {
 
     return (
       <Box sx={{ mt: "15px", height:"575px", width:"80%", display: { xs: "block", sm: "block" } }}>
-        <Box sx={{pb:"15px"}}>
+        <Stack   
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            sx={{pb:"15px" }}
+        >
+
           <StandaloneSearchBox
             onLoad={onLoad}
             onPlacesChanged={onPlacesChanged}
@@ -272,7 +280,29 @@ class MapView extends React.Component {
             />
           </StandaloneSearchBox>
 
-        </Box>
+          <Button sx={{ 
+              display: "flex",
+              height: "32px",
+              p: "16px",
+              variant:"contained", 
+              backgroundColor:"#d0342c", 
+              color:"white",
+              "&:hover": {
+                backgroundColor: "#d0342c",
+                "@media (hover: none)": {
+                  backgroundColor: "#d0342c",
+                  "&:active": {
+                    backgroundColor: "#d0342c"
+                  }
+                }}
+              }}
+          >
+            <Link style={{textDecoration: "none", color: "white"}} component={RouterLink} to={`/Resources`}>
+                HELP
+            </Link>
+          </Button> 
+
+        </Stack>
           <GoogleMap
           center={location}
           zoom={12}

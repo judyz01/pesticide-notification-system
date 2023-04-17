@@ -37,7 +37,7 @@ const Home = (props) => {
         </Typography>
 
 
-        <Box display="flex" width="80%" sx={{ justifyContent: "right", mb: "-50px", position:"relative"}}>
+        {/* <Box display="flex" width="80%" sx={{ zIndex:1, justifyContent: "right", mb: "-50px", position:"relative"}}>
           <Button sx={{ 
               display: "flex",
               height: "32px",
@@ -59,7 +59,7 @@ const Home = (props) => {
                 HELP
             </Link>
           </Button> 
-        </Box> 
+        </Box>  */}
 
 
         <LoadScript 
