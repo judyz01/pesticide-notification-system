@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Box, Button, Link, Typography } from '@mui/material';
+import { Box, Link, Typography } from '@mui/material';
 import { LoadScript } from "@react-google-maps/api";
 import { useTranslation } from "react-i18next";
 import {Link as RouterLink} from "react-router-dom";
