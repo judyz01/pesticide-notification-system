@@ -2,7 +2,8 @@
 import * as React from 'react';
 
 import axios from 'axios';
-import { Box, Button, Link, Stack, TextField } from "@mui/material";
+import { Box, Button, Input, InputAdornment, Link, Stack, TextField } from "@mui/material";
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { Circle, GoogleMap, Marker, MarkerClusterer, StandaloneSearchBox } from "@react-google-maps/api";
 import {Link as RouterLink} from "react-router-dom";
 import { withTranslation } from "react-i18next";
@@ -253,14 +254,19 @@ class MapView extends React.Component {
             onLoad={onLoad}
             onPlacesChanged={onPlacesChanged}
           >
-            <TextField id="outlined-basic" label="Enter Address" variant="outlined" >
-            <input
-              type="text"
-              style={{
-                fontSize: `16px`,
-                textOverflow: `ellipses`
-              }}
-            />
+            <TextField 
+              id="outlined-basic" 
+              label="Enter Address" 
+              variant="outlined" 
+              placeholder=""
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LocationOnIcon />
+                  </InputAdornment>
+                )
+              }} >
+              <Input />
             </TextField>
           </StandaloneSearchBox>
 
