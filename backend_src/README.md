@@ -13,3 +13,5 @@
   },
 ...
 `
+
+- In order for requests regarding the Twilio text message portion of our backend to work with your local instance of our express server, you will have to create an instance of ngrok, as well as run the Google Cloud SQL proxy.
