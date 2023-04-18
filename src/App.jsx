@@ -7,7 +7,7 @@ import { Route, Routes } from "react-router";
 
 import { Footer, Home, Navbar, NOIs, Resources} from './components';
 import theme from "./styles/theme";
-
+import CookieBanner from './CookieBanner';
 
 const App = () => {
   const [location, setLocation] = React.useState();
@@ -27,6 +27,7 @@ const App = () => {
             <Route path="/Resources" element={<Resources />} />
             <Route path="/NOIs" element={<NOIs location={location}/>} />
           </Routes>
+          <CookieBanner />
         </Box>
         <Footer />
       </ThemeProvider>

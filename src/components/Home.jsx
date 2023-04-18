@@ -41,9 +41,11 @@ const Home = (props) => {
           libraries={lib}
           loadingElement={Loading}>
           <MapView func={get_location}/>
+
         </LoadScript>
 
-        <Box sx={{m: "30px", display: "flex", justifyContent: "space-between", width: "80%" }}>
+        
+        <Box sx={{m: "30px", pt: "60px", display: "flex", justifyContent: "space-between", width: "80%" }}>
           <Typography sx={{ pt: "15px", fontSize: 21, fontWeight: 600, color: "#126701" }}>
             {t("NOI")}
           </Typography>

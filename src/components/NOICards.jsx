@@ -25,7 +25,7 @@ const NOICards = (props) =>  {
   const DISTANCE_UNIT = t("miles");
   const NO_NOIS = t("No NOIs");
 
-  const [pesticideData, setPesticideData] = useState('');
+  const [pesticideData, setPesticideData] = useState([]);
   const [isDesktop, setDesktop] = React.useState(true);
   const [isXSMobile, setXSMobile] = React.useState(true);
 
@@ -83,6 +83,19 @@ const NOICards = (props) =>  {
     }
   };
 
+  const getApplicatorCharacter = (str) => {
+    switch(str) {
+      case 'Aerial':
+        return 'A';
+      case 'Ground':
+        return 'B';
+      case 'Aerial/Ground':
+        return 'C';
+      default:
+        return "N/A";
+    }
+  };
+
   const getStandardTime = (time) => {
     // Times that are listed null
     if (!time) {
@@ -118,8 +131,6 @@ const NOICards = (props) =>  {
       setPesticideData('');
       setPage(1);
 
-      console.log("UPDATING");
-
       var stored_coordinates = localStorage.getItem('location');
       var check_coordinates_exist = props.location ? props.location : JSON.parse(stored_coordinates);
       var coordinates = check_coordinates_exist ? check_coordinates_exist : { lat: 38.53709139783189, lng: -121.75506664377548 };
@@ -127,7 +138,7 @@ const NOICards = (props) =>  {
       var order = getOrderParams(props.order);
       var radius = props.radius? props.radius : 5;
 
-      console.log("radius is " + radius);
+      // console.log("radius is " + radius);
       // console.log("order rank is " + order[0]);
       // console.log("order param is " + order[1]);
       // console.log("location lat is " + coordinates.lat);
@@ -138,9 +149,14 @@ const NOICards = (props) =>  {
             params: { latitude: coordinates.lat, longitude: coordinates.lng, radius: convertMilesToMeters(radius), order: order[0], orderParam: order[1]},
         })
         .then((response) => {
+          // TODO: Add checkboxes for aerial/ground indicators and filter out here
           if (props.fumigant === true) {
             const filteredData = response.data.filter(elem => elem.fumigant_sw === 'X');
-            console.log(filteredData);
+            // console.log("Fumigant " + filteredData);
+            setPesticideData(filteredData);
+          } else if (props.aerialGround) {
+            const filteredData = response.data.filter(elem => elem.aer_grnd_ind === getApplicatorCharacter(props.aerialGround));
+            // console.log("Aerial/Ground " + filteredData);
             setPesticideData(filteredData);
           } else {
             setPesticideData(response.data);
@@ -164,8 +180,9 @@ const NOICards = (props) =>  {
       localStorage.setItem('location', JSON.stringify(props.location))
       : console.log("no location passed from mapview");
 
+    console.log("Fumigant " + props.fumigant);
+    console.log("Aerial/Ground " + props.aerialGround);
 
-    props.fumigant ? console.log("FUMIGANT TRUE") : console.log("FUMIGANT False")
 
   }, [props], []);
 
@@ -253,8 +270,9 @@ const NOICards = (props) =>  {
         {(pesticideData.length > 0) ? pesticideData
         .slice((page - 1) * itemsPerPage, page * itemsPerPage)
         .map((elem, index) => (
+
           <Card key={index} sx={{ display:"flex", width: "80%", borderRadius: "16px", justifyContent: "space-between", flexDirection:{ sm:"column", md:"row"} }}>
-              <Box key={index} sx={{ flexDirection: "column" }}>
+              <Box sx={{ flexDirection: "column" }}>
                   <CardHeader
                     title={`${elem.product_name}`}
                     sx={{pb:0}}
@@ -311,7 +329,7 @@ const NOICards = (props) =>  {
         }
 
         {(pesticideData.length > 0) &&
-          <Pagination
+          <Pagination 
               count={Math.ceil(pesticideData.length / itemsPerPage)}
               page={page}
               onChange={handleChange}

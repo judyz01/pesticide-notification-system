@@ -78,5 +78,9 @@
     "Text": "Text \"SUBSCRIBE STANISLAUS\" to",
     "English": "English",
     "Spanish": "Spanish",
-    "Real Time": "For Real Time Notifications"
+    "Real Time": "For Real Time Notifications",
+
+    "Cookie": "This website uses cookies to provide the best possible experience. Please accept for optimal performance.",
+    "Accept": "Accept",
+    "Decline": "Decline"
 }
