@@ -101,10 +101,10 @@ app.get('/findNearbyNOI', async (req, res) => {
   try {
     res.set('Access-Control-Allow-Origin', '*');
     if (!orderParam) {
-      const noiList = await pool.raw('SELECT * FROM get_nearby_noi_data(?, ?, ?) ORDER BY applic_dt ?, applic_time ?', [latitude, longitude, radius, pool.raw(order), pool.raw(order)]);
+      const noiList = await pool.raw('SELECT * FROM find_nearby_noi_data(?, ?, ?) ORDER BY applic_dt ?, applic_time ?', [latitude, longitude, radius, pool.raw(order), pool.raw(order)]);
       res.status(200).json(noiList.rows);
     } else {
-      const noiList = await pool.raw('SELECT * FROM get_nearby_noi_data(?, ?, ?) ORDER BY ?? ?', [latitude, longitude, radius, orderParam, pool.raw(order)]);
+      const noiList = await pool.raw('SELECT * FROM find_nearby_noi_data(?, ?, ?) ORDER BY ?? ?', [latitude, longitude, radius, orderParam, pool.raw(order)]);
       res.status(200).json(noiList.rows);
     }
   } catch (err) {
