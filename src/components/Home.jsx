@@ -5,7 +5,9 @@ import { LoadScript } from "@react-google-maps/api";
 import { useTranslation } from "react-i18next";
 import {Link as RouterLink} from "react-router-dom";
 
-import { CommunityVoices, MapView, NOICards } from './';
+import { CommunityVoices, NOICards } from './';
+import { RefactoredMapView } from './';
+
 
 const lib = ["places"];
 const key = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
@@ -40,7 +42,7 @@ const Home = (props) => {
           googleMapsApiKey={key} 
           libraries={lib}
           loadingElement={Loading}>
-          <MapView func={get_location}/>
+          <RefactoredMapView func={get_location}/>
 
         </LoadScript>
 
