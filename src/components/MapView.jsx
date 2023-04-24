@@ -8,10 +8,6 @@ import { Circle, GoogleMap, Marker, MarkerClusterer, StandaloneSearchBox } from 
 import {Link as RouterLink} from "react-router-dom";
 import { withTranslation } from "react-i18next";
 
-
-// Demo imports
-import { FormControlLabel, FormGroup, Switch } from '@mui/material';
-
 // Radius is in meters, currently set to 5 mile radius (8046.72m)
 var userRadius = 8046.72;
 class MapView extends React.Component {
@@ -23,6 +19,7 @@ class MapView extends React.Component {
       markers: [],
       pesticideData: [],
       bounds: null,
+      map: [],
     };
   }
 
@@ -73,8 +70,7 @@ class MapView extends React.Component {
     this.props.func(this.state.currentLocation);
 
     if (prevState.currentLocation !== this.state.currentLocation) {
-      console.log("LOCATION SEARCHING");
-
+      // console.log("LOCATION SEARCHING");
 
       // Reset pesticide data
       this.setState({ pesticideData: [] });
@@ -96,10 +92,13 @@ class MapView extends React.Component {
       this.setState({ bounds: map.getBounds() });
     });
 
+    this.setState({ map: map });
+
     const legend = document.getElementById("legend");
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
 
     var search_types = ["primary_school", "secondary_school", "park", "university", "library"];
+    var local_markers = [];
 
     // Google Places API does not allow you to search for multiple places types at the same time, 
     // so the search_types are called separately through multiple requests
@@ -115,37 +114,27 @@ class MapView extends React.Component {
       let places = new google.maps.places.PlacesService(map);
 
       places.nearbySearch(search, (results, status, pagination) => {
-        console.log("searching nearby locations");
-
         if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-
-          // const results = document.getElementById("results");
-          // while (results.childNodes[0]) {
-          //   results.removeChild(results.childNodes[0]);
-          // }
-
-          for (let i = 0; i < this.state.markers.length; i++) {
-            if (this.state.markers[i]) {
-              this.state.markers[i].setMap(null);
-            }
-          }
-        
-          this.state.markers = [];
 
           for (let i = 0; i < results.length; i++) {
             const markerIcon = "../images/highlight_marker.png"
 
-            this.state.markers[i] = new google.maps.Marker({
-              position: results[i].geometry.location,
-              animation: google.maps.Animation.DROP,
-              icon: markerIcon,
+            let marker = new google.maps.Marker({
+                position: results[i].geometry.location,
+                animation: google.maps.Animation.DROP,
+                icon: markerIcon,
             });
 
-            this.state.markers[i].setMap(map);
+            marker.setMap(map);
+            local_markers.push(marker);
           }
         }
       });
     }
+
+    this.setState({ 
+      markers: local_markers
+    })
 
   };
 
@@ -189,13 +178,21 @@ class MapView extends React.Component {
 
     const onLoad = (ref) => {
       this.searchBox = ref;
-      console.log("search bar intiated");
+      // console.log("search bar intiated");
     }
 
     const onPlacesChanged = () => {
       var placesInfo = this.searchBox.getPlaces();
+      console.log("places changed");
 
-      console.log("places id: " + placesInfo[0].place_id);
+      for (let i = 0; i < this.state.markers.length; i++) {
+        if (this.state.markers[i]) {
+          console.log("deleting markers");
+          this.state.markers[i].setMap(null);
+        }
+      }
+
+      this.setState({ markers: [] });
 
       axios.get(`https://maps.googleapis.com/maps/api/geocode/json?`, {
         params: { place_id: placesInfo[0].place_id, key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY },
@@ -230,7 +227,7 @@ class MapView extends React.Component {
             onPlacesChanged={onPlacesChanged}
           >
             <TextField 
-              id="outlined-basic" 
+              id="search_box" 
               label="Enter Address" 
               variant="outlined" 
               placeholder=""
@@ -268,7 +265,7 @@ class MapView extends React.Component {
           </Button> 
 
         </Stack>
-          <GoogleMap
+          <GoogleMap 
           center={location}
           zoom={12}
           onLoad={map => this.onMapLoad(map)}
@@ -295,7 +292,7 @@ class MapView extends React.Component {
               <img src={setLegend} alt="map-legend"/>
             </div>
           </div>
-          
+
         </GoogleMap>
       </Box>
     );
