@@ -1,19 +1,15 @@
 /*global google*/
 import * as React from 'react';
-
 import axios from 'axios';
 import { Box, Button, Input, InputAdornment, Link, Stack, TextField } from "@mui/material";
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { Circle, GoogleMap, Marker, MarkerClusterer, StandaloneSearchBox } from "@react-google-maps/api";
+import { Circle, GoogleMap, Marker, MarkerClusterer, StandaloneSearchBox, useGoogleMap } from "@react-google-maps/api";
 import {Link as RouterLink} from "react-router-dom";
 import { withTranslation } from "react-i18next";
 
-
-// Demo imports
-import { FormControlLabel, FormGroup, Switch } from '@mui/material';
-
 // Radius is in meters, currently set to 5 mile radius (8046.72m)
 var userRadius = 8046.72;
+
 class MapView extends React.Component {
   constructor(props) {
     super(props);
@@ -23,8 +19,10 @@ class MapView extends React.Component {
       markers: [],
       pesticideData: [],
       bounds: null,
+      global_map: {},
     };
   }
+
 
   // Icon for user's current location
   blueDot = {
@@ -52,6 +50,8 @@ class MapView extends React.Component {
   };
 
   componentDidMount() {
+    console.log("ONCE");
+
     navigator.geolocation.getCurrentPosition(
       ({ coords: { latitude: lat, longitude: lng } }) => {
         const pos = { lat, lng };
@@ -64,6 +64,9 @@ class MapView extends React.Component {
     })
     .then(response => 
       this.setState({ pesticideData: response.data }))
+    .then(
+      this.findNearbyLocations()
+    )
     .catch(function (error) {
         console.error(error);
     });
@@ -73,83 +76,86 @@ class MapView extends React.Component {
     this.props.func(this.state.currentLocation);
 
     if (prevState.currentLocation !== this.state.currentLocation) {
-      console.log("LOCATION SEARCHING");
-
 
       // Reset pesticide data
       this.setState({ pesticideData: [] });
+      this.setState({ markers: [] });
+
 
       axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
         params: { latitude: this.state.currentLocation.lat, longitude: this.state.currentLocation.lng, radius: userRadius, order: "DESC", orderParam: "" },
       })
       .then(response => 
         this.setState({ pesticideData: response.data }))
+      .then(
+        this.findNearbyLocations()
+      )
       .catch(function (error) {
           console.error(error);
       });
     }
+
+
   }
 
+  findNearbyLocations = () => {
 
-  onMapLoad = map => {
+    var search_types = ["primary_school", "secondary_school", "park", "university", "library"];
+    var local_markers = [];
+
+    // console.log(this.state.currentLocation);
+
+    // Google Places API does not allow you to search for multiple places types at the same time, 
+    // so the search_types are called separately through multiple requests
+
+    for (let i = 0; i < search_types.length; i++) {
+      const search = {
+        radius: 100,
+        location: this.state.currentLocation,
+        bounds: this.state.bounds,
+        types: [search_types[i]],
+      };
+  
+      var places = new google.maps.places.PlacesService(document.createElement('div'));
+
+  
+      places.nearbySearch(search, (results, status, pagination) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+  
+          for (let i = 0; i < results.length; i++) {
+            // const markerIcon = "../images/highlight_marker.png"
+  
+            // let marker = new google.maps.Marker({
+            //     position: results[i].geometry.location,
+            //     animation: google.maps.Animation.DROP,
+            //     icon: markerIcon,
+            // });
+            console.log(results[i].geometry.location.lat());
+            console.log(results[i].geometry.location.lng());
+
+            local_markers.push(results[i].geometry.location);
+          }
+        }
+      });
+    }
+
+    this.setState({ 
+      markers: local_markers
+    })
+
+  };
+
+  onMapLoad = (map) => {
     google.maps.event.addListener(map, "bounds_changed", () => {
+      // console.log(map.getBounds());
       this.setState({ bounds: map.getBounds() });
     });
 
     const legend = document.getElementById("legend");
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
 
-    var search_types = ["primary_school", "secondary_school", "park", "university", "library"];
-
-    // Google Places API does not allow you to search for multiple places types at the same time, 
-    // so the search_types are called separately through multiple requests
-    for (var i = 0; i < search_types.length; i++) {
-
-      const search = {
-        radius: userRadius,
-        location: this.state.currentLocation,
-        bounds: map.getBounds(),
-        types: [search_types[i]],
-      };
-
-      let places = new google.maps.places.PlacesService(map);
-
-      places.nearbySearch(search, (results, status, pagination) => {
-        console.log("searching nearby locations");
-
-        if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-
-          // const results = document.getElementById("results");
-          // while (results.childNodes[0]) {
-          //   results.removeChild(results.childNodes[0]);
-          // }
-
-          for (let i = 0; i < this.state.markers.length; i++) {
-            if (this.state.markers[i]) {
-              this.state.markers[i].setMap(null);
-            }
-          }
-        
-          this.state.markers = [];
-
-          for (let i = 0; i < results.length; i++) {
-            const markerIcon = "../images/highlight_marker.png"
-
-            this.state.markers[i] = new google.maps.Marker({
-              position: results[i].geometry.location,
-              animation: google.maps.Animation.DROP,
-              icon: markerIcon,
-            });
-
-            this.state.markers[i].setMap(map);
-          }
-        }
-      });
-    }
-
-  };
-
-  handleChange = (event) => {
+    this.findNearbyLocations();
+    console.log("MAP");
   };
 
 
@@ -189,17 +195,19 @@ class MapView extends React.Component {
 
     const onLoad = (ref) => {
       this.searchBox = ref;
-      console.log("search bar intiated");
+      // console.log("search bar intiated");
     }
 
     const onPlacesChanged = () => {
       var placesInfo = this.searchBox.getPlaces();
-
-      console.log("places id: " + placesInfo[0].place_id);
+      console.log("places changed");
 
       axios.get(`https://maps.googleapis.com/maps/api/geocode/json?`, {
         params: { place_id: placesInfo[0].place_id, key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY },
       })
+      .then(
+        this.setState({ markers: [] })
+      )
       .then(response => {
         var coordinates = response.data.results[0].geometry.location;
         var lat = coordinates.lat;
@@ -210,7 +218,6 @@ class MapView extends React.Component {
       .catch(function (error) {
           console.error(error);
       });
-      
 
     };
 
@@ -230,7 +237,7 @@ class MapView extends React.Component {
             onPlacesChanged={onPlacesChanged}
           >
             <TextField 
-              id="outlined-basic" 
+              id="search_box" 
               label="Enter Address" 
               variant="outlined" 
               placeholder=""
@@ -263,12 +270,13 @@ class MapView extends React.Component {
               }}
           >
             <Link style={{textDecoration: "none", color: "white"}} component={RouterLink} to={`/Resources`}>
-                HELP
+                EMERGENCY
             </Link>
           </Button> 
 
         </Stack>
-          <GoogleMap
+          <GoogleMap 
+          id="map"
           center={location}
           zoom={12}
           onLoad={map => this.onMapLoad(map)}
@@ -280,6 +288,13 @@ class MapView extends React.Component {
             center={location}
             options={this.options}
           />
+
+
+        {        
+          (this.state.markers.length > 0) && this.state.markers.map((elem, idx) => (
+            <Marker key={idx} position={ {lat: parseFloat(elem.lat()), lng: parseFloat(elem.lng())} } />
+          ))
+        }
 
           <MarkerClusterer minimumClusterSize={1} calculator={this.calculator} options={this.clusterStyles}>
             {(clusterer) =>
@@ -295,7 +310,7 @@ class MapView extends React.Component {
               <img src={setLegend} alt="map-legend"/>
             </div>
           </div>
-          
+
         </GoogleMap>
       </Box>
     );

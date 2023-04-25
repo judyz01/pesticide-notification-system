@@ -152,7 +152,7 @@ const NOICards = (props) =>  {
           } else {
             setPesticideData(response.data);
           }
-          console.log("Pesticide data received for cards");
+          // console.log("Pesticide data received for cards");
         })
         .catch(function (error) {
             console.error(error);
@@ -171,8 +171,8 @@ const NOICards = (props) =>  {
       localStorage.setItem('location', JSON.stringify(props.location))
       : console.log("no location passed from mapview");
 
-    console.log("Fumigant " + props.fumigant);
-    console.log("Aerial/Ground " + props.aerialGround);
+    // console.log("Fumigant " + props.fumigant);
+    // console.log("Aerial/Ground " + props.aerialGround);
 
 
   }, [props], []);
