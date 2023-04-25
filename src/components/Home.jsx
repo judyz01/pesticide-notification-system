@@ -6,7 +6,8 @@ import { useTranslation } from "react-i18next";
 import {Link as RouterLink} from "react-router-dom";
 
 import { CommunityVoices, NOICards } from './';
-import { RefactoredMapView } from './';
+import { RefactoredMapView, MapView } from './';
+
 
 
 const lib = ["places"];

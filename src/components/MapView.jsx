@@ -50,6 +50,8 @@ class MapView extends React.Component {
   };
 
   componentDidMount() {
+    console.log("ONCE");
+
     navigator.geolocation.getCurrentPosition(
       ({ coords: { latitude: lat, longitude: lng } }) => {
         const pos = { lat, lng };
@@ -62,6 +64,9 @@ class MapView extends React.Component {
     })
     .then(response => 
       this.setState({ pesticideData: response.data }))
+    .then(
+      this.findNearbyLocations()
+    )
     .catch(function (error) {
         console.error(error);
     });
@@ -74,70 +79,75 @@ class MapView extends React.Component {
 
       // Reset pesticide data
       this.setState({ pesticideData: [] });
+      this.setState({ markers: [] });
+
 
       axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
         params: { latitude: this.state.currentLocation.lat, longitude: this.state.currentLocation.lng, radius: userRadius, order: "DESC", orderParam: "" },
       })
       .then(response => 
         this.setState({ pesticideData: response.data }))
+      .then(
+        this.findNearbyLocations()
+      )
       .catch(function (error) {
           console.error(error);
       });
     }
+
+
   }
 
   findNearbyLocations = () => {
 
-    // let map = new google.maps.Map(document.getElementById("map"), {
-    //   zoom: 12,
-    //   center: this.state.currentLocation,
-    // });
-
     var search_types = ["primary_school", "secondary_school", "park", "university", "library"];
     var local_markers = [];
 
-    console.log("NEARBY");
+    // console.log(this.state.currentLocation);
 
     // Google Places API does not allow you to search for multiple places types at the same time, 
     // so the search_types are called separately through multiple requests
-    // for (var i = 0; i < search_types.length; i++) {
 
-    //   const search = {
-    //     radius: userRadius,
-    //     location: this.state.currentLocation,
-    //     bounds: this.state.bounds,
-    //     types: [search_types[i]],
-    //   };
+    for (let i = 0; i < search_types.length; i++) {
+      const search = {
+        radius: 100,
+        location: this.state.currentLocation,
+        bounds: this.state.bounds,
+        types: [search_types[i]],
+      };
+  
+      var places = new google.maps.places.PlacesService(document.createElement('div'));
 
-    //   let places = new google.maps.places.PlacesService(map);
+  
+      places.nearbySearch(search, (results, status, pagination) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+  
+          for (let i = 0; i < results.length; i++) {
+            // const markerIcon = "../images/highlight_marker.png"
+  
+            // let marker = new google.maps.Marker({
+            //     position: results[i].geometry.location,
+            //     animation: google.maps.Animation.DROP,
+            //     icon: markerIcon,
+            // });
+            console.log(results[i].geometry.location.lat());
+            console.log(results[i].geometry.location.lng());
 
-    //   places.nearbySearch(search, (results, status, pagination) => {
-    //     if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+            local_markers.push(results[i].geometry.location);
+          }
+        }
+      });
+    }
 
-    //       for (let i = 0; i < results.length; i++) {
-    //         const markerIcon = "../images/highlight_marker.png"
-
-    //         let marker = new google.maps.Marker({
-    //             position: results[i].geometry.location,
-    //             animation: google.maps.Animation.DROP,
-    //             icon: markerIcon,
-    //         });
-
-    //         marker.setMap(map);
-    //         local_markers.push(marker);
-    //       }
-    //     }
-    //   });
-    // }
-
-    // this.setState({ 
-    //   markers: local_markers
-    // })
+    this.setState({ 
+      markers: local_markers
+    })
 
   };
 
   onMapLoad = (map) => {
     google.maps.event.addListener(map, "bounds_changed", () => {
+      // console.log(map.getBounds());
       this.setState({ bounds: map.getBounds() });
     });
 
@@ -146,9 +156,6 @@ class MapView extends React.Component {
 
     this.findNearbyLocations();
     console.log("MAP");
-  };
-
-  handleChange = (event) => {
   };
 
 
@@ -195,18 +202,12 @@ class MapView extends React.Component {
       var placesInfo = this.searchBox.getPlaces();
       console.log("places changed");
 
-      for (let i = 0; i < this.state.markers.length; i++) {
-        if (this.state.markers[i]) {
-          console.log("deleting markers");
-          this.state.markers[i].setMap(null);
-        }
-      }
-
-      this.setState({ markers: [] });
-
       axios.get(`https://maps.googleapis.com/maps/api/geocode/json?`, {
         params: { place_id: placesInfo[0].place_id, key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY },
       })
+      .then(
+        this.setState({ markers: [] })
+      )
       .then(response => {
         var coordinates = response.data.results[0].geometry.location;
         var lat = coordinates.lat;
@@ -218,7 +219,6 @@ class MapView extends React.Component {
           console.error(error);
       });
 
-      // this.findNearbyLocations();
     };
 
     var location = this.state.currentLocation;
@@ -288,6 +288,13 @@ class MapView extends React.Component {
             center={location}
             options={this.options}
           />
+
+
+        {        
+          (this.state.markers.length > 0) && this.state.markers.map((elem, idx) => (
+            <Marker key={idx} position={ {lat: parseFloat(elem.lat()), lng: parseFloat(elem.lng())} } />
+          ))
+        }
 
           <MarkerClusterer minimumClusterSize={1} calculator={this.calculator} options={this.clusterStyles}>
             {(clusterer) =>

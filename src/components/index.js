@@ -2,12 +2,13 @@ import CommunityVoices from "./CommunityVoices";
 import Filters from "./Filters";
 import Footer from "./Footer";
 import Home from "./Home";
-// import MapView from "./MapView";
+import MapView from "./MapView";
 import Navbar from "./Navbar";
 import NOICards from "./NOICards";
 import NOIs from "./NOIs";
 import Resources from "./Resources";
 import RefactoredMapView from "./RefactoredMapView";
+
 
 
 export {
@@ -19,5 +20,6 @@ export {
   NOICards, 
   NOIs, 
   Resources,
-  RefactoredMapView
+  RefactoredMapView,
+  MapView
 };

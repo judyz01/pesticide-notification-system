@@ -5,10 +5,7 @@ import { Box, Button, Input, InputAdornment, Link, Stack, TextField } from "@mui
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { Circle, GoogleMap, Marker, MarkerClusterer, StandaloneSearchBox } from "@react-google-maps/api";
 import {Link as RouterLink} from "react-router-dom";
-// import { withTranslation } from "react-i18next";
 import { useTranslation } from "react-i18next";
-
-import NearbyLocationSearch from "./NearbyLocationSearch";
 
 // Radius is in meters, currently set to 5 mile radius (8046.72m)
 var userRadius = 8046.72;
@@ -16,87 +13,12 @@ var userRadius = 8046.72;
 function RefactoredMapView(props) {
 
   const [currentLocation, setCurrentLocation] = useState({ lat: 38.53709139783189, lng: -121.75506664377548 });
-  const [markers, setMarkers] = useState([]);
   const [pesticideData, setPesticideData] = useState([]);
   const [searchBox, setSearchBox] = useState(null);
-
   const [bounds, setBounds] = useState(null);
 
-  // const { i18n } = props;
-  const { t } = useTranslation();
-  var setLegend = t.language === "en" ? "../images/legend_en.svg" : "../images/legend_sp.svg";
-
-  const findNearbyLocations = () => {
-    var search_types = ["primary_school", "secondary_school", "park", "university", "library"];
-    var local_markers = [];
-
-    console.log("NEARBY LOCATION SEARCH");
-  
-    // Google Places API does not allow you to search for multiple places types at the same time, 
-    // so the search_types are called separately through multiple requests
-
-    // for (let i = 0; i < search_types.length; i++) {
-    //   const search = {
-    //     radius: userRadius,
-    //     location: currentLocation,
-    //     bounds: bounds,
-    //     types: [search_types[i]],
-    //   };
-  
-    //   let places = new google.maps.places.PlacesService(map);
-  
-    //   places.nearbySearch(search, (results, status, pagination) => {
-    //     if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-  
-    //       for (let i = 0; i < results.length; i++) {
-    //         const markerIcon = "../images/highlight_marker.png"
-  
-    //         let marker = new google.maps.Marker({
-    //             position: results[i].geometry.location,
-    //             animation: google.maps.Animation.DROP,
-    //             icon: markerIcon,
-    //         });
-  
-    //         marker.setMap(map);
-    //         local_markers.push(marker);
-    //       }
-    //     }
-    //   });
-    // }
-  
-    // // this.setState({ 
-    // //   markers: local_markers
-    // // })
-
-    // setMarkers(local_markers);
-  };
-
-  const onPlacesChanged = () => {
-    var placesInfo = searchBox.getPlaces();
-
-    for (let i = 0; i < markers.length; i++) {
-      if (markers[i]) {
-        console.log("deleting markers");
-        markers[i].setMap(null);
-      }
-    }
-
-    setMarkers([]);
-
-    axios.get(`https://maps.googleapis.com/maps/api/geocode/json?`, {
-      params: { place_id: placesInfo[0].place_id, key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY },
-    })
-    .then(response => {
-      var coordinates = response.data.results[0].geometry.location;
-      var lat = coordinates.lat;
-      var lng = coordinates.lng;
-
-      setCurrentLocation({lat, lng});
-    })
-    .catch(function (error) {
-        console.error(error);
-    });
-  };
+  const { i18n } = useTranslation();
+  var setLegend = i18n.language === "en" ? "../images/legend_en.svg" : "../images/legend_sp.svg";
 
   // Icon for user's current location
   const blueDot = {
@@ -123,66 +45,15 @@ function RefactoredMapView(props) {
     zIndex: 1
   };
 
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      ({ coords: { latitude: lat, longitude: lng } }) => {
-        const pos = { lat, lng };
-        setCurrentLocation(pos);
-      }
-    );
-
-    axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-        params: { latitude: currentLocation.lat, longitude: currentLocation.lng, radius: userRadius, order: "DESC", orderParam: "" },
-    })
-    .then(response => 
-      setPesticideData(response.data))
-    .catch(function (error) {
-        console.error(error);
-    });
-  }, []);
-  
-  useEffect(() => {
-    props.func(currentLocation);
-    // Reset pesticide data
-    setPesticideData([]);
-
-    console.log("getting data");
-
-    axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-      params: { latitude: currentLocation.lat, longitude: currentLocation.lng, radius: userRadius, order: "DESC", orderParam: "" },
-    })
-    .then(response => 
-      setPesticideData(response.data))
-    .catch(function (error) {
-        console.error(error);
-    });
-  }, [currentLocation]);
-  
-  const onMapLoad = (map) => {
-    google.maps.event.addListener(map, "bounds_changed", () => {
-      setBounds(map.getBounds());
-    });
-
-    const legend = document.getElementById("legend");
-    map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
-
-    findNearbyLocations();
-    console.log("MAP");
-  };
-
-  const onLoad = (ref) => {
-    setSearchBox(ref);
-  }
-
   /* 
   Calculator determines which index (color) the cluster marker is going to be
-    Currently have the index change by increments of 50:
-      0-49: Green
-      50-99: Yellow
-      100-149: Orange
-      150-199: Red
-      200+: Purple
-  */
+  Currently have the index change by increments of 50:
+    0-49: Green
+    50-99: Yellow
+    100-149: Orange
+    150-199: Red
+    200+: Purple
+*/
   const calculator = function(markers) {
     const INCREMENT = 50;
     var index = 0;
@@ -203,6 +74,86 @@ function RefactoredMapView(props) {
     imagePath:
       '../images/clusters/m',
   };
+
+  const getPesticideData = ((lat, lng) => {
+    // Set pesticide date according to user's location
+    axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
+        params: { latitude: lat, longitude: lng, radius: userRadius, order: "DESC", orderParam: "" },
+    })
+    .then(response => 
+      setPesticideData(response.data))
+    .catch(function (error) {
+        console.error(error);
+    });
+  });
+    
+  // Used once on mount
+  useEffect(() => {
+    // Find current position of user
+    navigator.geolocation.getCurrentPosition(
+      ({ coords: { latitude: lat, longitude: lng } }) => {
+        const pos = { lat, lng };
+        setCurrentLocation(pos);
+      }
+    );
+
+    getPesticideData(currentLocation.lat, currentLocation.lng);
+
+  }, []);
+  
+  // Updates everytime the user's location changes
+  useEffect(() => {
+
+    // Reset pesticide data
+    setPesticideData([]);
+
+    // Pass location to NOI Cards
+    props.func(currentLocation);
+
+    // Get pesticide data
+    getPesticideData(currentLocation.lat, currentLocation.lng);
+
+  }, [currentLocation]);
+
+  // Receive new location from search box, converts it to lat/long coordinates
+  // Uses new coordinates to obtain pesticide data
+  const onPlacesChanged = () => {
+    var placesInfo = searchBox.getPlaces();
+
+    // Reset pesticide data
+    setPesticideData([]);
+
+    axios.get(`https://maps.googleapis.com/maps/api/geocode/json?`, {
+      params: { place_id: placesInfo[0].place_id, key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY },
+    })
+    .then(response => {
+      var coordinates = response.data.results[0].geometry.location;
+      var lat = coordinates.lat;
+      var lng = coordinates.lng;
+
+      setCurrentLocation({lat, lng});
+
+    })
+    .catch(function (error) {
+        console.error(error);
+    });
+  };
+
+
+  const onMapLoad = (map) => {
+
+    google.maps.event.addListener(map, "bounds_changed", () => {
+      setBounds(map.getBounds());
+    });
+
+    const legend = document.getElementById("legend");
+    map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
+
+  };
+
+  const onLoad = (ref) => {
+    setSearchBox(ref);
+  }
 
   return (
     <Box sx={{ mt: "15px", height:"575px", width:"80%", display: { xs: "block", sm: "block" } }}>
@@ -257,13 +208,11 @@ function RefactoredMapView(props) {
 
       </Stack>
         <GoogleMap 
-        center={currentLocation}
-        zoom={12}
-        onLoad={map => onMapLoad(map)}
-        mapContainerStyle={{ height: "100%", width: "100%" }}
+          center={currentLocation}
+          zoom={12}
+          onLoad={map => {onMapLoad(map)}}
+          mapContainerStyle={{ height: "100%", width: "100%" }}
         >
-
-        <NearbyLocationSearch/>
 
         <Marker icon={blueDot} position={currentLocation} />
         <Circle
@@ -271,12 +220,12 @@ function RefactoredMapView(props) {
           options={options}
         />
 
-        <MarkerClusterer minimumClusterSize={1} calculator={calculator} options={clusterStyles}>
+        <MarkerClusterer minimumClusterSize={1} calculator={calculator} noRedraw={true} options={clusterStyles}>
           {(clusterer) =>
-            pesticideData.map((elem, idx) => (
+            (pesticideData.length > 0) ? pesticideData.map((elem, idx) => (
               <Marker key={idx} position={ {lat: parseFloat(elem.latitude), lng: parseFloat(elem.longitude)} } 
                       clusterer={clusterer} />
-            ))
+            )) : clusterer.clearMarkers()
           }
         </MarkerClusterer>
 
