@@ -7,6 +7,8 @@ import Navbar from "./Navbar";
 import NOICards from "./NOICards";
 import NOIs from "./NOIs";
 import Resources from "./Resources";
+import RefactoredMapView from "./RefactoredMapView";
+
 
 
 export {
@@ -14,9 +16,10 @@ export {
   Filters,
   Footer,
   Home,
-  MapView,
   Navbar, 
   NOICards, 
   NOIs, 
   Resources,
+  RefactoredMapView,
+  MapView
 };

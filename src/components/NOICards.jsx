@@ -138,30 +138,21 @@ const NOICards = (props) =>  {
       var order = getOrderParams(props.order);
       var radius = props.radius? props.radius : 5;
 
-      // console.log("radius is " + radius);
-      // console.log("order rank is " + order[0]);
-      // console.log("order param is " + order[1]);
-      // console.log("location lat is " + coordinates.lat);
-      // console.log("location lng is " + coordinates.lng);
-
       if (coordinates) {
-        axios.get(`https://find-nearby-noi-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
+        axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
             params: { latitude: coordinates.lat, longitude: coordinates.lng, radius: convertMilesToMeters(radius), order: order[0], orderParam: order[1]},
         })
         .then((response) => {
-          // TODO: Add checkboxes for aerial/ground indicators and filter out here
           if (props.fumigant === true) {
             const filteredData = response.data.filter(elem => elem.fumigant_sw === 'X');
-            // console.log("Fumigant " + filteredData);
             setPesticideData(filteredData);
           } else if (props.aerialGround) {
             const filteredData = response.data.filter(elem => elem.aer_grnd_ind === getApplicatorCharacter(props.aerialGround));
-            // console.log("Aerial/Ground " + filteredData);
             setPesticideData(filteredData);
           } else {
             setPesticideData(response.data);
           }
-          console.log("Pesticide data received for cards");
+          // console.log("Pesticide data received for cards");
         })
         .catch(function (error) {
             console.error(error);
@@ -180,8 +171,8 @@ const NOICards = (props) =>  {
       localStorage.setItem('location', JSON.stringify(props.location))
       : console.log("no location passed from mapview");
 
-    console.log("Fumigant " + props.fumigant);
-    console.log("Aerial/Ground " + props.aerialGround);
+    // console.log("Fumigant " + props.fumigant);
+    // console.log("Aerial/Ground " + props.aerialGround);
 
 
   }, [props], []);
