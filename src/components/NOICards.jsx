@@ -23,6 +23,9 @@ const NOICards = (props) =>  {
   const TOOLTIP_APPLICATION = t("Tooltip Application");
   const COVERAGE_UNIT = t("acres");
   const DISTANCE_UNIT = t("miles");
+  const ADDRESS = t("Address");
+  const COVERAGE = t("Coverage");
+  const FUMIGANT = t("Fumigant label");
   const NO_NOIS = t("No NOIs");
 
   const [pesticideData, setPesticideData] = useState([]);
@@ -293,15 +296,15 @@ const NOICards = (props) =>  {
 
                 <CardContent>
                   <Typography variant="h11" color="#A5ADBB">
-                    Address: {`${elem.latitude}`}, {`${elem.longitude}`}
+                    {ADDRESS}: {`${elem.latitude}`}, {`${elem.longitude}`}
                   </Typography>
 
                   <Typography color="#A5ADBB">
-                    Coverage: {`${elem.acre_treated}`} {`${COVERAGE_UNIT}`}
+                    {COVERAGE}: {`${elem.acre_treated}`} {`${COVERAGE_UNIT}`}
                   </Typography>
 
                   <Typography color="#A5ADBB">
-                    Fumigant: {`${elem.fumigant_sw === 'X' ? "Yes" : "No"}`}
+                    {FUMIGANT}: {`${elem.fumigant_sw === 'X' ? "Yes" : "No"}`}
                   </Typography>
                 </CardContent>
               </Box>
