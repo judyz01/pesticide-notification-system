@@ -121,7 +121,7 @@ function RefactoredMapView(props) {
     var placesInfo = searchBox.getPlaces();
 
     // Reset pesticide data
-    setPesticideData([]);
+    // setPesticideData([]);
 
     axios.get(`https://maps.googleapis.com/maps/api/geocode/json?`, {
       params: { place_id: placesInfo[0].place_id, key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY },

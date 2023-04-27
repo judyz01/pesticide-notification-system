@@ -15,6 +15,9 @@
     "NOISearch": "NOIs Buscar",
     "Filters": "Filtros",
     "County": "Seleccionar Condado",
+    "Address": "Dirección",
+    "Coverage": "Cobertura",
+    "Fumigant label": "Fumigante",
 
     "Set Radius": "Establecer Radio",
 
@@ -31,6 +34,7 @@
     "Aerial": "Aéreo",
     "Ground": "Suelo",
     "Aerial/Ground": "Aéreo/Suelo",
+    "Applicant Type": "Tipo de Solicitante",
 
     "Tooltip Distance": "Distancia",
     "Tooltip Time/Date": "Hora y fecha",
@@ -79,7 +83,8 @@
     "Text": "Envía un mensaje de texto \"SUSCRIBE STANISLAUS\" a",
     "English": "Inglés",
     "Spanish": "Español",
-    "Real Time": "Para Notificaciones en Tiempo Real"
+    "Real Time": "Para Notificaciones en Tiempo Real",
 
-
+    "Emergency": "Emergencia",
+    "Call 911": "Llame al 911 para obtener ayuda"
 }

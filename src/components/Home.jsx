@@ -8,6 +8,7 @@ import {Link as RouterLink} from "react-router-dom";
 import { CommunityVoices, NOICards } from './';
 import { RefactoredMapView, MapView } from './';
 
+import HomePanel from "./HomePanel";
 
 
 const lib = ["places"];
@@ -30,7 +31,7 @@ const Home = (props) => {
 
   return (
     <Box sx={{display: "flex"}}>
-      <CommunityVoices />
+      <HomePanel />
 
       <Box sx={{display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#fdf7ee", flexGrow: 1}}>
         
