@@ -85,6 +85,9 @@
     "Real Time": "For Real Time Notifications",
 
     "Emergency": "Emergency",
-    "Call 911": "Call 911 for Help"
+    "Call 911": "Call 911 for Help",
 
+    "Cookie": "This website uses cookies to provide the best possible experience. Please accept for optimal performance.",
+    "Accept": "Accept",
+    "Decline": "Decline"
 }
