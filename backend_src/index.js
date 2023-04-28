@@ -154,14 +154,11 @@ Return Value:
 
 app.post('/addTableNOI', async function(req, res, next) {
   pool = pool || (await createPool());
-  let tablename = 'noi_'
+  let tablename = 'noi'
   let restricted = 'restricted_products'
   let preset_link = 'https://apps.cdpr.ca.gov/cgi-bin/label/label.pl?typ=pir&prodno='
   try {
     res.set('Access-Control-Allow-Origin', '*');
-
-    tablename = tablename + req.body.county_cd.toString().padStart(2, 0);
-    console.log(tablename);
 
     const noiList = 
       await pool.raw(
