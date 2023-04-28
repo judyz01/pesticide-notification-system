@@ -337,13 +337,12 @@ const handleMultiKeywordText = async (req, res, tokens) => {
 // Add an NOI to our database, and send notifications about this new application
 app.post('/addTableNOI', async (req, res) => {
   pool = pool || (await createPool());
-  const countyNumber = req.body.county_cd.toString().padStart(2, 0);
-  const tableName = 'subscribers_' + countyNumber;
+  const tableName = 'users';
   try {
     res.set('Access-Control-Allow-Origin', '*');
 
     // Retrieve subscriber info in the format {phone_number, language}
-    const users = await pool.raw('SELECT users.phone_number, language FROM ?? INNER JOIN users ON ??.phone_number = users.phone_number', [tableName, tableName]);
+    const users = await pool.raw('SELECT phone_number, language FROM ??', [tableName]);
 
     // Send a notification to every user subscribed
     users.rows.forEach(element => {
