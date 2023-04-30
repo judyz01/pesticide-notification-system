@@ -17,8 +17,10 @@ function RefactoredMapView(props) {
   const [searchBox, setSearchBox] = useState(null);
   const [bounds, setBounds] = useState(null);
 
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   var setLegend = i18n.language === "en" ? "../images/legend_en.svg" : "../images/legend_sp.svg";
+  const EMERGENCY = t("Emergency");
+  const ENTER_ADDRESS = t("Enter Address");
 
   // Icon for user's current location
   const blueDot = {
@@ -170,7 +172,7 @@ function RefactoredMapView(props) {
         >
           <TextField 
             id="search_box" 
-            label="Enter Address" 
+            label={ENTER_ADDRESS} 
             variant="outlined" 
             placeholder=""
             InputProps={{
@@ -202,7 +204,7 @@ function RefactoredMapView(props) {
             }}
         >
           <Link style={{textDecoration: "none", color: "white"}} component={RouterLink} to={`/Resources`}>
-              EMERGENCY
+              {EMERGENCY}
           </Link>
         </Button> 
 
