@@ -2,8 +2,13 @@ import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
 import { AccessTimeOutlined, LocationOnOutlined, WarningAmberOutlined}  from '@mui/icons-material';
-import { Box, Card, CardContent, CardHeader, CardMedia, Pagination, Skeleton, Stack, Tooltip, Typography } from '@mui/material';
+import { Box, Card, CardContent, CardHeader, CardMedia, IconButton, Pagination, Skeleton, Stack, Tooltip, Typography } from '@mui/material';
+import QrCode2Icon from '@mui/icons-material/QrCode2';
 import { useTranslation } from "react-i18next";
+import QRCode from "react-qr-code";
+
+import DialogTitle from '@mui/material/DialogTitle';
+import Dialog from '@mui/material/Dialog';
 
 function loadSkeleton() {
   return [
@@ -14,6 +19,35 @@ function loadSkeleton() {
     <Skeleton sx={{m:"15px", borderRadius: "16px"}} animation="wave" variant="rectangular" width="80%" height={150} />,
   ];
 }
+
+function SimpleDialog(props) {
+  const { onClose, selectedValue, open, qrCoords } = props;
+
+  console.log(qrCoords.lat + " " + qrCoords.lng);
+
+  const handleClose = () => {
+    onClose(selectedValue);
+  };
+
+  var url = "https://pesticidenoi.netlify.app?lat=" + qrCoords.lat + "&lng=" + qrCoords.lng;
+  console.log(url);
+
+  return (
+    <Dialog 
+      onClose={handleClose} 
+      open={open}                    
+    >
+        <DialogTitle>Scan QR Code</DialogTitle>
+        <QRCode
+          size={256}
+          style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+          value={url}
+          viewBox={`0 0 256 256`}
+        />
+    </Dialog>
+  );
+}
+
 
 const NOICards = (props) =>  {
   const { t } = useTranslation();
@@ -29,8 +63,11 @@ const NOICards = (props) =>  {
   const NO_NOIS = t("No NOIs");
 
   const [pesticideData, setPesticideData] = useState([]);
-  const [isDesktop, setDesktop] = React.useState(true);
-  const [isXSMobile, setXSMobile] = React.useState(true);
+  const [isDesktop, setDesktop] = useState(true);
+  const [isXSMobile, setXSMobile] = useState(true);
+  const [qrCoords, setQrCoords] = useState({});
+  const [open, setOpen] = useState(false);
+
 
   React.useEffect(() => {
 
@@ -56,6 +93,18 @@ const NOICards = (props) =>  {
 
   const convertMilesToMeters = (miles) => {
     return miles * 1609.34;
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (value) => {
+    setOpen(false);
+  };
+
+  const generateQR = (lat, lng) => {
+    setQrCoords({lat, lng});
   };
 
   const getOrderParams = (order) => {
@@ -267,10 +316,17 @@ const NOICards = (props) =>  {
 
           <Card key={index} sx={{ display:"flex", width: "80%", borderRadius: "16px", justifyContent: "space-between", flexDirection:{ sm:"column", md:"row"} }}>
               <Box sx={{ flexDirection: "column" }}>
+
+              <Stack direction="row">
                   <CardHeader
                     title={`${elem.product_name}`}
-                    sx={{pb:0}}
+                    sx={{pb:0, pr:0}}
                   />
+
+                  <IconButton sx={{mt:"15px"}} aria-label="qr_code" onClick={() => { handleClickOpen(); generateQR(elem.latitude, elem.longitude);}}>
+                    <QrCode2Icon />
+                  </IconButton>
+                </Stack>
 
                 {/* 
                   Mobile view: icons are shown sandwiched in between CardHeader and CardContent 
@@ -335,6 +391,14 @@ const NOICards = (props) =>  {
             />
         }
       </Stack>
+      
+      {/* Dialog has to be outside everything to prevent black background bug */}
+      <SimpleDialog
+        // selectedValue={selectedValue}
+        qrCoords = {qrCoords}
+        open={open}
+        onClose={handleClose}
+      />
     </>
   );
 
