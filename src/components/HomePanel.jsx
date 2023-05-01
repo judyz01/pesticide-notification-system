@@ -22,7 +22,7 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+          <Typography component="span">{children}</Typography>
         </Box>
       )}
     </div>
@@ -68,7 +68,7 @@ const HomePanel = () => {
           <Tab sx={{ pt:3, pb:3 }} label="Community" {...a11yProps(1)} />
         </Tabs>
 
-        <SwipeableViews
+        <SwipeableViews 
           axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
           index={value}
           onChangeIndex={handleChangeIndex}
