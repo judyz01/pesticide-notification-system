@@ -12,7 +12,7 @@ var userRadius = 8046.72;
 
 function RefactoredMapView(props) {
 
-  const [currentLocation, setCurrentLocation] = useState({ lat: 38.53709139783189, lng: -121.75506664377548 });
+  const [currentLocation, setCurrentLocation] = useState({ lat: null, lng: null });
   const [pesticideData, setPesticideData] = useState([]);
   const [searchBox, setSearchBox] = useState(null);
   const [address, setAddress] = useState(null);
@@ -78,6 +78,12 @@ function RefactoredMapView(props) {
   };
 
   const getPesticideData = ((lat, lng) => {
+
+    if (!lat && !lng) {
+      console.log("can't get pesticide data");
+      return;
+    }
+
     // Set pesticide date according to user's location
     axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
         params: { latitude: lat, longitude: lng, radius: userRadius, order: "DESC", orderParam: "" },
@@ -91,8 +97,8 @@ function RefactoredMapView(props) {
     
   // Used once on mount
   useEffect(() => {
-    // console.log(props.lat + "lat in home");
-    // console.log(props.lng + "lng in home");
+    console.log(props.lat + "lat in home");
+    console.log(props.lng + "lng in home");
 
     if (props.lat && props.lng) {
       const lat = parseFloat(props.lat);
@@ -109,6 +115,9 @@ function RefactoredMapView(props) {
         }
       );
     }
+
+    console.log(currentLocation.lat, currentLocation.lng);
+
 
     getPesticideData(currentLocation.lat, currentLocation.lng);
 
@@ -198,7 +207,7 @@ function RefactoredMapView(props) {
             id="search_box" 
             label={ENTER_ADDRESS} 
             variant="outlined" 
-            value={address}
+            // value={address? address : ""}
             placeholder=""
             InputProps={{
               startAdornment: (
