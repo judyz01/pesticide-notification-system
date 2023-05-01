@@ -15,10 +15,12 @@ function RefactoredMapView(props) {
   const [currentLocation, setCurrentLocation] = useState({ lat: 38.53709139783189, lng: -121.75506664377548 });
   const [pesticideData, setPesticideData] = useState([]);
   const [searchBox, setSearchBox] = useState(null);
-  const [bounds, setBounds] = useState(null);
+  const [address, setAddress] = useState(null);
 
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   var setLegend = i18n.language === "en" ? "../images/legend_en.svg" : "../images/legend_sp.svg";
+  const EMERGENCY = t("Emergency");
+  const ENTER_ADDRESS = t("Enter Address");
 
   // Icon for user's current location
   const blueDot = {
@@ -89,13 +91,24 @@ function RefactoredMapView(props) {
     
   // Used once on mount
   useEffect(() => {
-    // Find current position of user
-    navigator.geolocation.getCurrentPosition(
-      ({ coords: { latitude: lat, longitude: lng } }) => {
-        const pos = { lat, lng };
-        setCurrentLocation(pos);
-      }
-    );
+    // console.log(props.lat + "lat in home");
+    // console.log(props.lng + "lng in home");
+
+    if (props.lat && props.lng) {
+      const lat = parseFloat(props.lat);
+      const lng = parseFloat(props.lng);
+      setCurrentLocation({lat, lng})
+
+      findPlaceFromCoords(lat, lng);
+    } else {
+      // Find current position of user
+      navigator.geolocation.getCurrentPosition(
+        ({ coords: { latitude: lat, longitude: lng } }) => {
+          const pos = { lat, lng };
+          setCurrentLocation(pos);
+        }
+      );
+    }
 
     getPesticideData(currentLocation.lat, currentLocation.lng);
 
@@ -115,16 +128,30 @@ function RefactoredMapView(props) {
 
   }, [currentLocation]);
 
+  useEffect(() => {
+    console.log((address));
+  }, [address]);
+
+  const findPlaceFromCoords = (lat, lng) => {
+    var lat_lng = lat + ", " + lng;
+    console.log(lat_lng);
+    axios.get(`https://maps.googleapis.com/maps/api/geocode/json?`, {
+      params: { latlng: lat_lng , key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY },
+    })
+    .then(({data}) => {
+        setAddress(data.results[2].formatted_address);
+    });
+  };
+
   // Receive new location from search box, converts it to lat/long coordinates
   // Uses new coordinates to obtain pesticide data
-  const onPlacesChanged = () => {
-    var placesInfo = searchBox.getPlaces();
+  const onPlacesChanged = (placeID) => {
+    // var placesInfo = searchBox.getPlaces()[0].place_id;
 
-    // Reset pesticide data
-    // setPesticideData([]);
+    var place =  placeID ? placeID : searchBox.getPlaces()[0].place_id;
 
     axios.get(`https://maps.googleapis.com/maps/api/geocode/json?`, {
-      params: { place_id: placesInfo[0].place_id, key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY },
+      params: { place_id: place, key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY },
     })
     .then(response => {
       var coordinates = response.data.results[0].geometry.location;
@@ -139,12 +166,11 @@ function RefactoredMapView(props) {
     });
   };
 
-
   const onMapLoad = (map) => {
 
-    google.maps.event.addListener(map, "bounds_changed", () => {
-      setBounds(map.getBounds());
-    });
+    // google.maps.event.addListener(map, "bounds_changed", () => {
+    //   setBounds(map.getBounds());
+    // });
 
     const legend = document.getElementById("legend");
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
@@ -170,8 +196,9 @@ function RefactoredMapView(props) {
         >
           <TextField 
             id="search_box" 
-            label="Enter Address" 
+            label={ENTER_ADDRESS} 
             variant="outlined" 
+            value={address}
             placeholder=""
             InputProps={{
               startAdornment: (
@@ -202,7 +229,7 @@ function RefactoredMapView(props) {
             }}
         >
           <Link style={{textDecoration: "none", color: "white"}} component={RouterLink} to={`/Resources`}>
-              EMERGENCY
+              {EMERGENCY}
           </Link>
         </Button> 
 
