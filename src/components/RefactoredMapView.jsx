@@ -12,7 +12,8 @@ var userRadius = 8046.72;
 
 function RefactoredMapView(props) {
 
-  const [currentLocation, setCurrentLocation] = useState({ lat: null, lng: null });
+  const [currentLocation, setCurrentLocation] = useState(() => (props.lat && props.lng) ? {lat: parseFloat(props.lat), lng: parseFloat(props.lng)} : {lat: 38.53709139783189, lng: -121.75506664377548});
+
   const [pesticideData, setPesticideData] = useState([]);
   const [searchBox, setSearchBox] = useState(null);
   const [address, setAddress] = useState(null);
@@ -97,20 +98,13 @@ function RefactoredMapView(props) {
     
   // Used once on mount
   useEffect(() => {
-    console.log(props.lat + "lat in home");
-    console.log(props.lng + "lng in home");
 
-    if (props.lat && props.lng) {
-      const lat = parseFloat(props.lat);
-      const lng = parseFloat(props.lng);
-      setCurrentLocation({lat, lng})
-
-      findPlaceFromCoords(lat, lng);
-    } else {
+    if (!props.lat && props.lng) {
       // Find current position of user
       navigator.geolocation.getCurrentPosition(
         ({ coords: { latitude: lat, longitude: lng } }) => {
           const pos = { lat, lng };
+          console.log("found current location");
           setCurrentLocation(pos);
         }
       );
@@ -118,14 +112,12 @@ function RefactoredMapView(props) {
 
     console.log(currentLocation.lat, currentLocation.lng);
 
-
     getPesticideData(currentLocation.lat, currentLocation.lng);
-
   }, []);
   
   // Updates everytime the user's location changes
   useEffect(() => {
-
+    console.log("curr location changed " + currentLocation.lat + " " + currentLocation.lng);
     // Reset pesticide data
     setPesticideData([]);
 
@@ -137,9 +129,9 @@ function RefactoredMapView(props) {
 
   }, [currentLocation]);
 
-  useEffect(() => {
-    console.log((address));
-  }, [address]);
+  // useEffect(() => {
+  //   console.log((address));
+  // }, [address]);
 
   const findPlaceFromCoords = (lat, lng) => {
     var lat_lng = lat + ", " + lng;

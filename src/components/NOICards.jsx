@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
 import { AccessTimeOutlined, LocationOnOutlined, WarningAmberOutlined}  from '@mui/icons-material';
-import { Box, Card, CardContent, CardHeader, CardMedia, IconButton, Pagination, Skeleton, Stack, Tooltip, Typography } from '@mui/material';
+import {Link, Box, Card, CardContent, CardHeader, CardMedia, IconButton, Pagination, Skeleton, Stack, Tooltip, Typography } from '@mui/material';
 import QrCode2Icon from '@mui/icons-material/QrCode2';
 import { useTranslation } from "react-i18next";
 import QRCode from "react-qr-code";
@@ -23,13 +23,18 @@ function loadSkeleton() {
 function SimpleDialog(props) {
   const { onClose, selectedValue, open, qrCoords } = props;
 
-  console.log(qrCoords.lat + " " + qrCoords.lng);
+  if (!qrCoords.lat  && !qrCoords.lng ) {
+    return;
+  }
+
+  console.log("qr coords " + qrCoords.lat + " " + qrCoords.lng);
 
   const handleClose = () => {
     onClose(selectedValue);
   };
 
   var url = "https://pesticidenoi.netlify.app?lat=" + qrCoords.lat + "&lng=" + qrCoords.lng;
+  var debug = "http://localhost:3000?lat=" + qrCoords.lat + "&lng=" + qrCoords.lng;
   console.log(url);
 
   return (
@@ -44,6 +49,9 @@ function SimpleDialog(props) {
           value={url}
           viewBox={`0 0 256 256`}
         />
+        {/* <Link href={debug}>
+          Debug Link
+        </Link> */}
     </Dialog>
   );
 }
