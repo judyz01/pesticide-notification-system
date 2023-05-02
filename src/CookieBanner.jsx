@@ -20,13 +20,13 @@ function CookieBanner() {
         <Dialog
             open={show}
         >
-            <Box sx={{position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", zIndex: 12000, backgroundColor: "#FFFFFF", width: "300px", height: "150px", boxShadow: 10, p: "10px"}}>
-                <Typography sx={{fontSize: "14px", fontWeight: 600, color: "#126701"}}>
+            <Box sx={{position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", zIndex: 12000, backgroundColor: "#FFFFFF", width: "300px", height: "150px", boxShadow: 10, p: "20px", alignItems: "center", display: "flex", flexDirection: "column"}}>
+                <Typography sx={{fontSize: "14px", fontWeight: 600, color: "black", ml: "9px"}}>
                     {t("Cookie")}
                 </Typography>
+                <Box sx={{display: "flex", flexDirection: "row", mt: "5px"}}>
                 <Button
                     sx={{
-                        ml: "20%",
                         padding: "10px",
                         variant:"contained", 
                         backgroundColor:"#FFFFFF", 
@@ -44,11 +44,12 @@ function CookieBanner() {
                         setShow(false);
                     }}
                 >
+                    <Typography sx={{color: "green"}}>
                     {t("Accept")}
+                    </Typography>
                 </Button>
                 <Button
                     sx={{
-                        m: "10px",
                         padding: "10px",
                         variant:"contained", 
                         backgroundColor:"#FFFFFF", 
@@ -66,8 +67,11 @@ function CookieBanner() {
                         setShow(false);
                     }}
                 >
+                   <Typography sx={{color: "red"}}>
                     {t("Decline")}
+                    </Typography>
                 </Button>
+                </Box>
             </Box>
         </Dialog>
     )
