@@ -13,13 +13,14 @@ CREATE OR REPLACE FUNCTION public.find_nearby_noi(
     ROWS 1000
 
 AS $BODY$
+DECLARE current_location geography := ST_MakePoint(lon, lat)::geography;
 BEGIN
 	RETURN QUERY
-	SELECT *
-	FROM coordinates
+	SELECT coordinates_view.use_no, coordinates_view.latitude, coordinates_view.longitude
+	FROM coordinates_view
 	WHERE ST_DWithin(
-		ST_MakePoint(coordinates.longitude, coordinates.latitude)::geography,
-		ST_MakePoint(lon, lat)::geography,
+		coordinates_view.geog,
+		current_location,
 		radius
 	);
 	END;
