@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { Box, CssBaseline } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import { Route, Routes } from "react-router";
+import { useSearchParams } from "react-router-dom";
 
 import { Footer, Home, Navbar, NOIs, Resources} from './components';
 import theme from "./styles/theme";
@@ -16,14 +17,16 @@ const App = () => {
     setLocation(location);
   }
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
   return (
-    <Suspense fallback="loading">
+    <Suspense fallback="loading...">
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Navbar />
         <Box component="main" sx={{ pt: 15 }}>
           <Routes>
-            <Route path="/" element={<Home set_location={set_location} />} />
+            <Route path="/" element={<Home set_location={set_location} lat={searchParams.get("lat")} lng={searchParams.get("lng")}/>} />
             <Route path="/Resources" element={<Resources />} />
             <Route path="/NOIs" element={<NOIs location={location}/>} />
           </Routes>

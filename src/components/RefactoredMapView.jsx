@@ -12,13 +12,16 @@ var userRadius = 8046.72;
 
 function RefactoredMapView(props) {
 
-  const [currentLocation, setCurrentLocation] = useState({ lat: 38.53709139783189, lng: -121.75506664377548 });
+  const [currentLocation, setCurrentLocation] = useState(() => (props.lat && props.lng) ? {lat: parseFloat(props.lat), lng: parseFloat(props.lng)} : {lat: 38.53709139783189, lng: -121.75506664377548});
+
   const [pesticideData, setPesticideData] = useState([]);
   const [searchBox, setSearchBox] = useState(null);
-  const [bounds, setBounds] = useState(null);
+  const [address, setAddress] = useState(null);
 
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   var setLegend = i18n.language === "en" ? "../images/legend_en.svg" : "../images/legend_sp.svg";
+  const EMERGENCY = t("Emergency");
+  const ENTER_ADDRESS = t("Enter Address");
 
   // Icon for user's current location
   const blueDot = {
@@ -76,6 +79,12 @@ function RefactoredMapView(props) {
   };
 
   const getPesticideData = ((lat, lng) => {
+
+    if (!lat && !lng) {
+      console.log("can't get pesticide data");
+      return;
+    }
+
     // Set pesticide date according to user's location
     axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
         params: { latitude: lat, longitude: lng, radius: userRadius, order: "DESC", orderParam: "" },
@@ -89,21 +98,26 @@ function RefactoredMapView(props) {
     
   // Used once on mount
   useEffect(() => {
-    // Find current position of user
-    navigator.geolocation.getCurrentPosition(
-      ({ coords: { latitude: lat, longitude: lng } }) => {
-        const pos = { lat, lng };
-        setCurrentLocation(pos);
-      }
-    );
+
+    if (!props.lat && props.lng) {
+      // Find current position of user
+      navigator.geolocation.getCurrentPosition(
+        ({ coords: { latitude: lat, longitude: lng } }) => {
+          const pos = { lat, lng };
+          console.log("found current location");
+          setCurrentLocation(pos);
+        }
+      );
+    }
+
+    console.log(currentLocation.lat, currentLocation.lng);
 
     getPesticideData(currentLocation.lat, currentLocation.lng);
-
   }, []);
   
   // Updates everytime the user's location changes
   useEffect(() => {
-
+    console.log("curr location changed " + currentLocation.lat + " " + currentLocation.lng);
     // Reset pesticide data
     setPesticideData([]);
 
@@ -115,16 +129,30 @@ function RefactoredMapView(props) {
 
   }, [currentLocation]);
 
+  // useEffect(() => {
+  //   console.log((address));
+  // }, [address]);
+
+  const findPlaceFromCoords = (lat, lng) => {
+    var lat_lng = lat + ", " + lng;
+    console.log(lat_lng);
+    axios.get(`https://maps.googleapis.com/maps/api/geocode/json?`, {
+      params: { latlng: lat_lng , key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY },
+    })
+    .then(({data}) => {
+        setAddress(data.results[2].formatted_address);
+    });
+  };
+
   // Receive new location from search box, converts it to lat/long coordinates
   // Uses new coordinates to obtain pesticide data
-  const onPlacesChanged = () => {
-    var placesInfo = searchBox.getPlaces();
+  const onPlacesChanged = (placeID) => {
+    // var placesInfo = searchBox.getPlaces()[0].place_id;
 
-    // Reset pesticide data
-    setPesticideData([]);
+    var place =  placeID ? placeID : searchBox.getPlaces()[0].place_id;
 
     axios.get(`https://maps.googleapis.com/maps/api/geocode/json?`, {
-      params: { place_id: placesInfo[0].place_id, key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY },
+      params: { place_id: place, key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY },
     })
     .then(response => {
       var coordinates = response.data.results[0].geometry.location;
@@ -139,12 +167,11 @@ function RefactoredMapView(props) {
     });
   };
 
-
   const onMapLoad = (map) => {
 
-    google.maps.event.addListener(map, "bounds_changed", () => {
-      setBounds(map.getBounds());
-    });
+    // google.maps.event.addListener(map, "bounds_changed", () => {
+    //   setBounds(map.getBounds());
+    // });
 
     const legend = document.getElementById("legend");
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
@@ -170,8 +197,9 @@ function RefactoredMapView(props) {
         >
           <TextField 
             id="search_box" 
-            label="Enter Address" 
+            label={ENTER_ADDRESS} 
             variant="outlined" 
+            // value={address? address : ""}
             placeholder=""
             InputProps={{
               startAdornment: (
@@ -202,7 +230,7 @@ function RefactoredMapView(props) {
             }}
         >
           <Link style={{textDecoration: "none", color: "white"}} component={RouterLink} to={`/Resources`}>
-              EMERGENCY
+              {EMERGENCY}
           </Link>
         </Button> 
 
