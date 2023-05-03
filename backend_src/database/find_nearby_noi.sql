@@ -16,10 +16,10 @@ AS $BODY$
 DECLARE current_location geography := ST_MakePoint(lon, lat)::geography;
 BEGIN
 	RETURN QUERY
-	SELECT coordinates.use_no, coordinates.latitude, coordinates.longitude
-	FROM coordinates
+	SELECT coordinates_view.use_no, coordinates_view.latitude, coordinates_view.longitude
+	FROM coordinates_view
 	WHERE ST_DWithin(
-		coordinates.geog,
+		coordinates_view.geog,
 		current_location,
 		radius
 	);
