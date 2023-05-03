@@ -75,19 +75,58 @@ const createPool = async () => {
   }
 };
 
-/**
- * HTTP function to test if API is working
- */
+// API Endpoint test
 app.get('/', (req, res) => {
   res.status(200).send("GET / works correctly");
 });
 
 /**
+ * HTTP function that finds NOI's applied within (a) given county/counties
+ * Parameters:
+ *  req.query.counties: Array of counties to look through
+ *  req.query.order: ASC or DESC order for application date
+ * Return Value:
+ *  JSON List of NOI's and their relevant information 
+*/
+app.get('/findCountyNOI', async (req, res) => {
+  pool = pool || (await createPool());
+
+  let reqOrder = req.query.order
+
+  // Setup query for single or multiple counties
+  let counties = req.query.counties;
+  if (!Array.isArray(counties)) {
+    counties = [counties]
+  }
+
+  try {
+    res.set('Access-Control-Allow-Origin', '*');
+    const noiList = await pool.distinct('restricted_noi_view.use_no', 'prodno', 'product_name', 'aer_grnd_ind', 'fumigant_sw',
+      'chem_code', 'chemname', 'acre_treated', 'unit_treated', 'applic_dt',
+      'applic_time', 'aer_gnd_ind', 'county_cd', 'latitude', 'longitude')
+      .from('restricted_noi_view')
+      .innerJoin('coordinates_view', 'restricted_noi_view.use_no', '=', 'coordinates_view.use_no')
+      .whereIn('county_cd', counties)
+      .orderBy([
+        { column: 'applic_dt', order: reqOrder },
+        { column: 'applic_time', order: reqOrder }
+      ])
+    res.status(200).json(noiList);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error in request: findCountyNOI');
+  }
+});
+
+/**
  * HTTP function that finds NOI's applied within a radius of a coordinate location
  * Parameters:
- *  req.query.latitude Location's latitude value
- *  req.query.longitude Location's longitude value
- *  req.query.radius Radius to search within
+ *  req.query.latitude: Location's latitude value
+ *  req.query.longitude: Location's longitude value
+ *  req.query.radius: Radius to search within
+ *  req.query.counties: List of counties to look within
+ *  req.query.orderParam: The parameter to sort the NOI data [distance, applic_dt/applic_time (default)]
+ *  req.query.order: Whether data should be sorted in ascending or descending order
  * Return Value:
  *  JSON List of nearby NOI's and their relevant information 
 */
@@ -109,7 +148,7 @@ app.get('/findNearbyNOI', async (req, res) => {
     }
   } catch (err) {
     console.error(err);
-    res.status(500).send('Error in request');
+    res.status(500).send('Error in request: findNearbyNOI');
   }
 });
 
@@ -152,7 +191,7 @@ Parameters:
 Return Value:
   JSON message "Successfully added" */
 
-app.post('/addTableNOI', async function(req, res, next) {
+app.post('/addTableNOI', async function (req, res, next) {
   pool = pool || (await createPool());
   let tablename = 'noi'
   let restricted = 'restricted_products'
@@ -160,16 +199,16 @@ app.post('/addTableNOI', async function(req, res, next) {
   try {
     res.set('Access-Control-Allow-Origin', '*');
 
-    const noiList = 
+    const noiList =
       await pool.raw(
-      'INSERT INTO ??(use_no, prodno, chem_code, prodchem_pct, lbs_chm_used, lbs_prd_used, amt_prd_used, unit_of_meas, acre_planted, unit_treated, applic_cnt, applic_dt, applic_time, county_cd, base_ln_mer, township, tship_dir, range, range_dir, section, site_loc_id, grower_id, license_no, planting_seq, aer_gnd_ind,site_code, qualify_cd, batch_no, document_no, summary_cd, record_id, comtrs, error_flag) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-      [tablename, req.body.use_no, req.body.prodno, req.body.chem_code, req.body.prodchem_pct, req.body.lbs_chm_used, req.body.lbs_prd_used, req.body.amt_prd_used, req.body.unit_of_meas, req.body.acre_planted, req.body.unit_treated, req.body.applic_cnt, req.body.applic_dt, req.body.applic_time, req.body.county_cd, req.body.base_ln_mer, req.body.township, req.body.tship_dir, req.body.range, req.body.range_dir, req.body.section, req.body.site_loc_id, req.body.grower_id, req.body.license_no, req.body.planting_seq, req.body.aer_gnd_ind, req.body.site_code, req.body.qualify_cd, req.body.batch_no, req.body.document_no, req.body.summary_cd, req.body.record_id, req.body.comtrs, req.body.error_flag])
+        'INSERT INTO ??(use_no, prodno, chem_code, prodchem_pct, lbs_chm_used, lbs_prd_used, amt_prd_used, unit_of_meas, acre_planted, unit_treated, applic_cnt, applic_dt, applic_time, county_cd, base_ln_mer, township, tship_dir, range, range_dir, section, site_loc_id, grower_id, license_no, planting_seq, aer_gnd_ind,site_code, qualify_cd, batch_no, document_no, summary_cd, record_id, comtrs, error_flag) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [tablename, req.body.use_no, req.body.prodno, req.body.chem_code, req.body.prodchem_pct, req.body.lbs_chm_used, req.body.lbs_prd_used, req.body.amt_prd_used, req.body.unit_of_meas, req.body.acre_planted, req.body.unit_treated, req.body.applic_cnt, req.body.applic_dt, req.body.applic_time, req.body.county_cd, req.body.base_ln_mer, req.body.township, req.body.tship_dir, req.body.range, req.body.range_dir, req.body.section, req.body.site_loc_id, req.body.grower_id, req.body.license_no, req.body.planting_seq, req.body.aer_gnd_ind, req.body.site_code, req.body.qualify_cd, req.body.batch_no, req.body.document_no, req.body.summary_cd, req.body.record_id, req.body.comtrs, req.body.error_flag])
 
-      
+
     const lookup = await pool.raw(
-        'SELECT * FROM ?? WHERE prodno = ? AND fumigant_sw = ?',
-          [restricted, req.body.prodno, 'X']
-      )
+      'SELECT * FROM ?? WHERE prodno = ? AND fumigant_sw = ?',
+      [restricted, req.body.prodno, 'X']
+    )
     if (lookup.rows[0]) {
       req.product_name = lookup.rows[0].product_name
     } else {
@@ -278,7 +317,7 @@ const handleMultiKeywordText = async (req, res, tokens) => {
     let tableName = 'subscribers_';
     if (new Set(county_functions.available_county_table).has(tokens[1])) {
       let countyNumber = county_functions.county_lookup(tokens[1]);
-      tableName = tableName+=countyNumber;
+      tableName = tableName += countyNumber;
     } else {
       twilio_functions.sendError(req, res, 'invalid_county')
       res.status(500).send("Error subscribing. Not a valid county number.")
@@ -306,7 +345,7 @@ const handleMultiKeywordText = async (req, res, tokens) => {
     let tableName = 'subscribers_';
     let countyNumber = county_functions.county_lookup(tokens[1]);
     if (countyNumber != 0) {
-      tableName = tableName+=countyNumber;
+      tableName = tableName += countyNumber;
     } else {
       twilio_functions.sendError(req, res, 'invalid_county')
       res.status(500).send("Error unsubscribing. Not a valid county number.")
