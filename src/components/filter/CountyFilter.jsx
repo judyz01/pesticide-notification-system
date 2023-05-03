@@ -76,6 +76,12 @@ const names = [
   'Yuba',
 ];
 
+const countyDict = {};
+
+names.forEach((countyName, index) => {
+  countyDict[countyName] = index + 1;
+});
+
 function getStyles(name, countyName, theme) {
   return {
     fontWeight:
@@ -87,24 +93,36 @@ function getStyles(name, countyName, theme) {
 
 export default function CountyDropdown(props) {
   const theme = useTheme();
-  const [countyName, setcountyName] = React.useState(props.currentCounty);
+  const [countyName, setcountyName] = React.useState([]);
+  const [countyIndex, setcountyIndex] = React.useState(props.currentCounty);
 
   const { t } = useTranslation();
   const COUNTY_LABEL = t("County");
 
   const handleChange = (event) => {
+
     const {
       target: { value },
     } = event;
 
+    var countyIndexes = [];
+    value.forEach((name, idx) => {
+      countyIndexes.push(countyDict[name]);
+    });
+
+    // County index prop passed to NOICards for axios request
+    setcountyIndex(countyIndexes);
+
+    // County names used for labelling here
     setcountyName(
       typeof value === 'string' ? value.split(',') : value,
     );
+
   };
 
   React.useEffect(() => {
-    props.func(countyName);
-  }, [countyName, props]);
+    props.func(countyIndex);
+  }, [countyIndex, props]);
 
   return (
       <FormControl sx={{ width: "100%", mt: 3 }}>

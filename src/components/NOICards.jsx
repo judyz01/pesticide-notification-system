@@ -21,7 +21,7 @@ function loadSkeleton() {
 }
 
 function SimpleDialog(props) {
-  const { onClose, selectedValue, open, qrCoords } = props;
+  const { onClose, open, qrCoords } = props;
 
   if (!qrCoords.lat  && !qrCoords.lng ) {
     return;
@@ -30,7 +30,7 @@ function SimpleDialog(props) {
   console.log("qr coords " + qrCoords.lat + " " + qrCoords.lng);
 
   const handleClose = () => {
-    onClose(selectedValue);
+    onClose();
   };
 
   var url = "https://pesticidenoi.netlify.app?lat=" + qrCoords.lat + "&lng=" + qrCoords.lng;
@@ -199,26 +199,58 @@ const NOICards = (props) =>  {
       var radius = props.radius? props.radius : 5;
 
       if (coordinates) {
-        axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-            params: { latitude: coordinates.lat, longitude: coordinates.lng, radius: convertMilesToMeters(radius), order: order[0], orderParam: order[1]},
-        })
-        .then((response) => {
-          if (props.fumigant === true) {
-            const filteredData = response.data.filter(elem => elem.fumigant_sw === 'X');
-            setPesticideData(filteredData);
-          } else if (props.aerialGround) {
-            const filteredData = response.data.filter(elem => elem.aer_grnd_ind === getApplicatorCharacter(props.aerialGround));
-            setPesticideData(filteredData);
-          } else {
-            setPesticideData(response.data);
-          }
-          // console.log("Pesticide data received for cards");
-        })
-        .catch(function (error) {
-            console.error(error);
-        });
-      } else {
-        console.log("no location found");
+
+        if (typeof props.county !== 'undefined' && props.county.length > 0) {
+          console.log("shenme");
+
+          var counties = new URLSearchParams();
+
+          counties.append("order", order[0]);
+          props.county.forEach((countyIndex, idx) => {
+            counties.append("counties", countyIndex);
+          });
+
+          axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findCountyNOI`, {
+            params: counties,
+          })
+          .then((response) => {
+            console.log(response);
+            if (props.fumigant === true) {
+              const filteredData = response.data.filter(elem => elem.fumigant_sw === 'X');
+              setPesticideData(filteredData);
+            } else if (props.aerialGround) {
+              const filteredData = response.data.filter(elem => elem.aer_grnd_ind === getApplicatorCharacter(props.aerialGround));
+              setPesticideData(filteredData);
+            } else {
+              setPesticideData(response.data);
+            }
+          })
+          .catch(function (error) {
+              console.error(error);
+          });
+
+        } else {
+          console.log("huh");
+
+          axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
+              params: { latitude: coordinates.lat, longitude: coordinates.lng, radius: convertMilesToMeters(radius), order: order[0], orderParam: order[1]},
+          })
+          .then((response) => {
+            console.log(response);
+            if (props.fumigant === true) {
+              const filteredData = response.data.filter(elem => elem.fumigant_sw === 'X');
+              setPesticideData(filteredData);
+            } else if (props.aerialGround) {
+              const filteredData = response.data.filter(elem => elem.aer_grnd_ind === getApplicatorCharacter(props.aerialGround));
+              setPesticideData(filteredData);
+            } else {
+              setPesticideData(response.data);
+            }
+          })
+          .catch(function (error) {
+              console.error(error);
+          });
+        }
       }
     };
   };
@@ -227,14 +259,12 @@ const NOICards = (props) =>  {
 
   // These props hold the data from each of the filters - county is array of strings, order is a string, fumigant is boolean, radius is int
   useEffect(() => {
-    props.location ?
-      localStorage.setItem('location', JSON.stringify(props.location))
-      : console.log("no location passed from mapview");
+    props.location &&
+      localStorage.setItem('location', JSON.stringify(props.location));
 
     // console.log("Fumigant " + props.fumigant);
     // console.log("Aerial/Ground " + props.aerialGround);
-
-
+    console.log(props.county);
   }, [props], []);
 
   const iconMedia = (elem) => {
@@ -248,6 +278,7 @@ const NOICards = (props) =>  {
           {`${parseFloat(elem.distance).toFixed(2)}`} {DISTANCE_UNIT}
           </Typography>
         </Stack>
+
         <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
           <Tooltip title={TOOLTIP_DATE}  arrow placement="left">
             <AccessTimeOutlined />
@@ -402,7 +433,6 @@ const NOICards = (props) =>  {
       
       {/* Dialog has to be outside everything to prevent black background bug */}
       <SimpleDialog
-        // selectedValue={selectedValue}
         qrCoords = {qrCoords}
         open={open}
         onClose={handleClose}
