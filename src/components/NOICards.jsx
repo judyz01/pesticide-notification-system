@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 
 import axios from 'axios';
-import { AccessTimeOutlined, LocationOnOutlined, WarningAmberOutlined}  from '@mui/icons-material';
-import {Link, Box, Card, CardContent, CardHeader, CardMedia, IconButton, Pagination, Skeleton, Stack, Tooltip, Typography } from '@mui/material';
-import QrCode2Icon from '@mui/icons-material/QrCode2';
 import { useTranslation } from "react-i18next";
-import QRCode from "react-qr-code";
+import { AccessTimeOutlined, LocationOnOutlined, QrCode2, WarningAmberOutlined}  from '@mui/icons-material';
+import {Link, Box, Button, Card, CardContent, CardHeader, CardMedia, Dialog, DialogTitle, IconButton, Pagination, Skeleton, Stack, Tooltip, Typography } from '@mui/material';
 
-import DialogTitle from '@mui/material/DialogTitle';
-import Dialog from '@mui/material/Dialog';
+import QRCode from "react-qr-code";
+import ReactToPrint from 'react-to-print';
+
 
 function loadSkeleton() {
   return [
@@ -22,6 +21,7 @@ function loadSkeleton() {
 
 function SimpleDialog(props) {
   const { onClose, open, qrCoords } = props;
+  const QRRef = useRef(null);
 
   if (!qrCoords.lat  && !qrCoords.lng ) {
     return;
@@ -33,22 +33,42 @@ function SimpleDialog(props) {
     onClose();
   };
 
+  const getPageMargins = () => {
+    return `@page { margin: '10px' '10px' '10px '10px' !important; }`;
+  };
+
   var url = "https://pesticidenoi.netlify.app?lat=" + qrCoords.lat + "&lng=" + qrCoords.lng;
   var debug = "http://localhost:3000?lat=" + qrCoords.lat + "&lng=" + qrCoords.lng;
   console.log(url);
 
   return (
     <Dialog 
+      titleStyle={{textAlign: "center"}}
       onClose={handleClose} 
       open={open}                    
     >
-        <DialogTitle>Scan QR Code</DialogTitle>
-        <QRCode
-          size={256}
-          style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-          value={url}
-          viewBox={`0 0 256 256`}
-        />
+      <div ref={QRRef} style={{ background: 'white', padding: '16px', justifyContent:"center", alignItems:"center"}}>
+        <DialogTitle textAlign="center"> Scan QR Code </DialogTitle>
+          <QRCode
+            size={256}
+            style={{ width: "100%"}}
+            value={url}
+            viewBox={`0 0 256 256`}
+          />
+        </div>
+
+
+        <ReactToPrint
+          pageStyle={getPageMargins}
+          // documentTitle = {"Pesticide Notification System"}
+          trigger={() => (
+            <Button sx={{p: "20px"}} >
+              Print QR Code
+            </Button>
+            )}
+          content={() => QRRef.current}>
+        </ReactToPrint>
+
         {/* <Link href={debug}>
           Debug Link
         </Link> */}
@@ -201,7 +221,7 @@ const NOICards = (props) =>  {
       if (coordinates) {
 
         if (typeof props.county !== 'undefined' && props.county.length > 0) {
-          console.log("shenme");
+          console.log("finding counties");
 
           var counties = new URLSearchParams();
 
@@ -230,7 +250,7 @@ const NOICards = (props) =>  {
           });
 
         } else {
-          console.log("huh");
+          console.log("finding current location");
 
           axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
               params: { latitude: coordinates.lat, longitude: coordinates.lng, radius: convertMilesToMeters(radius), order: order[0], orderParam: order[1]},
@@ -378,7 +398,7 @@ const NOICards = (props) =>  {
                   />
 
                   <IconButton sx={{mt:"15px"}} aria-label="qr_code" onClick={() => { handleClickOpen(); generateQR(elem.latitude, elem.longitude);}}>
-                    <QrCode2Icon />
+                    <QrCode2 />
                   </IconButton>
                 </Stack>
 
