@@ -99,7 +99,7 @@ function RefactoredMapView(props) {
   // Used once on mount
   useEffect(() => {
 
-    if (!props.lat && props.lng) {
+    if (!(props.lat && props.lng)) {
       // Find current position of user
       navigator.geolocation.getCurrentPosition(
         ({ coords: { latitude: lat, longitude: lng } }) => {
