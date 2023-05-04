@@ -270,15 +270,30 @@ const NOICards = (props) =>  {
   const iconMedia = (elem) => {
     return(
       <>
-        <Stack direction="row" alignItems="center" gap={2}>
+        
+        <Stack direction="row" alignItems="center" gap={2}> 
+
+        { 
+          elem.distance && 
+          <>
           <Tooltip title={TOOLTIP_DISTANCE} arrow placement="left">
             <LocationOnOutlined />
           </Tooltip>
-          <Typography variant="body1">
-          {`${parseFloat(elem.distance).toFixed(2)}`} {DISTANCE_UNIT}
-          </Typography>
-        </Stack>
 
+
+            <Typography variant="body1">
+            {`${parseFloat(elem.distance).toFixed(2)}`} {DISTANCE_UNIT}
+            </Typography> 
+            </>
+
+            // :
+
+            // <Typography variant="body1">
+            //   {elem.county_cd} County
+            // </Typography> 
+        }
+
+        </Stack>
         <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
           <Tooltip title={TOOLTIP_DATE}  arrow placement="left">
             <AccessTimeOutlined />
