@@ -103,7 +103,7 @@ app.get('/findCountyNOI', async (req, res) => {
     res.set('Access-Control-Allow-Origin', '*');
     const noiList = await pool.distinct('restricted_noi_view.use_no', 'prodno', 'product_name', 'aer_grnd_ind', 'fumigant_sw',
       'chem_code', 'chemname', 'acre_treated', 'unit_treated', 'applic_dt',
-      'applic_time', 'aer_gnd_ind', 'county_cd', 'latitude', 'longitude')
+      'applic_time', 'aer_gnd_ind', 'county_cd', 'county_name', 'latitude', 'longitude')
       .from('restricted_noi_view')
       .innerJoin('coordinates_view', 'restricted_noi_view.use_no', '=', 'coordinates_view.use_no')
       .whereIn('county_cd', counties)
@@ -140,7 +140,8 @@ app.get('/findNearbyNOI', async (req, res) => {
   try {
     res.set('Access-Control-Allow-Origin', '*');
     if (!orderParam) {
-      const noiList = await pool.raw('SELECT * FROM find_nearby_noi_data(?, ?, ?) ORDER BY applic_dt ?, applic_time ?', [latitude, longitude, radius, pool.raw(order), pool.raw(order)]);
+      const noiList = await pool.raw('SELECT * FROM find_nearby_noi_data(?, ?, ?) ORDER BY applic_dt ?, applic_time ?',
+        [latitude, longitude, radius, pool.raw(order), pool.raw(order)]);
       res.status(200).json(noiList.rows);
     } else {
       const noiList = await pool.raw('SELECT * FROM find_nearby_noi_data(?, ?, ?) ORDER BY ?? ?', [latitude, longitude, radius, orderParam, pool.raw(order)]);
