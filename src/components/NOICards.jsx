@@ -293,25 +293,21 @@ const NOICards = (props) =>  {
         
         <Stack direction="row" alignItems="center" gap={2}> 
 
-        { 
-          elem.distance && 
-          <>
+
           <Tooltip title={TOOLTIP_DISTANCE} arrow placement="left">
             <LocationOnOutlined />
           </Tooltip>
 
-
+          { 
+          elem.distance ?
             <Typography variant="body1">
             {`${parseFloat(elem.distance).toFixed(2)}`} {DISTANCE_UNIT}
             </Typography> 
-            </>
-
-            // :
-
-            // <Typography variant="body1">
-            //   {elem.county_cd} County
-            // </Typography> 
-        }
+            :
+            <Typography variant="body1">
+              {elem.county_name} County
+            </Typography> 
+          }
 
         </Stack>
         <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
