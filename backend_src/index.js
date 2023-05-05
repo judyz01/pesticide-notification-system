@@ -83,8 +83,10 @@ app.get('/', (req, res) => {
 /**
  * HTTP function that finds NOI's applied within (a) given county/counties
  * Parameters:
- *  req.query.counties: Array of counties to look through
+ *  req.query.counties: County/counties to look through
  *  req.query.order: ASC or DESC order for application date
+ *  req.query.startDate: The first date of NOI's returned
+ *  req.query.endDate: The last date of NOI's returned
  * Return Value:
  *  JSON List of NOI's and their relevant information 
 */
@@ -92,12 +94,19 @@ app.get('/findCountyNOI', async (req, res) => {
   pool = pool || (await createPool());
 
   let reqOrder = req.query.order
+  if (!reqOrder) {
+    reqOrder = 'ASC';
+  }
 
   // Setup query for single or multiple counties
   let counties = req.query.counties;
   if (!Array.isArray(counties)) {
     counties = [counties]
   }
+
+  // Date range query
+  let startDate = req.query.startDate;
+  let endDate = req.query.endDate;
 
   try {
     res.set('Access-Control-Allow-Origin', '*');
@@ -107,10 +116,20 @@ app.get('/findCountyNOI', async (req, res) => {
       .from('restricted_noi_view')
       .innerJoin('coordinates_view', 'restricted_noi_view.use_no', '=', 'coordinates_view.use_no')
       .whereIn('county_cd', counties)
+      .modify((pool) => {
+        if (startDate) {
+          pool.whereRaw('applic_dt > ?', startDate)
+        }
+        if (endDate) {
+          pool.whereRaw('applic_dt < ?', endDate)
+        }
+      })
       .orderBy([
         { column: 'applic_dt', order: reqOrder },
         { column: 'applic_time', order: reqOrder }
       ])
+
+    // Return list of NOI's
     res.status(200).json(noiList);
   } catch (err) {
     console.error(err);
