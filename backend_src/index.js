@@ -315,25 +315,18 @@ const handleSingleKeywordText = (req, res, token) => {
 // Handle text messages with 2 keywords
 const handleMultiKeywordText = async (req, res, tokens) => {
   if (tokens[0] == 'SUB') {
-    let tableName = 'subscribers_';
-    if (new Set(county_functions.available_county_table).has(tokens[1])) {
-      let countyNumber = county_functions.county_lookup(tokens[1]);
-      tableName = tableName += countyNumber;
-    } else {
-      twilio_functions.sendError(req, res, 'invalid_county')
-      res.status(500).send("Error subscribing. Not a valid county number.")
-      return
-    }
-
+    let subs = 'subscribers';
+    let subscriber_string = 'sub' + String(county_functions.county_lookup(tokens[1])).padStart(2, '0');
     // Add users to subscription list, and send confirmation text.
     // Send error message otherwise.
     try {
       res.set('Access-Control-Allow-Origin', '*');
       pool = (pool || createPool());
       const lng = req.headers['accept-language']
-      // Add to users table
-      await pool.raw('INSERT INTO users (phone_number, language) VALUES (?, ?) ON CONFLICT (phone_number) DO UPDATE SET language = ?', [req.body.From, lng, lng]);
-      await pool.raw('INSERT INTO ?? (phone_number) VALUES (?)', [tableName, req.body.From])
+      // Add to subscribers table
+      await pool.raw('INSERT INTO ?? (phone_number, language) VALUES (?, ?)', [subs, req.body.From, lng]);
+      // Toggle boolean for county specified in text
+      await pool.raw('UPDATE ?? SET ?? = true WHERE phone_number = ?', [subs, subscriber_string, req.body.From]);
       twilio_functions.sendSubscribeConfirmation(req, res, tokens[1]);
       res.status(200).send("Subscription successful.");
     } catch (err) {
@@ -343,22 +336,16 @@ const handleMultiKeywordText = async (req, res, tokens) => {
       return
     }
   } else if (tokens[0] == 'HALT') {
-    let tableName = 'subscribers_';
-    let countyNumber = county_functions.county_lookup(tokens[1]);
-    if (countyNumber != 0) {
-      tableName = tableName += countyNumber;
-    } else {
-      twilio_functions.sendError(req, res, 'invalid_county')
-      res.status(500).send("Error unsubscribing. Not a valid county number.")
-      return;
-    }
+    let tableName = 'subscribers';
 
     // Delete users to subscription list, and send confirmation text.
     // Send error message otherwise.
     try {
       res.set('Access-Control-Allow-Origin', '*');
       pool = (pool || createPool());
-      await pool.raw('DELETE FROM ?? WHERE ??=?', [tableName, 'phone_number', req.body.From])
+      let subscriber_string = 'sub' + String(county_functions.county_lookup(tokens[1])).padStart(2, '0');
+      // Toggle boolean for county specified
+      await pool.raw('UPDATE ?? SET ?? = false WHERE phone_number = ?', [tableName, subscriber_string, req.body.From]);
       twilio_functions.sendUnsubscribeConfirmation(req, res, tokens[1]);
       res.status(200).send("Unsubscription successful.");
     } catch (err) {
@@ -377,7 +364,7 @@ const handleMultiKeywordText = async (req, res, tokens) => {
 // Add an NOI to our database, and send notifications about this new application
 app.post('/addTableNOI', async (req, res) => {
   pool = pool || (await createPool());
-  const tableName = 'users';
+  const tableName = 'subscribers';
   try {
     res.set('Access-Control-Allow-Origin', '*');
 
