@@ -83,8 +83,10 @@ app.get('/', (req, res) => {
 /**
  * HTTP function that finds NOI's applied within (a) given county/counties
  * Parameters:
- *  req.query.counties: Array of counties to look through
+ *  req.query.counties: County/counties to look through
  *  req.query.order: ASC or DESC order for application date
+ *  req.query.startDate: The first date of NOI's returned
+ *  req.query.endDate: The last date of NOI's returned
  * Return Value:
  *  JSON List of NOI's and their relevant information 
 */
@@ -92,6 +94,9 @@ app.get('/findCountyNOI', async (req, res) => {
   pool = pool || (await createPool());
 
   let reqOrder = req.query.order
+  if (!reqOrder) {
+    reqOrder = 'ASC';
+  }
 
   // Setup query for single or multiple counties
   let counties = req.query.counties;
@@ -100,8 +105,8 @@ app.get('/findCountyNOI', async (req, res) => {
   }
 
   // Date range query
-  let startDate = req.query.start;
-  let endDate = req.query.end;
+  let startDate = req.query.startDate;
+  let endDate = req.query.endDate;
 
   try {
     res.set('Access-Control-Allow-Origin', '*');
