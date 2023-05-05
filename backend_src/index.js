@@ -99,6 +99,10 @@ app.get('/findCountyNOI', async (req, res) => {
     counties = [counties]
   }
 
+  // Date range query
+  let startDate = req.query.start;
+  let endDate = req.query.end;
+
   try {
     res.set('Access-Control-Allow-Origin', '*');
     const noiList = await pool.distinct('restricted_noi_view.use_no', 'prodno', 'product_name', 'aer_grnd_ind', 'fumigant_sw',
@@ -107,10 +111,20 @@ app.get('/findCountyNOI', async (req, res) => {
       .from('restricted_noi_view')
       .innerJoin('coordinates_view', 'restricted_noi_view.use_no', '=', 'coordinates_view.use_no')
       .whereIn('county_cd', counties)
+      .modify((pool) => {
+        if (startDate) {
+          pool.whereRaw('applic_dt > ?', startDate)
+        }
+        if (endDate) {
+          pool.whereRaw('applic_dt < ?', endDate)
+        }
+      })
       .orderBy([
         { column: 'applic_dt', order: reqOrder },
         { column: 'applic_time', order: reqOrder }
       ])
+
+    // Return list of NOI's
     res.status(200).json(noiList);
   } catch (err) {
     console.error(err);
