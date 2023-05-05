@@ -20,7 +20,7 @@ function CookieBanner() {
         <Dialog
             open={show}
         >
-            <Box sx={{position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", zIndex: 12000, backgroundColor: "#FFFFFF", width: "300px", height: "150px", boxShadow: 10, p: "20px", alignItems: "center", display: "flex", flexDirection: "column"}}>
+            <Box sx={{position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", zIndex: 12000, backgroundColor: "#FFFFFF", width: "300px", height: "160px", boxShadow: 10, p: "20px", alignItems: "center", display: "flex", flexDirection: "column", justifyContent: "center"}}>
                 <Typography sx={{fontSize: "14px", fontWeight: 600, color: "black", ml: "9px"}}>
                     {t("Cookie")}
                 </Typography>
