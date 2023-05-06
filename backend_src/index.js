@@ -272,6 +272,28 @@ app.post('/addTableNOI', async (req, res, next) => {
   next();
 })
 
+// Add an NOI to our database, and send notifications about this new application
+app.post('/addTableNOI', async (req, res) => {
+  pool = pool || (await createPool());
+  const tableName = 'subscribers';
+  try {
+    res.set('Access-Control-Allow-Origin', '*');
+
+    // Retrieve subscriber info in the format {phone_number, language}
+    const users = await pool.raw('SELECT phone_number, language FROM ??', [tableName]);
+
+    // Send a notification to every user subscribed
+    users.rows.forEach(element => {
+      twilio_functions.sendNotifications(i18next, element.phone_number, req.product_name, 'link', element.language, req.lat, req.lon)
+    });
+
+    res.status(200).send("Notifications sent")
+  } catch (err) {
+    console.error(err)
+    res.status(500).send('Error sending notifications')
+  }
+});
+
 // Middleware to parse which language of messaging service messaging service to use
 app.use('/sms/in', (req, res, next) => {
   req.headers['accept-language'] = req.path.slice(1);
@@ -379,28 +401,6 @@ const handleMultiKeywordText = async (req, res, tokens) => {
     return
   }
 }
-
-// Add an NOI to our database, and send notifications about this new application
-app.post('/addTableNOI', async (req, res) => {
-  pool = pool || (await createPool());
-  const tableName = 'subscribers';
-  try {
-    res.set('Access-Control-Allow-Origin', '*');
-
-    // Retrieve subscriber info in the format {phone_number, language}
-    const users = await pool.raw('SELECT phone_number, language FROM ??', [tableName]);
-
-    // Send a notification to every user subscribed
-    users.rows.forEach(element => {
-      twilio_functions.sendNotifications(i18next, element.phone_number, req.product_name, 'link', element.language, req.lat, req.lon)
-    });
-
-    res.status(200).send("Notifications sent")
-  } catch (err) {
-    console.error(err)
-    res.status(500).send('Error sending notifications')
-  }
-});
 
 app.use((req, res) => {
   res.status(404).send("Unable to locate resource. Please try again.");
