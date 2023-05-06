@@ -185,7 +185,7 @@ function RefactoredMapView(props) {
           direction="row"
           justifyContent="space-between"
           alignItems="center"
-          sx={{pb:"15px" }}
+          sx={{pb:"15px"}}
       >
 
         <StandaloneSearchBox
@@ -194,6 +194,7 @@ function RefactoredMapView(props) {
         >
           <TextField 
             id="search_box" 
+            sx={{width:"100%"}}
             label={ENTER_ADDRESS} 
             variant="outlined" 
             // value={address? address : ""}

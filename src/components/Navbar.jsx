@@ -124,12 +124,12 @@ const Navbar = (props) => {
           <Box
               component="img"
               sx={{
-                width: 183,
-                height: 100,
+                width: "auto",
+                height: 50,
                 display: { xs: "block", sm: "block" } 
               }}
               alt="logo"
-              src="../images/logo.png"
+              src="../images/davislogo.png"
           />
         </a>
 
