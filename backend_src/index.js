@@ -118,10 +118,10 @@ app.get('/findCountyNOI', async (req, res) => {
       .whereIn('county_cd', counties)
       .modify((pool) => {
         if (startDate) {
-          pool.whereRaw('applic_dt > ?', startDate)
+          pool.whereRaw('applic_dt > ?', [startDate])
         }
         if (endDate) {
-          pool.whereRaw('applic_dt < ?', endDate)
+          pool.whereRaw('applic_dt < ?', [endDate])
         }
       })
       .orderBy([
@@ -272,6 +272,30 @@ app.post('/addTableNOI', async (req, res, next) => {
   next();
 })
 
+// Add an NOI to our database, and send notifications about this new application
+app.post('/addTableNOI', async (req, res) => {
+  pool = pool || (await createPool());
+  const tableName = 'subscribers';
+  try {
+    res.set('Access-Control-Allow-Origin', '*');
+
+    // Retrieve subscriber info in the format {phone_number, language}
+    const users = await pool.raw('SELECT phone_number, language FROM ??', [tableName]);
+
+    // Send a notification to every user subscribed
+    users.rows.forEach(element => {
+      twilio_functions.sendNotifications(i18next, element.phone_number, req.product_name, 'link', element.language, req.lat, req.lon)
+    });
+
+    res.status(200).send("Notifications sent")
+  } catch (err) {
+    console.error(err)
+    res.status(500).send('Error sending notifications')
+  }
+});
+
+// SMS Notification System
+
 // Middleware to parse which language of messaging service messaging service to use
 app.use('/sms/in', (req, res, next) => {
   req.headers['accept-language'] = req.path.slice(1);
@@ -335,7 +359,7 @@ const handleSingleKeywordText = (req, res, token) => {
 const handleMultiKeywordText = async (req, res, tokens) => {
   if (tokens[0] == 'SUB') {
     let subs = 'subscribers';
-    let subscriber_string = 'sub' + String(county_functions.county_lookup(tokens[1])).padStart(2, '0');
+    let county_column = 'sub' + String(county_functions.county_lookup(tokens[1]));
     // Add users to subscription list, and send confirmation text.
     // Send error message otherwise.
     try {
@@ -343,9 +367,12 @@ const handleMultiKeywordText = async (req, res, tokens) => {
       pool = (pool || createPool());
       const lng = req.headers['accept-language']
       // Add to subscribers table
-      await pool.raw('INSERT INTO ?? (phone_number, language) VALUES (?, ?)', [subs, req.body.From, lng]);
-      // Toggle boolean for county specified in text
-      await pool.raw('UPDATE ?? SET ?? = true WHERE phone_number = ?', [subs, subscriber_string, req.body.From]);
+      await pool.raw('INSERT INTO ?? (phone_number, language, ??) VALUES (?, ?, ?) ON CONFLICT (phone_number)\
+        DO UPDATE SET LANGUAGE=?, ??=?',
+        [subs, county_column, req.body.From, lng, true,
+          lng, county_column, true]);
+
+      // Send confirmation reply to user
       twilio_functions.sendSubscribeConfirmation(req, res, tokens[1]);
       res.status(200).send("Subscription successful.");
     } catch (err) {
@@ -356,13 +383,12 @@ const handleMultiKeywordText = async (req, res, tokens) => {
     }
   } else if (tokens[0] == 'HALT') {
     let tableName = 'subscribers';
-
     // Delete users to subscription list, and send confirmation text.
     // Send error message otherwise.
     try {
       res.set('Access-Control-Allow-Origin', '*');
       pool = (pool || createPool());
-      let subscriber_string = 'sub' + String(county_functions.county_lookup(tokens[1])).padStart(2, '0');
+      let subscriber_string = 'sub' + String(county_functions.county_lookup(tokens[1]));
       // Toggle boolean for county specified
       await pool.raw('UPDATE ?? SET ?? = false WHERE phone_number = ?', [tableName, subscriber_string, req.body.From]);
       twilio_functions.sendUnsubscribeConfirmation(req, res, tokens[1]);
@@ -379,28 +405,6 @@ const handleMultiKeywordText = async (req, res, tokens) => {
     return
   }
 }
-
-// Add an NOI to our database, and send notifications about this new application
-app.post('/addTableNOI', async (req, res) => {
-  pool = pool || (await createPool());
-  const tableName = 'subscribers';
-  try {
-    res.set('Access-Control-Allow-Origin', '*');
-
-    // Retrieve subscriber info in the format {phone_number, language}
-    const users = await pool.raw('SELECT phone_number, language FROM ??', [tableName]);
-
-    // Send a notification to every user subscribed
-    users.rows.forEach(element => {
-      twilio_functions.sendNotifications(i18next, element.phone_number, req.product_name, 'link', element.language, req.lat, req.lon)
-    });
-
-    res.status(200).send("Notifications sent")
-  } catch (err) {
-    console.error(err)
-    res.status(500).send('Error sending notifications')
-  }
-});
 
 app.use((req, res) => {
   res.status(404).send("Unable to locate resource. Please try again.");
