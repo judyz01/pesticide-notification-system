@@ -335,7 +335,7 @@ const handleSingleKeywordText = (req, res, token) => {
 const handleMultiKeywordText = async (req, res, tokens) => {
   if (tokens[0] == 'SUB') {
     let subs = 'subscribers';
-    let subscriber_string = 'sub' + String(county_functions.county_lookup(tokens[1])).padStart(2, '0');
+    let subscriber_string = 'sub' + String(county_functions.county_lookup(tokens[1]));
     // Add users to subscription list, and send confirmation text.
     // Send error message otherwise.
     try {
@@ -362,7 +362,7 @@ const handleMultiKeywordText = async (req, res, tokens) => {
     try {
       res.set('Access-Control-Allow-Origin', '*');
       pool = (pool || createPool());
-      let subscriber_string = 'sub' + String(county_functions.county_lookup(tokens[1])).padStart(2, '0');
+      let subscriber_string = 'sub' + String(county_functions.county_lookup(tokens[1]));
       // Toggle boolean for county specified
       await pool.raw('UPDATE ?? SET ?? = false WHERE phone_number = ?', [tableName, subscriber_string, req.body.From]);
       twilio_functions.sendUnsubscribeConfirmation(req, res, tokens[1]);
