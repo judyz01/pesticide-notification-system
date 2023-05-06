@@ -19,7 +19,7 @@ function HideOnScroll(props) {
 }
 
 const Navbar = (props) => {
-  const navItems = ["NOIS", "Resources"];
+  const navItems = ["Archive", "Resources"];
   const [showButtons, setShowButtons] = useState(true);
   const [showMenu, setShowMenu] = useState(false);
   const [isDesktop, setDesktop] = useState(true);

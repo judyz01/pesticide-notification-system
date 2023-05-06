@@ -28,7 +28,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Home set_location={set_location} lat={searchParams.get("lat")} lng={searchParams.get("lng")}/>} />
             <Route path="/Resources" element={<Resources />} />
-            <Route path="/NOIs" element={<NOIs location={location}/>} />
+            <Route path="/Archive" element={<NOIs location={location}/>} />
           </Routes>
           <CookieBanner />
         </Box>
