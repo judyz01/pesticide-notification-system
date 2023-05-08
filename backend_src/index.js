@@ -221,9 +221,17 @@ app.post('/addTableNOI', async function (req, res, next) {
 
     const noiList =
       await pool.raw(
-        'INSERT INTO ??(use_no, prodno, chem_code, prodchem_pct, lbs_chm_used, lbs_prd_used, amt_prd_used, unit_of_meas, acre_planted, unit_treated, applic_cnt, applic_dt, applic_time, county_cd, base_ln_mer, township, tship_dir, range, range_dir, section, site_loc_id, grower_id, license_no, planting_seq, aer_gnd_ind,site_code, qualify_cd, batch_no, document_no, summary_cd, record_id, comtrs, error_flag) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        [tablename, req.body.use_no, req.body.prodno, req.body.chem_code, req.body.prodchem_pct, req.body.lbs_chm_used, req.body.lbs_prd_used, req.body.amt_prd_used, req.body.unit_of_meas, req.body.acre_planted, req.body.unit_treated, req.body.applic_cnt, req.body.applic_dt, req.body.applic_time, req.body.county_cd, req.body.base_ln_mer, req.body.township, req.body.tship_dir, req.body.range, req.body.range_dir, req.body.section, req.body.site_loc_id, req.body.grower_id, req.body.license_no, req.body.planting_seq, req.body.aer_gnd_ind, req.body.site_code, req.body.qualify_cd, req.body.batch_no, req.body.document_no, req.body.summary_cd, req.body.record_id, req.body.comtrs, req.body.error_flag])
-
+        'INSERT INTO ??(use_no, prodno, chem_code, prodchem_pct, lbs_chm_used, lbs_prd_used, amt_prd_used, unit_of_meas,\
+          acre_planted, unit_treated, applic_cnt, applic_dt, applic_time, county_cd, base_ln_mer, township, tship_dir, range,\
+          range_dir, section, site_loc_id, grower_id, license_no, planting_seq, aer_gnd_ind,site_code, qualify_cd, batch_no, document_no,\
+          summary_cd, record_id, comtrs, error_flag)\
+          VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [tablename, req.body.use_no, req.body.prodno, req.body.chem_code, req.body.prodchem_pct, req.body.lbs_chm_used,
+          req.body.lbs_prd_used, req.body.amt_prd_used, req.body.unit_of_meas, req.body.acre_planted, req.body.unit_treated,
+          req.body.applic_cnt, req.body.applic_dt, req.body.applic_time, req.body.county_cd, req.body.base_ln_mer, req.body.township,
+          req.body.tship_dir, req.body.range, req.body.range_dir, req.body.section, req.body.site_loc_id, req.body.grower_id,
+          req.body.license_no, req.body.planting_seq, req.body.aer_gnd_ind, req.body.site_code, req.body.qualify_cd, req.body.batch_no,
+          req.body.document_no, req.body.summary_cd, req.body.record_id, req.body.comtrs, req.body.error_flag])
 
     const lookup = await pool.raw(
       'SELECT * FROM ?? WHERE prodno = ? AND fumigant_sw = ?',
@@ -264,7 +272,7 @@ app.post('/addTableNOI', async (req, res, next) => {
   try {
     res.set('Access-Control-Allow-Origin', '*');
     pool = pool || (await createPool());
-    const noiList = await pool.raw('INSERT INTO coordinates VALUES (?, ?, ?)', [req.body.use_no, req.lat, req.lon]);
+    const noiList = await pool.raw('INSERT INTO coordinates VALUES (?, ?, ?, ST_MakePoint(?, ?))', [req.body.use_no, req.lat, req.lon, req.lon, req.lat]);
   } catch (err) {
     console.error(err);
     return res.status(500).send(err);
@@ -276,18 +284,25 @@ app.post('/addTableNOI', async (req, res, next) => {
 app.post('/addTableNOI', async (req, res) => {
   pool = pool || (await createPool());
   const tableName = 'subscribers';
+  let county_column = 'sub' + String(req.body.county_cd);
   try {
     res.set('Access-Control-Allow-Origin', '*');
 
     // Retrieve subscriber info in the format {phone_number, language}
-    const users = await pool.raw('SELECT phone_number, language FROM ??', [tableName]);
+    const users = await pool.select('phone_number', 'language')
+      .from(tableName)
+      .whereRaw('??=true', [county_column]);
 
-    // Send a notification to every user subscribed
-    users.rows.forEach(element => {
-      twilio_functions.sendNotifications(i18next, element.phone_number, req.product_name, 'link', element.language, req.lat, req.lon)
-    });
+    if (users.length) {
+      // Send a notification to every user subscribed
+      users.forEach(element => {
+        twilio_functions.sendNotifications(i18next, element.phone_number, req.product_name, 'link', element.language, req.lat, req.lon)
+      });
 
-    res.status(200).send("Notifications sent")
+      res.status(200).send("Notifications sent")
+    } else {
+      res.status(200).send('No notifications sent; no users subscribed to this county.')
+    }
   } catch (err) {
     console.error(err)
     res.status(500).send('Error sending notifications')
