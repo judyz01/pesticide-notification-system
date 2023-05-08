@@ -1,14 +1,14 @@
 import * as React from "react";
 import { Suspense } from "react";
 
-import { Box, CssBaseline } from "@mui/material";
+import { Box, CssBaseline, Typography } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import { Route, Routes } from "react-router";
 import { useSearchParams } from "react-router-dom";
 
 import { Footer, Home, Navbar, NOIs, Resources} from './components';
 import theme from "./styles/theme";
-import CookieBanner from './CookieBanner';
+import CookieConsent from "react-cookie-consent";
 
 const App = () => {
   const [location, setLocation] = React.useState();
@@ -30,7 +30,16 @@ const App = () => {
             <Route path="/Resources" element={<Resources />} />
             <Route path="/NOIs" element={<NOIs location={location}/>} />
           </Routes>
-          <CookieBanner />
+          <CookieConsent
+            flipButtons
+            enableDeclineButton
+            onDecline={() => {
+              alert("This may impact your ability to usew the tool!");
+            }}
+            style={{ background: "#126701" }}
+          >
+           <Typography style={{color: "#FFFFFFF"}}>This website uses cookies to enhance the user experience.</Typography> 
+          </CookieConsent>
         </Box>
         <Footer />
       </ThemeProvider>
