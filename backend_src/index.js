@@ -155,17 +155,36 @@ app.get('/findNearbyNOI', async (req, res) => {
   let longitude = req.query.longitude;
   let radius = req.query.radius;
   let orderParam = req.query.orderParam;
-  let order = req.query.order;
+  let reqOrder = req.query.order;
+  let startDate = req.query.startDate;
+  let endDate = req.query.endDate;
+
   try {
     res.set('Access-Control-Allow-Origin', '*');
-    if (!orderParam) {
-      const noiList = await pool.raw('SELECT * FROM find_nearby_noi_data(?, ?, ?) ORDER BY applic_dt ?, applic_time ?',
-        [latitude, longitude, radius, pool.raw(order), pool.raw(order)]);
-      res.status(200).json(noiList.rows);
-    } else {
-      const noiList = await pool.raw('SELECT * FROM find_nearby_noi_data(?, ?, ?) ORDER BY ?? ?', [latitude, longitude, radius, orderParam, pool.raw(order)]);
-      res.status(200).json(noiList.rows);
-    }
+
+    const noiList = await pool.select(pool.raw('* FROM find_nearby_noi_data(?, ?, ?)', [latitude, longitude, radius]))
+      .modify((pool) => {
+        // Sort
+        if (orderParam === "distance") {
+          pool.orderBy([
+            { column: 'distance', order: reqOrder },
+          ])
+        } else {
+          pool.orderBy([
+            { column: 'applic_dt', order: reqOrder },
+            { column: 'applic_time', order: reqOrder }
+          ])
+        }
+
+        // Date range filter
+        if (startDate) {
+          pool.whereRaw('applic_dt > ?', [startDate])
+        }
+        if (endDate) {
+          pool.whereRaw('applic_dt < ?', [endDate])
+        }
+      })
+    res.status(200).json(noiList);
   } catch (err) {
     console.error(err);
     res.status(500).send('Error in request: findNearbyNOI');
