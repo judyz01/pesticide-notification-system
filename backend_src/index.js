@@ -43,7 +43,7 @@ const createPool = async () => {
   config.pool.max = 5;
   // 'min' is the minimum number of idle connections Knex maintains in the pool.
   // Additional connections will be established to meet this value unless the pool is full.
-  config.pool.min = 5;
+  config.pool.min = 0;
   // [END cloud_sql_postgres_knex_limit]
 
   // [START cloud_sql_postgres_knex_timeout]
@@ -131,6 +131,7 @@ app.get('/findCountyNOI', async (req, res) => {
 
     // Return list of NOI's
     res.status(200).json(noiList);
+    pool.destroy()
   } catch (err) {
     console.error(err);
     res.status(500).send('Error in request: findCountyNOI');
