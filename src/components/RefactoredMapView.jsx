@@ -1,10 +1,9 @@
 /*global google*/
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Box, Button, Input, InputAdornment, Link, Stack, TextField } from "@mui/material";
+import { Box, Input, InputAdornment, Stack, TextField } from "@mui/material";
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { Circle, GoogleMap, Marker, MarkerClusterer, StandaloneSearchBox } from "@react-google-maps/api";
-import {Link as RouterLink} from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 // Radius is in meters, currently set to 5 mile radius (8046.72m)
@@ -20,7 +19,6 @@ function RefactoredMapView(props) {
 
   const { i18n, t } = useTranslation();
   var setLegend = i18n.language === "en" ? "../images/legend_en.svg" : "../images/legend_sp.svg";
-  const EMERGENCY = t("Emergency");
   const ENTER_ADDRESS = t("Enter Address");
 
   // Icon for user's current location
@@ -127,7 +125,7 @@ function RefactoredMapView(props) {
     // Get pesticide data
     getPesticideData(currentLocation.lat, currentLocation.lng);
 
-  }, [currentLocation]);
+  }, [props, currentLocation]);
 
   // useEffect(() => {
   //   console.log((address));
@@ -147,7 +145,6 @@ function RefactoredMapView(props) {
   // Receive new location from search box, converts it to lat/long coordinates
   // Uses new coordinates to obtain pesticide data
   const onPlacesChanged = (placeID) => {
-    // var placesInfo = searchBox.getPlaces()[0].place_id;
 
     var place =  placeID ? placeID : searchBox.getPlaces()[0].place_id;
 
@@ -188,7 +185,7 @@ function RefactoredMapView(props) {
           direction="row"
           justifyContent="space-between"
           alignItems="center"
-          sx={{pb:"15px" }}
+          sx={{pb:"15px"}}
       >
 
         <StandaloneSearchBox
@@ -197,6 +194,7 @@ function RefactoredMapView(props) {
         >
           <TextField 
             id="search_box" 
+            sx={{width:"100%"}}
             label={ENTER_ADDRESS} 
             variant="outlined" 
             // value={address? address : ""}
@@ -211,28 +209,6 @@ function RefactoredMapView(props) {
             <Input />
           </TextField>
         </StandaloneSearchBox>
-
-        <Button sx={{ 
-            display: "flex",
-            height: "40px",
-            p: "16px",
-            variant:"contained", 
-            backgroundColor:"#d0342c", 
-            color:"white",
-            "&:hover": {
-              backgroundColor: "#d0342c",
-              "@media (hover: none)": {
-                backgroundColor: "#d0342c",
-                "&:active": {
-                  backgroundColor: "#d0342c"
-                }
-              }}
-            }}
-        >
-          <Link style={{textDecoration: "none", color: "white"}} component={RouterLink} to={`/Resources`}>
-              {EMERGENCY}
-          </Link>
-        </Button> 
 
       </Stack>
         <GoogleMap 
