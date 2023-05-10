@@ -445,3 +445,4 @@ app.use((req, res) => {
 })
 
 functions.http('api', app);
+module.exports = app;
