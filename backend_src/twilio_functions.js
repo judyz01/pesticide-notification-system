@@ -40,8 +40,8 @@ const optOutKeywords = new Set([
 const sendSubscribeConfirmation = (req, res, county) => {
     client.messages
         .create({
-            body: req.t("successful_subscription", {county: county}),
-            messagingServiceSid: req.headers['accept-language'] == 'en' ? mSID: mSIDSp,
+            body: req.t("successful_subscription", { county: county }),
+            messagingServiceSid: req.headers['accept-language'] == 'en' ? mSID : mSIDSp,
             to: req.body.From
         })
         .then(message => console.log(message.status));
@@ -51,8 +51,8 @@ const sendSubscribeConfirmation = (req, res, county) => {
 const sendUnsubscribeConfirmation = (req, res, county) => {
     client.messages
         .create({
-            body: req.t("successful_unsubscription", {county: county}),
-            messagingServiceSid: req.headers['accept-language'] == 'en' ? mSID: mSIDSp,
+            body: req.t("successful_unsubscription", { county: county }),
+            messagingServiceSid: req.headers['accept-language'] == 'en' ? mSID : mSIDSp,
             to: req.body.From
         })
         .then(message => console.log(message.status));
@@ -61,8 +61,8 @@ const sendUnsubscribeConfirmation = (req, res, county) => {
 const sendGuide = (req, res) => {
     client.messages
         .create({
-            body: req.t("guide", {available_counties: `${county_functions.available_county_table}`}),
-            messagingServiceSid: req.headers['accept-language'] == 'en' ? mSID: mSIDSp,
+            body: req.t("guide", { available_counties: `${county_functions.available_county_table}` }),
+            messagingServiceSid: req.headers['accept-language'] == 'en' ? mSID : mSIDSp,
             to: req.body.From
         })
         .then(message => console.log(message.status));
@@ -78,7 +78,7 @@ const sendError = async (req, res, err) => {
     client.messages
         .create({
             body: req.t(err),
-            messagingServiceSid: req.headers['accept-language'] == 'en' ? mSID: mSIDSp,
+            messagingServiceSid: req.headers['accept-language'] == 'en' ? mSID : mSIDSp,
             to: req.body.From
         })
         .then(message => console.log(message.status));
@@ -87,11 +87,11 @@ const sendError = async (req, res, err) => {
 const sendNotifications = async (i18next, number, Chemical_name, link, language, lat, lon) => {
     client.messages
         .create({
-            body: i18next.t("notification", {chemical_name: Chemical_name, link: link, lat: lat, lon: lon, lng: language}),
+            body: i18next.t("notification", { chemical_name: Chemical_name, link: link, lat: lat, lon: lon, lng: language }),
             messagingServiceSid: language == 'en' ? mSID : mSIDSp,
             to: number
         })
-        .then(message => console.log(message.sid))
+        .then(message => console.log(message.status))
 }
 
 module.exports = {
