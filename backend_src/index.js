@@ -43,7 +43,7 @@ const createPool = async () => {
   config.pool.max = 1;
   // 'min' is the minimum number of idle connections Knex maintains in the pool.
   // Additional connections will be established to meet this value unless the pool is full.
-  config.pool.min = 1;
+  config.pool.min = 0;
   // [END cloud_sql_postgres_knex_limit]
 
   // [START cloud_sql_postgres_knex_timeout]
@@ -58,7 +58,7 @@ const createPool = async () => {
   config.pool.createTimeoutMillis = 30000; // 30 seconds
   // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool
   // and not be checked out before it is automatically closed.
-  config.pool.idleTimeoutMillis = 600000; // 10 minutes
+  config.pool.idleTimeoutMillis = 10000; // 10 seconds
   // [END cloud_sql_postgres_knex_timeout]
 
   // [START cloud_sql_postgres_knex_backoff]
@@ -445,4 +445,7 @@ app.use((req, res) => {
 })
 
 functions.http('api', app);
-module.exports = app;
+module.exports = {
+  app,
+  pool
+};
