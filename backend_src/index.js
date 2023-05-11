@@ -131,7 +131,6 @@ app.get('/findCountyNOI', async (req, res) => {
 
     // Return list of NOI's
     res.status(200).json(noiList);
-    pool.destroy()
   } catch (err) {
     console.error(err);
     res.status(500).send('Error in request: findCountyNOI');
