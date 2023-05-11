@@ -16,3 +16,8 @@
 `
 
 - In order for requests regarding the Twilio text message portion of our backend to work with your local instance of our express server, you will have to create an instance of ngrok, as well as run the Google Cloud SQL proxy.
+
+### Deploying to Google Cloud Functions
+It is possible to deploy changes to the code through the CLI or through the Google Cloud Console
+- https://cloud.google.com/sdk/gcloud/reference/functions/deploy
+- https://console.cloud.google.com/welcome?project=noi-notification-system
