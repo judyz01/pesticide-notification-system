@@ -40,10 +40,10 @@ const createPool = async () => {
   // [START cloud_sql_postgres_knex_limit]
   // 'max' limits the total number of concurrent connections this pool will keep. Ideal
   // values for this setting are highly variable on app design, infrastructure, and database.
-  config.pool.max = 5;
+  config.pool.max = 1;
   // 'min' is the minimum number of idle connections Knex maintains in the pool.
   // Additional connections will be established to meet this value unless the pool is full.
-  config.pool.min = 0;
+  config.pool.min = 1;
   // [END cloud_sql_postgres_knex_limit]
 
   // [START cloud_sql_postgres_knex_timeout]
