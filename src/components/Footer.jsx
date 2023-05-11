@@ -14,15 +14,16 @@ const Footer = () => {
         <Box
             component="img"
             sx={{
-            width: 220,
-            height: 80,
-            ml: 1,
-            mt: 2,
-            mb: 1,
+            width: "auto",
+            height: 60,
+            opacity: "50%",
+            mt: "30px",
+            mb: "30px",
+            ml: "15px",
             display: { xs: "block", sm: "block" } 
             }}
             alt="logo-white"
-            src="../images/logo-white.png"
+            src="../images/davislogo_white.png"
           />
     </Box>
   );

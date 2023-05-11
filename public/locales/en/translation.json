@@ -11,7 +11,7 @@
     "CommunityUser2": "What type of pesticide are they going to put, because not only do we want them to tell us when they are going to put a pesticide. No. We want it to be general, that any type of pesticide, be it good or bad, be notified.",
     "CommunityUser3": "I have lived in Nyeland Acres for 17 years and have been working in the fields ever since. I think a notification system that tells us what chemicals are used is very important because I don’t know what chemicals are used where we are working, and they always smell.",
     
-    "NOISearch": "NOIs Search",
+    "NOISearch": "Notices of Intent Search",
     "Filters": "Filters",
     "County": "Select County",
     "Address": "Address",
@@ -35,7 +35,7 @@
     "Aerial/Ground": "Aerial/Ground",
     "Applicant Type": "Applicant Type",
 
-    "Tooltip Distance": "Distance",
+    "Tooltip Distance": "Distance from current location",
     "Tooltip Time/Date": "Time/Date" ,
     "Tooltip Application": "Application Method",
 
