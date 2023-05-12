@@ -89,6 +89,7 @@ const NOICards = (props) =>  {
   const COVERAGE = t("Coverage");
   const FUMIGANT = t("Fumigant label");
   const NO_NOIS = t("No NOIs");
+  const COUNTY = t("County");
 
   const [pesticideData, setPesticideData] = useState([]);
   const [isDesktop, setDesktop] = useState(true);
@@ -305,7 +306,7 @@ const NOICards = (props) =>  {
             </Typography> 
             :
             <Typography variant="body1">
-              {elem.county_name} County
+              {elem.county_name} {COUNTY}
             </Typography> 
           }
 

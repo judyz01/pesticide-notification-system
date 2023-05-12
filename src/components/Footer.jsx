@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 
 const Footer = () => {
   return (
-    <Box sx={{
+    <Box data-testid="footer" sx={{
         display: "flex", 
         background: "#227711", 
         left:0,

@@ -14,7 +14,7 @@
 
     "NOISearch": "Avisos de Intención Buscar",
     "Filters": "Filtros",
-    "County": "Seleccionar Condado",
+    "Select County": "Seleccionar Condado",
     "Address": "Dirección",
     "Coverage": "Cobertura",
     "Fumigant label": "Fumigante",
@@ -31,6 +31,7 @@
 
     "acres": "hectáreas",
     "miles": "millas",
+    "County": "Condado",
     "Aerial": "Aéreo",
     "Ground": "Suelo",
     "Aerial/Ground": "Aéreo/Suelo",
