@@ -173,8 +173,8 @@ const Navbar = (props) => {
               <MenuIcon sx={{ width:"30px", height:"30px"}}/>
             </Button> 
           </Box>
-        {showButtons ? renderButtons() : undefined}
-        {showMenu ? renderMenu() : undefined}
+        {showButtons && renderButtons()}
+        {showMenu && renderMenu()}
 
         </Box>
       </Toolbar>
