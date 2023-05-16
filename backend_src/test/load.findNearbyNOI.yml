@@ -1,0 +1,17 @@
+config:
+  target: "https://noi-notification-system-qvo2g2xyga-uc.a.run.app"
+  phases:
+    - duration: 60
+      arrivalRate: 3
+      name: Warm Up
+  payload:
+    path: "testCoordinates.csv"
+    fields:
+      - "latitude"
+      - "longitude"
+      - "radius"
+scenarios:
+  - flow:
+      - get:
+          url: "/findNearbyNOI?latitude={{latitude}}&longitude={{longitude}}&radius={{radius}}
+          &order=ASC&orderParam=distance&startDate=2019-06-01&endDate=2019-06-30"

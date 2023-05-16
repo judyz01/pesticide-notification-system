@@ -17,6 +17,7 @@ const app = express()
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+// lazy init knex connection pool
 let pool;
 
 // initialize SQL Pool
@@ -55,10 +56,10 @@ const createPool = async () => {
   // 'createTimeoutMillis` is the maximum number of milliseconds to wait trying to establish an
   // initial connection before retrying.
   // After acquireTimeoutMillis has passed, a timeout exception will be thrown.
-  config.pool.createTimeoutMillis = 30000; // 30 seconds
+  config.pool.createTimeoutMillis = 10000; // 10 seconds
   // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool
   // and not be checked out before it is automatically closed.
-  config.pool.idleTimeoutMillis = 10000; // 10 seconds
+  config.pool.idleTimeoutMillis = 1; // Immediately after the query is serviced
   // [END cloud_sql_postgres_knex_timeout]
 
   // [START cloud_sql_postgres_knex_backoff]

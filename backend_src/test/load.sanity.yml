@@ -1,0 +1,9 @@
+config:
+  target: https://noi-notification-system-qvo2g2xyga-uc.a.run.app
+  phases:
+    - duration: 30
+      arrivalRate: 10
+scenarios:
+  - flow:
+      - get:
+          url: "/"

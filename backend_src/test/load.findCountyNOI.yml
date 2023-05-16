@@ -1,0 +1,14 @@
+config:
+  target: "https://noi-notification-system-qvo2g2xyga-uc.a.run.app"
+  phases:
+    - duration: 58
+      arrivalRate: 1
+      name: Warm Up
+  payload:
+    path: "counties.csv"
+    fields:
+      - "county_cd"
+scenarios:
+  - flow:
+      - get:
+          url: "/findCountyNOI?counties={{county_cd}}&order=ASC"

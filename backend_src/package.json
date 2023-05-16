@@ -6,7 +6,8 @@
   "scripts": {
     "test": "nyc mocha --reporter spec",
     "start": "npx functions-framework --target=api [--signature-type=http]",
-    "watch": "npm-watch start"
+    "watch": "npm-watch start",
+    "loadTest": "artillery test/load.yml"
   },
   "watch": {
     "start": "*"
