@@ -3,7 +3,7 @@ import React from "react";
 import { Box, Stack, Typography } from '@mui/material';
 import { useTranslation } from "react-i18next";
 
-import { AerialGroundFilter, CountyFilter, DateDistanceFilter, FumigantFilter, RadiusFilter } from './filter';
+import { AerialGroundFilter, CountyFilter, DateDistanceFilter, DateRangeFilter, FumigantFilter, RadiusFilter } from './filter';
 
 
 const Filters = (props) => {
@@ -54,6 +54,9 @@ const Filters = (props) => {
           func={get_aerial_ground}
           currentAerialGround={props.currentAerialGround}
         />
+
+        < DateRangeFilter />
+        
         <FumigantFilter 
           func={get_fumigant}
           currentFumigant={props.currentFumigant}

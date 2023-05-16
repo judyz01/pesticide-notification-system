@@ -34,11 +34,12 @@ const App = () => {
             flipButtons
             enableDeclineButton
             onDecline={() => {
-              alert("This may impact your ability to usew the tool!");
+              alert("This may impact your ability to use the tool!");
             }}
             style={{ background: "#126701" }}
+            buttonStyle={{ color: "#4e503b", fontSize: "16px" }}
           >
-           <Typography style={{color: "#FFFFFFF"}}>This website uses cookies to enhance the user experience.</Typography> 
+            <Typography style={{color: "#FFFFFFF"}}>This website uses cookies to enhance the user experience.</Typography> 
           </CookieConsent>
         </Box>
         <Footer />

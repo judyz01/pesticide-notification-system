@@ -32,7 +32,7 @@ function getStyles(name, distanceDateOrder, theme) {
   };
 }
 
-export default function DateFilter(props) {
+export default function DateDistanceFilter(props) {
   const { t } = useTranslation();
   const INPUT_LABEL = t("Date/Distance");
 
