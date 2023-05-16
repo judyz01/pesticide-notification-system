@@ -3,7 +3,7 @@ import React from "react";
 import { Box, Stack, Typography } from '@mui/material';
 import { useTranslation } from "react-i18next";
 
-import { AerialGroundFilter, CountyFilter, DateDistanceFilter, FumigantFilter, RadiusFilter } from './filter';
+import { AerialGroundFilter, CountyFilter, DateDistanceFilter, DateRangeFilter, FumigantFilter, RadiusFilter } from './filter';
 
 
 const Filters = (props) => {
@@ -27,6 +27,14 @@ const Filters = (props) => {
 
   const get_aerial_ground = (aerialGround) => {
     props.set_aerial_ground(aerialGround);
+  }
+
+  const get_start_date = (startDate) => {
+    props.set_start_date(startDate);
+  }
+
+  const get_end_date = (endDate) => {
+    props.set_end_date(endDate);
   }
 
   return (
@@ -54,6 +62,15 @@ const Filters = (props) => {
           func={get_aerial_ground}
           currentAerialGround={props.currentAerialGround}
         />
+
+        < DateRangeFilter 
+          start_date_func={get_start_date}
+          currentStartDate={props.startDate}
+
+          end_date_func={get_end_date}
+          currentEndDate={props.endDate}
+        />
+
         <FumigantFilter 
           func={get_fumigant}
           currentFumigant={props.currentFumigant}

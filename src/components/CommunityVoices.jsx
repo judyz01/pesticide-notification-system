@@ -11,7 +11,7 @@ const CommunityVoices = () => {
 
   return (
     <>
-      <Box sx={{pt: "10px", pl: "20px", fontSize: 21, fontWeight: 600, color: "#126701" }}>
+      <Box data-testid="community-panel" sx={{pt: "10px", pl: "20px", fontSize: 21, fontWeight: 600, color: "#126701" }}>
         {t("Community Voices")}
       </Box>
 

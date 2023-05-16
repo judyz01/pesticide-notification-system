@@ -97,7 +97,7 @@ export default function CountyDropdown(props) {
   const [countyIndex, setcountyIndex] = React.useState(props.currentCounty);
 
   const { t } = useTranslation();
-  const COUNTY_LABEL = t("County");
+  const COUNTY_LABEL = t("Select County");
 
   const handleChange = (event) => {
 

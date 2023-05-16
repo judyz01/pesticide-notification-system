@@ -14,6 +14,8 @@ const NOIs = (props) => {
   const [radius, setRadius] = React.useState();
   const [fumigant, setFumigant] = React.useState();
   const [aerialGround, setAerialGround] = React.useState();
+  const [startDate, setStartDate] = React.useState();
+  const [endDate, setEndDate] = React.useState();
 
   const [isDesktop, setDesktop] = React.useState(true);
   const [showDrawer, setShowDrawer] = React.useState(false);
@@ -24,7 +26,8 @@ const NOIs = (props) => {
   const [currentRadius, setCurrentRadius] = React.useState(5);
   const [currentFumigant, setCurrentFumigant] = React.useState(false);
   const [currentAerialGround, setCurrentAerialGround] = React.useState('');
-
+  const [currentStartDate, setCurrentStartDate] = React.useState();
+  const [currentEndDate, setCurrentEndDate] = React.useState();
 
 
   React.useEffect(() => {
@@ -70,6 +73,16 @@ const NOIs = (props) => {
     setCurrentAerialGround(aerial_ground);
   }
 
+  const set_start_date = (start_date) => {
+    setStartDate(start_date);
+    setCurrentStartDate(start_date);
+  }
+
+  const set_end_date = (end_date) => {
+    setEndDate(end_date);
+    setCurrentEndDate(end_date);
+  }
+
   return (
     <Box sx={{display: "flex", minHeight: `calc(100vh - 224px)`}}>
 
@@ -81,12 +94,16 @@ const NOIs = (props) => {
           set_radius={set_radius}
           set_fumigant={set_fumigant}
           set_aerial_ground={set_aerial_ground}
+          set_start_date={set_start_date}
+          set_end_date={set_end_date}
 
           currentCounty={currentCounty}
           currentOrder={currentOrder}
           currentRadius={currentRadius}
           currentFumigant={currentFumigant}
           currentAerialGround={currentAerialGround}
+          currentStartDate={currentStartDate}
+          currentEndDate={currentEndDate}
         />
       }
 
@@ -155,12 +172,16 @@ const NOIs = (props) => {
               set_radius={set_radius}
               set_fumigant={set_fumigant}
               set_aerial_ground={set_aerial_ground}
+              set_start_date={set_start_date}
+              set_end_date={set_end_date}
 
               currentCounty={currentCounty}
               currentOrder={currentOrder}
               currentRadius={currentRadius}
               currentFumigant={currentFumigant}
               currentAerialGround={currentAerialGround}
+              currentStartDate={currentStartDate}
+              currentEndDate={currentEndDate}
             />
           </Drawer>
         }
@@ -171,6 +192,9 @@ const NOIs = (props) => {
           radius={radius}
           fumigant={fumigant}
           aerialGround={aerialGround}
+          startDate={startDate}
+          endDate={endDate}
+
           location={props.location}
           dontRefresh={dontRefresh}
         />
