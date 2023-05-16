@@ -6,9 +6,6 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { Circle, GoogleMap, Marker, MarkerClusterer, StandaloneSearchBox } from "@react-google-maps/api";
 import { useTranslation } from "react-i18next";
 
-// Radius is in meters, currently set to 5 mile radius (8046.72m)
-var userRadius = 8046.72;
-
 function RefactoredMapView(props) {
 
   const [currentLocation, setCurrentLocation] = useState(() => (props.lat && props.lng) ? {lat: parseFloat(props.lat), lng: parseFloat(props.lng)} : {lat: 38.53709139783189, lng: -121.75506664377548});
@@ -18,6 +15,10 @@ function RefactoredMapView(props) {
   const [address, setAddress] = useState(null);
 
   const { i18n, t } = useTranslation();
+
+  // Radius is in meters, currently set to 5 mile radius (8046.72m)
+  var userRadius = (props.lat && props.lng) ? 1609.34 : 8046.72;
+
   var setLegend = i18n.language === "en" ? "../images/legend_en.svg" : "../images/legend_sp.svg";
   const ENTER_ADDRESS = t("Enter Address");
 
@@ -119,7 +120,7 @@ function RefactoredMapView(props) {
     // Reset pesticide data
     setPesticideData([]);
 
-    // Pass location to NOI Cards
+    // Pass location to Home and then NOI Cards
     props.func(currentLocation);
 
     // Get pesticide data
