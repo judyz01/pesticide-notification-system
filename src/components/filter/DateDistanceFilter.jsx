@@ -43,6 +43,16 @@ export default function DateDistanceFilter(props) {
     setDistanceDateOrder(event.target.value);
   };
 
+  const handleDisable = (name) => {
+    if (typeof props.currentCounty !== 'undefined' && props.currentCounty.length > 0) {
+      if(name == 'Closest' || name == 'Furthest') {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
   React.useEffect(() => {
     props.func(distanceDateOrder);
   }, [distanceDateOrder, props]);
@@ -63,6 +73,7 @@ export default function DateDistanceFilter(props) {
           <MenuItem
             key={name}
             value={name}
+            disabled={handleDisable(name)}
             style={getStyles(name, distanceDateOrder, theme)}
           >
             {t(name)}
