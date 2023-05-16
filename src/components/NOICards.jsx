@@ -285,7 +285,10 @@ const NOICards = (props) =>  {
 
     // console.log("Fumigant " + props.fumigant);
     // console.log("Aerial/Ground " + props.aerialGround);
-    console.log(props.county);
+    // console.log(props.county);
+    console.log(props.startDate);
+    console.log(props.endDate);
+
   }, [props], []);
 
   const iconMedia = (elem) => {

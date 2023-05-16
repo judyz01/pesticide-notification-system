@@ -8,11 +8,10 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 
 export default function DateRangeFilter(props) {
   const { t } = useTranslation();
-
+  
   const [startDate, setStartDate] = React.useState(null);
   const [endDate, setEndDate] = React.useState(null);
   const [error, setError] = React.useState(null);
-
 
   const handleStartDate = (newValue) => {
     setStartDate(newValue);
@@ -34,20 +33,12 @@ export default function DateRangeFilter(props) {
     }
   }, [error]);
 
-  // React.useEffect(() => {
-  //   props.func(distanceDateOrder);
-  // }, [distanceDateOrder, props]);
+  React.useEffect(() => {
 
-  /*
-  - only send request when both props are received
+    props.start_date_func(startDate);
+    props.end_date_func(endDate);
 
-  Validation:
-  - end date has to be greater than start date
-    - if change start date to be greater than end date, call error for end date
-  
-  - start date has to be less than end date
-    - set a minimum date for end date to be the start date to avoid errors
-  */
+  }, [startDate, endDate, props]);
 
   return (
     <Stack direction="column" gap={2} sx={{width: "100%", mt:3}}>
@@ -68,8 +59,8 @@ export default function DateRangeFilter(props) {
             inputFormat="MM/DD/YYYY"
             minDate={startDate}
             value={endDate}
-            onChange={handleEndDate}
             onError={(newError) => setError(newError)}
+            onChange={handleEndDate}
             slotProps={{
               textField: {
                 helperText: errorMessage,

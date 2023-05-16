@@ -12,5 +12,4 @@ export {
   DateRangeFilter,
   FumigantFilter,
   RadiusFilter,
-
 };
