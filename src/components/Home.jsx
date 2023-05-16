@@ -21,6 +21,7 @@ const Home = (props) => {
   const [location, setLocation] = React.useState();
 
   const get_location = (location) => {
+    // Passed to App to pass to NOIs
     props.set_location(location);
 
     // Passes to NOICard component below as it's also listed on home page
