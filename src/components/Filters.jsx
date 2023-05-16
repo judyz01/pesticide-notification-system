@@ -57,6 +57,7 @@ const Filters = (props) => {
         <DateDistanceFilter 
           func={get_order}
           currentOrder={props.currentOrder}
+          currentCounty={props.currentCounty}
         />
         <AerialGroundFilter 
           func={get_aerial_ground}
