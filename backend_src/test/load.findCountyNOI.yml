@@ -11,4 +11,4 @@ config:
 scenarios:
   - flow:
       - get:
-          url: "/findCountyNOI?counties={{county_cd}}&order=ASC"
+          url: "/findCountyNOI?counties={{county_cd}}"

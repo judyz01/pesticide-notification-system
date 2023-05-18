@@ -36,7 +36,10 @@ app.use(async (req, res, next) => {
 // Initialize Knex, a Node.js SQL query builder library with built-in connection pooling.
 const createPool = async () => {
   // Configure which instance and what database user to connect with.
-  const config = { pool: {} };
+  const config = {
+    acquireConnectionTimeout: 600000,
+    pool: {}
+  };
 
   // [START cloud_sql_postgres_knex_limit]
   // 'max' limits the total number of concurrent connections this pool will keep. Ideal
@@ -170,7 +173,7 @@ app.get('/findNearbyNOI', async (req, res) => {
           pool.orderBy([
             { column: 'distance', order: reqOrder },
           ])
-        } else {
+        } else if (orderParam === "time") {
           pool.orderBy([
             { column: 'applic_dt', order: reqOrder },
             { column: 'applic_time', order: reqOrder }
