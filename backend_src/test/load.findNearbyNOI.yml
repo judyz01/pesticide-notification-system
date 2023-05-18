@@ -7,13 +7,19 @@ config:
       arrivalRate: 2
       name: Warm Up
   payload:
-    path: "testCoordinates.csv"
-    fields:
-      - "latitude"
-      - "longitude"
-      - "radius"
+    - 
+      path: "testCoordinates.csv"
+      fields:
+        - "latitude"
+        - "longitude"
+        - "radius"
+    -
+      path: "dates.csv"
+      fields:
+        - "startDate"
+        - "endDate"
 scenarios:
   - flow:
       - get:
           url: "/findNearbyNOI?latitude={{latitude}}&longitude={{longitude}}
-          &radius={{radius}}&orderParam=time&order=ASC"
+          &radius={{radius}}&startDate={{startDate}}&endDate={{endDate}}&orderParam=time&order=ASC"

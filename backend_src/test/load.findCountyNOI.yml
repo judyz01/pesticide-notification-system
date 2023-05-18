@@ -5,10 +5,18 @@ config:
       arrivalRate: 1
       name: Warm Up
   payload:
-    path: "counties.csv"
-    fields:
-      - "county_cd"
+    -
+      path: "counties.csv"
+      fields:
+        - "county_cd"
+        - "startDate"
+        - "endDate"
+    -
+      path: "dates.csv"
+      fields:
+        - "startDate"
+        - "endDate"
 scenarios:
   - flow:
       - get:
-          url: "/findCountyNOI?counties={{county_cd}}"
+          url: "/findCountyNOI?counties={{county_cd}}&startDate={{startDate}}&endDate={{endDate}}"
