@@ -13,7 +13,7 @@
     
     "NOISearch": "Notices of Intent Search",
     "Filters": "Filters",
-    "County": "Select County",
+    "Select County": "Select County",
     "Address": "Address",
     "Coverage": "Coverage",
     "Fumigant label": "Fumigant",
@@ -30,6 +30,7 @@
 
     "acres": "acres",
     "miles": "miles",
+    "County": "County",
     "Aerial": "Aerial",
     "Ground": "Ground",
     "Aerial/Ground": "Aerial/Ground",

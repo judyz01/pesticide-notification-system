@@ -62,6 +62,7 @@ const Resources = () => {
   const [expanded, setExpanded] = React.useState('');
   const [checked, setChecked] = React.useState([]);
 
+  // Checkboxes
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
     const newChecked = [...checked];
@@ -81,7 +82,7 @@ const Resources = () => {
 
   return (
 
-    <Box sx={{display: "flex", flexDirection: "column", alignItems:"center", backgroundColor: "#fdf7ee", minHeight: `calc(100vh - 224px)`}}>
+    <Box data-testid="resources" sx={{display: "flex", flexDirection: "column", alignItems:"center", backgroundColor: "#fdf7ee", minHeight: `calc(100vh - 224px)`}}>
 
       <Card sx={{ mb:"30px", mt:"30px", borderRadius: "16px", border: "1px solid #126701", width:"38%",  minWidth: "275px", maxWidth:"550px" }}>
           <CardHeader 
@@ -118,7 +119,7 @@ const Resources = () => {
 
 
       <Box sx={{width:"80%"}}>
-        <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+        <Accordion data-testid="accordian-home" expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
           <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
             <Typography>
               {t("At Home")}
@@ -131,6 +132,7 @@ const Resources = () => {
 
             <List sx={{ width: "90%" }}>
               {[0, 1, 2, 3].map((value) => {
+                const dataTestId = `checkbox-list-label-${value}`;
                 const labelId = `checkbox-list-label-${value}`;
                 const points = [
                   t("Close"),
@@ -147,11 +149,12 @@ const Resources = () => {
                     <ListItemButton role={undefined} onClick={handleToggle(value)} >
                       <ListItemIcon>
                         <Checkbox
+                          data-testid={dataTestId}
                           edge="start"
                           checked={checked.indexOf(value) !== -1}
                           tabIndex={-1}
                           disableRipple
-                          inputProps={{ 'aria-labelledby': labelId }}
+                          inputProps={{ 'aria-labelledby': labelId}}
                         />
                       </ListItemIcon>
                       <ListItemText id={labelId} primary={points[value]} />
@@ -221,7 +224,7 @@ const Resources = () => {
           </AccordionDetails>
         </Accordion>
 
-        <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
+        <Accordion data-testid="accordian-work" expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
           <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
             <Typography>
               {t("At Work")}

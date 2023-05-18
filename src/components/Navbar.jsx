@@ -65,7 +65,9 @@ const Navbar = (props) => {
         flexDirection: {xs: "column", sm: "row"},
         position: "relative", 
         zIndex: 12000 }}>
+
         <Button
+          data-testid="Home"
           sx={{ 
             pl:4,
             pr:4,
@@ -78,8 +80,10 @@ const Navbar = (props) => {
               {HOME}
             </Link>
         </Button>
+
         {navItems.map((item) => (
           <Button key={item} 
+            data-testid={item}
             sx={{ 
               pl:4,
               pr:4,
@@ -100,7 +104,9 @@ const Navbar = (props) => {
   const renderMenu = () => {
     return(
       <ClickAwayListener onClickAway={() => setShowMenu(false)}>
-        <Box sx={{
+        <Box 
+          data-testid="menu"
+          sx={{
           display: "block", 
           position: "absolute",
           top: "119px",
@@ -122,13 +128,14 @@ const Navbar = (props) => {
       }}>
         <a href="/">
           <Box
+              data-testid="davis-logo"
               component="img"
               sx={{
                 width: "auto",
                 height: 50,
                 display: { xs: "block", sm: "block" } 
               }}
-              alt="logo"
+              alt="davis-logo"
               src="../images/davislogo.png"
           />
         </a>
@@ -137,6 +144,7 @@ const Navbar = (props) => {
           
           <Box sx={{pr:"10px", m:"20px", display: { xs: "block", sm: "block" } }}>
             <Button 
+                data-testid="language"
                 sx={{
                   float: "right", 
                   variant:"contained", 
@@ -158,14 +166,15 @@ const Navbar = (props) => {
           </Box>
           <Box sx={{display: { xs: "block", sm: "none" }}}>
             <Button 
+              data-testid="menu-icon"
               sx={{pr:"25px", float:"right", minWidth:"0px"}}
               onClick={() => setShowMenu(!showMenu)}
             >
               <MenuIcon sx={{ width:"30px", height:"30px"}}/>
             </Button> 
           </Box>
-        {showButtons ? renderButtons() : undefined}
-        {showMenu ? renderMenu() : undefined}
+        {showButtons && renderButtons()}
+        {showMenu && renderMenu()}
 
         </Box>
       </Toolbar>

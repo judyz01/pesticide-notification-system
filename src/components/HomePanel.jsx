@@ -64,8 +64,8 @@ const HomePanel = () => {
           variant="fullWidth"
           aria-label="full width tabs example"
         >
-          <Tab sx={{ pt:3, pb:3 }} label="Emergency" {...a11yProps(0)} />
-          <Tab sx={{ pt:3, pb:3 }} label="Community" {...a11yProps(1)} />
+          <Tab data-testid="emergency-tab" sx={{ pt:3, pb:3 }} label="Emergency" {...a11yProps(0)} />
+          <Tab data-testid="community-tab" sx={{ pt:3, pb:3 }} label="Community" {...a11yProps(1)} />
         </Tabs>
 
         <SwipeableViews 

@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useTranslation } from "react-i18next";
 import { AccessTimeOutlined, LocationOnOutlined, QrCode2, WarningAmberOutlined}  from '@mui/icons-material';
 import {Link, Box, Button, Card, CardContent, CardHeader, CardMedia, Dialog, DialogTitle, IconButton, Pagination, Skeleton, Stack, Tooltip, Typography } from '@mui/material';
+import dayjs from 'dayjs';
 
 import QRCode from "react-qr-code";
 import ReactToPrint from 'react-to-print';
@@ -89,6 +90,7 @@ const NOICards = (props) =>  {
   const COVERAGE = t("Coverage");
   const FUMIGANT = t("Fumigant label");
   const NO_NOIS = t("No NOIs");
+  const COUNTY = t("County");
 
   const [pesticideData, setPesticideData] = useState([]);
   const [isDesktop, setDesktop] = useState(true);
@@ -218,60 +220,71 @@ const NOICards = (props) =>  {
       var order = getOrderParams(props.order);
       var radius = props.radius? props.radius : 5;
 
-      if (coordinates) {
+      var startDate = "";
+      var endDate = "";
 
-        if (typeof props.county !== 'undefined' && props.county.length > 0) {
-          console.log("finding counties");
-
-          var counties = new URLSearchParams();
-
-          counties.append("order", order[0]);
-          props.county.forEach((countyIndex, idx) => {
-            counties.append("counties", countyIndex);
-          });
-
-          axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findCountyNOI`, {
-            params: counties,
-          })
-          .then((response) => {
-            console.log(response);
-            if (props.fumigant === true) {
-              const filteredData = response.data.filter(elem => elem.fumigant_sw === 'X');
-              setPesticideData(filteredData);
-            } else if (props.aerialGround) {
-              const filteredData = response.data.filter(elem => elem.aer_grnd_ind === getApplicatorCharacter(props.aerialGround));
-              setPesticideData(filteredData);
-            } else {
-              setPesticideData(response.data);
-            }
-          })
-          .catch(function (error) {
-              console.error(error);
-          });
-
-        } else {
-          console.log("finding current location");
-
-          axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-              params: { latitude: coordinates.lat, longitude: coordinates.lng, radius: convertMilesToMeters(radius), order: order[0], orderParam: order[1]},
-          })
-          .then((response) => {
-            console.log(response);
-            if (props.fumigant === true) {
-              const filteredData = response.data.filter(elem => elem.fumigant_sw === 'X');
-              setPesticideData(filteredData);
-            } else if (props.aerialGround) {
-              const filteredData = response.data.filter(elem => elem.aer_grnd_ind === getApplicatorCharacter(props.aerialGround));
-              setPesticideData(filteredData);
-            } else {
-              setPesticideData(response.data);
-            }
-          })
-          .catch(function (error) {
-              console.error(error);
-          });
-        }
+      if(props.startDate && props.endDate && (props.startDate.$d < props.endDate.$d)) {
+        startDate = dayjs(props.startDate.$d).format('YYYY-MM-DD');
+        endDate = dayjs(props.endDate.$d).format('YYYY-MM-DD');
       }
+
+
+      if (typeof props.county !== 'undefined' && props.county.length > 0) {
+        console.log("finding counties");
+
+        var counties = new URLSearchParams();
+
+        counties.append("order", order[0]);
+        props.county.forEach((countyIndex, idx) => {
+          counties.append("counties", countyIndex);
+        });
+
+        counties.append("startDate", startDate);
+        counties.append("endDate", endDate);
+
+
+        axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findCountyNOI`, {
+          params: counties,
+        })
+        .then((response) => {
+          console.log(response);
+          if (props.fumigant === true) {
+            const filteredData = response.data.filter(elem => elem.fumigant_sw === 'X');
+            setPesticideData(filteredData);
+          } else if (props.aerialGround) {
+            const filteredData = response.data.filter(elem => elem.aer_grnd_ind === getApplicatorCharacter(props.aerialGround));
+            setPesticideData(filteredData);
+          } else {
+            setPesticideData(response.data);
+          }
+        })
+        .catch(function (error) {
+            console.error(error);
+        });
+
+      } else {
+        console.log("finding current location");
+
+        axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
+            params: { latitude: coordinates.lat, longitude: coordinates.lng, radius: convertMilesToMeters(radius), order: order[0], orderParam: order[1], startDate: startDate, endDate: endDate},
+        })
+        .then((response) => {
+          console.log(response);
+          if (props.fumigant === true) {
+            const filteredData = response.data.filter(elem => elem.fumigant_sw === 'X');
+            setPesticideData(filteredData);
+          } else if (props.aerialGround) {
+            const filteredData = response.data.filter(elem => elem.aer_grnd_ind === getApplicatorCharacter(props.aerialGround));
+            setPesticideData(filteredData);
+          } else {
+            setPesticideData(response.data);
+          }
+        })
+        .catch(function (error) {
+            console.error(error);
+        });
+      }
+
     };
   };
 
@@ -284,7 +297,14 @@ const NOICards = (props) =>  {
 
     // console.log("Fumigant " + props.fumigant);
     // console.log("Aerial/Ground " + props.aerialGround);
-    console.log(props.county);
+    // console.log(props.county);
+    // console.log(props.startDate);
+    // console.log(props.endDate);
+
+    // console.log(dayjs(props.startDate.$d).format('YYYY-MM-DD'));
+    // console.log(dayjs(props.endDate.$d).format('YYYY-MM-DD'));
+
+
   }, [props], []);
 
   const iconMedia = (elem) => {
@@ -305,7 +325,7 @@ const NOICards = (props) =>  {
             </Typography> 
             :
             <Typography variant="body1">
-              {elem.county_name} County
+              {elem.county_name} {COUNTY}
             </Typography> 
           }
 

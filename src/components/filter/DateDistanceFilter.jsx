@@ -32,7 +32,7 @@ function getStyles(name, distanceDateOrder, theme) {
   };
 }
 
-export default function DateFilter(props) {
+export default function DateDistanceFilter(props) {
   const { t } = useTranslation();
   const INPUT_LABEL = t("Date/Distance");
 
@@ -41,6 +41,16 @@ export default function DateFilter(props) {
 
   const handleChange = (event) => {
     setDistanceDateOrder(event.target.value);
+  };
+
+  const handleDisable = (name) => {
+    if (typeof props.currentCounty !== 'undefined' && props.currentCounty.length > 0) {
+      if(name == 'Closest' || name == 'Furthest') {
+        return true;
+      }
+    }
+
+    return false;
   };
 
   React.useEffect(() => {
@@ -63,6 +73,7 @@ export default function DateFilter(props) {
           <MenuItem
             key={name}
             value={name}
+            disabled={handleDisable(name)}
             style={getStyles(name, distanceDateOrder, theme)}
           >
             {t(name)}
