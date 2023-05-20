@@ -61,7 +61,7 @@ const sendUnsubscribeConfirmation = (req, res, county) => {
 const sendGuide = (req, res) => {
     client.messages
         .create({
-            body: req.t("guide", { available_counties: county_functions.available_county_table }),
+            body: req.t("guide", { available_counties: `${county_functions.available_county_table}` }),
             messagingServiceSid: req.headers['accept-language'] == 'en' ? mSID : mSIDSp,
             to: req.body.From
         })
