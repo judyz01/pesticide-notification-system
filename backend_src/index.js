@@ -122,10 +122,10 @@ app.get('/findCountyNOI', async (req, res) => {
       .whereIn('county_cd', counties)
       .modify((pool) => {
         if (startDate) {
-          pool.whereRaw('applic_dt > ?', [startDate])
+          pool.whereRaw('applic_dt >= ?', [startDate])
         }
         if (endDate) {
-          pool.whereRaw('applic_dt < ?', [endDate])
+          pool.whereRaw('applic_dt <= ?', [endDate])
         }
       })
       .orderBy([
@@ -182,10 +182,10 @@ app.get('/findNearbyNOI', async (req, res) => {
 
         // Date range filter
         if (startDate) {
-          pool.whereRaw('applic_dt > ?', [startDate])
+          pool.whereRaw('applic_dt >= ?', [startDate])
         }
         if (endDate) {
-          pool.whereRaw('applic_dt < ?', [endDate])
+          pool.whereRaw('applic_dt <= ?', [endDate])
         }
       })
     res.status(200).json(noiList);
