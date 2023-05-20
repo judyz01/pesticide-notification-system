@@ -17,6 +17,7 @@ const app = express()
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+// lazy init knex connection pool
 let pool;
 
 // initialize SQL Pool
@@ -35,15 +36,18 @@ app.use(async (req, res, next) => {
 // Initialize Knex, a Node.js SQL query builder library with built-in connection pooling.
 const createPool = async () => {
   // Configure which instance and what database user to connect with.
-  const config = { pool: {} };
+  const config = {
+    acquireConnectionTimeout: 600000,
+    pool: {}
+  };
 
   // [START cloud_sql_postgres_knex_limit]
   // 'max' limits the total number of concurrent connections this pool will keep. Ideal
   // values for this setting are highly variable on app design, infrastructure, and database.
-  config.pool.max = 5;
+  config.pool.max = 1;
   // 'min' is the minimum number of idle connections Knex maintains in the pool.
   // Additional connections will be established to meet this value unless the pool is full.
-  config.pool.min = 5;
+  config.pool.min = 0;
   // [END cloud_sql_postgres_knex_limit]
 
   // [START cloud_sql_postgres_knex_timeout]
@@ -55,10 +59,10 @@ const createPool = async () => {
   // 'createTimeoutMillis` is the maximum number of milliseconds to wait trying to establish an
   // initial connection before retrying.
   // After acquireTimeoutMillis has passed, a timeout exception will be thrown.
-  config.pool.createTimeoutMillis = 30000; // 30 seconds
+  config.pool.createTimeoutMillis = 10000; // 10 seconds
   // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool
   // and not be checked out before it is automatically closed.
-  config.pool.idleTimeoutMillis = 600000; // 10 minutes
+  config.pool.idleTimeoutMillis = 1; // Immediately after the query is serviced
   // [END cloud_sql_postgres_knex_timeout]
 
   // [START cloud_sql_postgres_knex_backoff]
@@ -169,7 +173,7 @@ app.get('/findNearbyNOI', async (req, res) => {
           pool.orderBy([
             { column: 'distance', order: reqOrder },
           ])
-        } else {
+        } else if (orderParam === "time") {
           pool.orderBy([
             { column: 'applic_dt', order: reqOrder },
             { column: 'applic_time', order: reqOrder }
@@ -445,3 +449,7 @@ app.use((req, res) => {
 })
 
 functions.http('api', app);
+module.exports = {
+  app,
+  pool
+};

@@ -1,0 +1,32 @@
+config:
+  target: "https://noi-notification-system-qvo2g2xyga-uc.a.run.app"
+  http:
+    timeout: 30
+  phases:
+    - duration: 30
+      arrivalRate: 1
+      name: Warm Up
+    - duration: 30
+      arrivalRate: 1
+      rampTo: 5
+      name: Ramp Up
+    - duration: 60
+      arrivalRate: 5
+      name: Steady - Low
+  payload:
+    - 
+      path: "testCoordinates.csv"
+      fields:
+        - "latitude"
+        - "longitude"
+        - "radius"
+    -
+      path: "dates.csv"
+      fields:
+        - "startDate"
+        - "endDate"
+scenarios:
+  - flow:
+      - get:
+          url: "/findNearbyNOI?latitude={{latitude}}&longitude={{longitude}}
+          &radius={{radius}}&startDate={{startDate}}&endDate={{endDate}}&orderParam=time&order=ASC"
