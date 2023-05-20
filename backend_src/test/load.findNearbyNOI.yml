@@ -4,8 +4,15 @@ config:
     timeout: 30
   phases:
     - duration: 30
-      arrivalRate: 2
+      arrivalRate: 1
       name: Warm Up
+    - duration: 30
+      arrivalRate: 1
+      rampTo: 5
+      name: Ramp Up
+    - duration: 60
+      arrivalRate: 5
+      name: Steady - Low
   payload:
     - 
       path: "testCoordinates.csv"
