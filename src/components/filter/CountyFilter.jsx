@@ -125,7 +125,7 @@ export default function CountyDropdown(props) {
   }, [countyIndex, props]);
 
   return (
-      <FormControl sx={{ width: "100%", mt: 3 }}>
+      <FormControl data-testid="county" sx={{ width: "100%", mt: 3 }}>
         <InputLabel id="county-label"> {COUNTY_LABEL} </InputLabel>
         <Select
           labelId="county-label"

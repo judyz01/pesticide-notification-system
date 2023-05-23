@@ -42,6 +42,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build && echo '/* /index.html  200' | cat >build/_redirects ",
     "test": "react-scripts test",
+    "test:unit": "jest --testPathPattern=src/components/__tests__",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

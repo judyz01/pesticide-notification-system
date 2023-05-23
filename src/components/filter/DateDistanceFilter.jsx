@@ -45,7 +45,7 @@ export default function DateDistanceFilter(props) {
 
   const handleDisable = (name) => {
     if (typeof props.currentCounty !== 'undefined' && props.currentCounty.length > 0) {
-      if(name == 'Closest' || name == 'Furthest') {
+      if(name === 'Closest' || name === 'Furthest') {
         return true;
       }
     }
