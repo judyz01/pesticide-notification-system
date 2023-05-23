@@ -8,13 +8,13 @@ config:
       name: Warm Up
   payload:
     -
-      path: "counties.csv"
+      path: "data.counties.csv"
       fields:
         - "county_cd"
         - "startDate"
         - "endDate"
     -
-      path: "dates.csv"
+      path: "data.dates.csv"
       fields:
         - "startDate"
         - "endDate"

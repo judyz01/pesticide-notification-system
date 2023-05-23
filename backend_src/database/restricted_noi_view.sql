@@ -16,10 +16,13 @@ CREATE OR REPLACE VIEW public.restricted_noi_view
     restricted_products.product_name,
     restricted_products.aer_grnd_ind,
     restricted_products.fumigant_sw,
-    chemicals.chemname
+    restricted_products.product_label_link,
+    chemicals.chemname,
+    counties.county_name
    FROM noi
      JOIN restricted_products ON noi.prodno = restricted_products.prodno
-     JOIN chemicals ON noi.chem_code = chemicals.chem_code;
+     JOIN chemicals ON noi.chem_code = chemicals.chem_code
+     JOIN counties ON noi.county_cd = counties.county_cd;
 
 ALTER TABLE public.restricted_noi_view
     OWNER TO dev;

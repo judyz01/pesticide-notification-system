@@ -116,7 +116,7 @@ app.get('/findCountyNOI', async (req, res) => {
     res.set('Access-Control-Allow-Origin', '*');
     const noiList = await pool.distinct('restricted_noi_view.use_no', 'prodno', 'product_name', 'aer_grnd_ind', 'fumigant_sw',
       'chem_code', 'chemname', 'acre_treated', 'unit_treated', 'applic_dt',
-      'applic_time', 'aer_gnd_ind', 'county_cd', 'county_name', 'latitude', 'longitude')
+      'applic_time', 'aer_gnd_ind', 'county_cd', 'county_name', 'latitude', 'longitude', 'product_label_link')
       .from('restricted_noi_view')
       .innerJoin('coordinates_view', 'restricted_noi_view.use_no', '=', 'coordinates_view.use_no')
       .whereIn('county_cd', counties)
