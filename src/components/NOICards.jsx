@@ -407,11 +407,21 @@ const NOICards = (props) =>  {
           <Card key={index} sx={{ display:"flex", width: "80%", borderRadius: "16px", justifyContent: "space-between", flexDirection:{ sm:"column", md:"row"} }}>
               <Box sx={{ flexDirection: "column" }}>
 
-              <Stack direction="row">
-                  <CardHeader
-                    title={`${elem.product_name}`}
-                    sx={{pb:0, pr:0}}
-                  />
+                <Stack direction="row">
+
+                  {elem.product_label_link ? 
+                    <Link underline="hover" href={`${elem.product_label_link}`}>
+                      <CardHeader
+                        title={`${elem.product_name}`}
+                        sx={{pb:0, pr:0}}
+                      />
+                    </Link>
+                    :
+                    <CardHeader
+                      title={`${elem.product_name}`}
+                      sx={{pb:0, pr:0}}
+                    />
+                  }
 
                   <IconButton sx={{mt:"15px"}} aria-label="qr_code" onClick={() => { handleClickOpen(); generateQR(elem.latitude, elem.longitude);}}>
                     <QrCode2 />

@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { render, screen, fireEvent, cleanup, getByLabelText} from '@testing-library/react';
+import { render, screen, fireEvent, cleanup, getByLabelText, act} from '@testing-library/react';
 import Navbar from '../Navbar';
 import {MemoryRouter} from 'react-router-dom';
 import { ClickAwayListener } from '@mui/material';
@@ -53,7 +53,6 @@ describe('Navbar', () => {
 
     const menuIcon = screen.getByTestId("menu-icon");
 
-
     global.innerWidth = 599;
     global.dispatchEvent(new Event('resize'));
 
@@ -73,18 +72,31 @@ describe('Navbar', () => {
 
   });
 
-  it("should be able to click all the navigation tabs", () => {
+  it("should be able to click the home tab", () => {
 
     const homeTab = screen.getByTestId("Home");
-    const archiveTab = screen.getByTestId("Archive");
-    const resourcesTab = screen.getByTestId("Resources");
 
     expect(homeTab).toBeInTheDocument();
-    expect(archiveTab).toBeInTheDocument();
-    expect(resourcesTab).toBeInTheDocument();
+
 
     fireEvent.click(homeTab);
+  });
+
+  it("should be able to click the archive tab", () => {
+
+    const archiveTab = screen.getByTestId("Archive");
+
+    expect(archiveTab).toBeInTheDocument();
+
     fireEvent.click(archiveTab);
+  });
+
+  it("should be able to click the resources tab", () => {
+
+    const resourcesTab = screen.getByTestId("Resources");
+
+    expect(resourcesTab).toBeInTheDocument();
+
     fireEvent.click(resourcesTab);
   });
 
@@ -106,6 +118,11 @@ describe('Navbar', () => {
 
     fireEvent.click(menuIcon);
 
+  });
+
+  it("should not show the menu icon in desktop mode", () => {
+    global.innerWidth = 1200;
+    global.dispatchEvent(new Event('resize'));
   });
 
   // it("should be able to make menu disappear by clicking away", () => {

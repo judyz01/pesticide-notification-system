@@ -47,7 +47,7 @@ export default function DateFilter(props) {
   }, [aerialGroundOrder, props]);
 
   return (
-    <FormControl sx={{ width: "100%", mt: 3  }}>
+    <FormControl data-testid="aerialground" sx={{ width: "100%", mt: 3  }}>
       <InputLabel id="order-by-aerial-ground-date-label">{INPUT_LABEL}</InputLabel>
       <Select
         labelId="order-by-distance-date-label"
