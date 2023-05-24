@@ -24,6 +24,7 @@ const names = [
 ];
 
 function getStyles(name, distanceDateOrder, theme) {
+
   return {
     fontWeight:
     distanceDateOrder.indexOf(name) === -1
@@ -54,6 +55,10 @@ export default function DateDistanceFilter(props) {
   };
 
   React.useEffect(() => {
+    if (typeof props.currentCounty !== 'undefined' && props.currentCounty.length > 0) {
+      setDistanceDateOrder('Most Recent');
+    }
+
     props.func(distanceDateOrder);
   }, [distanceDateOrder, props]);
 
