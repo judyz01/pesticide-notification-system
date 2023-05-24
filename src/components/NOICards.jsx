@@ -140,9 +140,9 @@ const NOICards = (props) =>  {
   const getOrderParams = (order) => {
     switch(order) {
       case 'Most Recent':
-        return ["DESC", ""];
+        return ["DESC", "time"];
       case 'Least Recent':
-        return ["ASC", ""];
+        return ["ASC", "time"];
       case 'Closest':
         return ["ASC", "distance"];
       case 'Furthest':
@@ -265,6 +265,8 @@ const NOICards = (props) =>  {
       } else {
         console.log("finding current location");
 
+        console.log(order[1]);
+
         axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
             params: { latitude: coordinates.lat, longitude: coordinates.lng, radius: convertMilesToMeters(radius), order: order[0], orderParam: order[1], startDate: startDate, endDate: endDate},
         })
@@ -294,6 +296,8 @@ const NOICards = (props) =>  {
   useEffect(() => {
     props.location &&
       localStorage.setItem('location', JSON.stringify(props.location));
+
+    console.log(props.order);
 
     // console.log("Fumigant " + props.fumigant);
     // console.log("Aerial/Ground " + props.aerialGround);
