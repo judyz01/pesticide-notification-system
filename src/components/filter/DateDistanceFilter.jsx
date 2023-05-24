@@ -56,7 +56,9 @@ export default function DateDistanceFilter(props) {
 
   React.useEffect(() => {
     if (typeof props.currentCounty !== 'undefined' && props.currentCounty.length > 0) {
-      setDistanceDateOrder('Most Recent');
+      if (distanceDateOrder != 'Most Recent' && distanceDateOrder != 'Least Recent') {
+        setDistanceDateOrder('Most Recent');
+      }
     }
 
     props.func(distanceDateOrder);
