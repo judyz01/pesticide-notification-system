@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Box, Link, Typography } from '@mui/material';
+import { Box, Link, Stack, Typography } from '@mui/material';
 import { LoadScript } from "@react-google-maps/api";
 import { useTranslation } from "react-i18next";
 import {Link as RouterLink} from "react-router-dom";
@@ -9,6 +9,7 @@ import { RefactoredMapView, NOICards } from './';
 
 import HomePanel from "./HomePanel";
 
+import { DateDistanceFilter, RadiusFilter } from './filter';
 
 const lib = ["places"];
 const key = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
@@ -24,7 +25,7 @@ const Home = (props) => {
     // Passed to App to pass to NOIs
     props.set_location(location);
 
-    // Passes to NOICard component below as it's also listed on home page
+    // Passes to NOICards component below as it's also listed on home page
     setLocation(location);
   }
 
@@ -54,7 +55,7 @@ const Home = (props) => {
             {t("NOI")}
           </Typography>
 
-          <Link to="/NOIS" underline="hover" component={RouterLink} sx={{ pt: "15px", component: "button", color: "#208EF3", fontSize: 18, fontWeight: 600}}>
+          <Link to="/Archive" underline="hover" component={RouterLink} sx={{ pt: "15px", component: "button", color: "#208EF3", fontSize: 18, fontWeight: 600}}>
             {t("SeeAll")}
           </Link>
 
