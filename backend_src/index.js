@@ -397,7 +397,16 @@ const handleSingleKeywordText = (req, res, token) => {
 const handleMultiKeywordText = async (req, res, tokens) => {
   if (tokens[0] == 'SUB') {
     let subs = 'subscribers';
-    let county_column = 'sub' + String(county_functions.county_lookup(tokens[1]));
+    let county_num = county_functions.county_lookup(tokens[1]);
+    let county_column;
+    if (county_num) {
+      county_column = 'sub' + String(county_num);
+    } else {
+      console.error("Invalid county");
+      twilio_functions.sendError(req, res, "invalid_county");
+      res.status(500).send("Invalid county. Error subscribing");
+      return;
+    }
     // Add users to subscription list, and send confirmation text.
     // Send error message otherwise.
     try {

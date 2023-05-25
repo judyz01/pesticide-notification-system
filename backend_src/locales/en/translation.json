@@ -3,11 +3,10 @@
     "guide": "Available counties: {{available_counties}}. Text SUB <COUNTY> to start receiving notifications about pesticides in that county, and text HALT <COUNTY> to stop. Text STOP to stop receiving all messages.",
     "successful_subscription": "Thank you for subscribing to the CDPR NOI Notification System for {{county}}. For more info, text GUIDE.",
     "successful_unsubscription": "You will no longer receive CDPR NOI Notification messages for {{county}}. For more info, text GUIDE.",
-
     "parse_error": "Error parsing command. Too many arguments.",
     "invalid_keyword": "Try again. Text SUB <COUNTY> to receive information about pesticide use in your area. For a full list of available counties, text GUIDE.",
     "excess_keyword": "Too many commands. Text SUB <COUNTY> to receive information about pesticide use in your area. For a full list of available counties, text GUIDE.",
-    "invalid_county": "Notifications for this county are unavailable right now. For a full list of available counties, text GUIDE.", 
-    "42P01": "Notifications for this county are unavailable right now. For a full list of available counties, text GUIDE.",
+    "invalid_county": "Notifications for this county are unavailable right now. Make sure you are spelling the county correctly. For a full list of available counties, text GUIDE.",
+    "42P01": "Notifications for this county are unavailable right now. Make sure you are spelling the county correctly. For a full list of available counties, text GUIDE.",
     "23505": "You've already subscribed to this county. For a full list of available counties, text GUIDE."
 }

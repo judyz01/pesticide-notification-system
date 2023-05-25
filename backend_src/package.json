@@ -7,7 +7,10 @@
     "test": "nyc mocha --reporter spec",
     "start": "npx functions-framework --target=api [--signature-type=http]",
     "watch": "npm-watch start",
-    "loadTest": "artillery test/load.yml"
+    "loadNearby": "artillery run -o test/reports/findNearbyNOI.json test/load.findNearbyNOI.yml",
+    "loadCounty": "artillery run -o test/reports/findCountyNOI.json test/load.findCountyNOI.yml",
+    "reportNearby": "artillery report test/reports/findNearbyNOI.json",
+    "reportCounty": "artillery report test/reports/findCountyNOI.json"
   },
   "watch": {
     "start": "*"
