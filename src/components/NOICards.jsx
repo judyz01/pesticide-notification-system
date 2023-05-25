@@ -3,11 +3,12 @@ import React, { useState, useEffect, useRef} from 'react';
 import axios from 'axios';
 import { useTranslation } from "react-i18next";
 import { AccessTimeOutlined, LocationOnOutlined, QrCode2, WarningAmberOutlined}  from '@mui/icons-material';
-import {Link, Box, Button, Card, CardContent, CardHeader, CardMedia, Dialog, DialogTitle, IconButton, Pagination, Skeleton, Stack, Tooltip, Typography } from '@mui/material';
+import {Link, Box, Button, Card, CardContent, CardHeader, CardMedia, Dialog, DialogTitle, IconButton, Pagination, Skeleton, Snackbar, Stack, Tooltip, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 
 import QRCode from "react-qr-code";
 import ReactToPrint from 'react-to-print';
+import IosShareIcon from '@mui/icons-material/IosShare';
 
 
 function loadSkeleton() {
@@ -23,6 +24,8 @@ function loadSkeleton() {
 function SimpleDialog(props) {
   const { onClose, open, qrCoords } = props;
   const QRRef = useRef(null);
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
 
   if (!qrCoords.lat  && !qrCoords.lng ) {
     return;
@@ -42,14 +45,20 @@ function SimpleDialog(props) {
   var debug = "http://localhost:3000?lat=" + qrCoords.lat + "&lng=" + qrCoords.lng;
   console.log(url);
 
+  const handleClick = () => {
+    setSnackbarOpen(true);
+    navigator.clipboard.writeText(url);
+  }
+
+
   return (
     <Dialog 
-      titleStyle={{textAlign: "center"}}
+      titlestyle={{textAlign: "center"}}
       onClose={handleClose} 
       open={open}                    
     >
       <div ref={QRRef} style={{ background: 'white', padding: '16px', justifyContent:"center", alignItems:"center"}}>
-        <DialogTitle textAlign="center"> Scan QR Code </DialogTitle>
+        <DialogTitle textAlign="center"> Scan for Pesticide Location </DialogTitle>
           <QRCode
             size={256}
             style={{ width: "100%"}}
@@ -58,17 +67,30 @@ function SimpleDialog(props) {
           />
         </div>
 
+        <Stack sx={{pb:"15px"}} direction="row" justifyContent="center" alignItems="center">
+          <ReactToPrint
+            pageStyle={getPageMargins}
+            // documentTitle = {"Pesticide Notification System"}
+            trigger={() => (
+              <Button sx={{p: "20px"}} >
+                Print QR Code
+              </Button>
+              )}
+            content={() => QRRef.current}>
+          </ReactToPrint>
 
-        <ReactToPrint
-          pageStyle={getPageMargins}
-          // documentTitle = {"Pesticide Notification System"}
-          trigger={() => (
-            <Button sx={{p: "20px"}} >
-              Print QR Code
-            </Button>
-            )}
-          content={() => QRRef.current}>
-        </ReactToPrint>
+          <IconButton onClick={handleClick}>
+            <IosShareIcon />
+          </IconButton>
+          <Snackbar
+            anchorOrigin={{ vertical: 'top', horizontal: 'center'}}
+            open={snackbarOpen}
+            onClose={() => setSnackbarOpen(false)}
+            autoHideDuration={2500}
+            message="Copied to clipboard"
+          />
+        </Stack>
+
 
         {/* <Link href={debug}>
           Debug Link
@@ -426,10 +448,6 @@ const NOICards = (props) =>  {
                       sx={{pb:0, pr:0}}
                     />
                   }
-
-                  <IconButton sx={{mt:"15px"}} aria-label="qr_code" onClick={() => { handleClickOpen(); generateQR(elem.latitude, elem.longitude);}}>
-                    <QrCode2 />
-                  </IconButton>
                 </Stack>
 
                 {/* 
@@ -455,9 +473,21 @@ const NOICards = (props) =>  {
                 }
 
                 <CardContent>
-                  <Typography variant="h11" color="#A5ADBB">
-                    {ADDRESS}: {`${elem.latitude}`}, {`${elem.longitude}`}
+{/* 
+                  <IconButton sx={{mt:"15px"}} aria-label="qr_code" onClick={() => { handleClickOpen(); generateQR(elem.latitude, elem.longitude);}}>
+                    <QrCode2 />
+                  </IconButton> */}
+                  <Typography variant="h11" color="#A5ADBB" alignItems="center">
+                    {ADDRESS}
+                    <IconButton sx={{ml:"-5px", mr:"-8px"}} aria-label="qr_code" onClick={() => { handleClickOpen(); generateQR(elem.latitude, elem.longitude);}}>
+                      <QrCode2 opacity="0.8"/>
+                    </IconButton>
+                    : {`${elem.latitude}`}, {`${elem.longitude}`}
                   </Typography>
+
+                  {/* <Typography variant="h11" color="#A5ADBB">
+                    {ADDRESS} : {`${elem.latitude}`}, {`${elem.longitude}`}
+                  </Typography> */}
 
                   <Typography color="#A5ADBB">
                     {COVERAGE}: {`${elem.acre_treated}`} {`${COVERAGE_UNIT}`}

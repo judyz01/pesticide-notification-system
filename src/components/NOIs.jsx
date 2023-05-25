@@ -1,7 +1,8 @@
 import * as React from "react";
 
 import { useTranslation } from "react-i18next";
-import { Box, Button, Drawer, Typography } from '@mui/material';
+import { Box, Button, Drawer, Stack, Typography, Tooltip } from '@mui/material';
+import HelpIcon from '@mui/icons-material/Help';
 
 import { Filters, NOICards } from "./";
 
@@ -108,9 +109,16 @@ const NOIs = (props) => {
       }
 
       <Box sx={{display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#fdf7ee", flexGrow: 1}}>
-        <Typography align="center" sx={{mt: "25px", mb: "25px", fontSize: 28, fontWeight: 600, color: "#126701"}}>
-          {NOI_SEARCH}
-        </Typography>
+
+        <Stack direction="row" justifyContent="center" alignItems="center"> 
+          <Typography align="center" sx={{mt: "25px", mb: "25px", fontSize: 28, fontWeight: 600, color: "#126701"}}>
+            {NOI_SEARCH} 
+          </Typography>
+
+          <Tooltip title="A Notice of Intent is a document submitted by an agricultural grower indicating a site and intended start date for a Restricted Material application. The grower must submit an NOI at least 24 hours in advance of each application and is allowed a 72 hour grace period." arrow placement="right">
+              <HelpIcon opacity="0.5" sx={{ml:"10px"}}/>
+          </Tooltip>
+        </Stack>
 
         { !isDesktop &&
           <>
