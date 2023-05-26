@@ -3,12 +3,11 @@ import React, { useState, useEffect, useRef} from 'react';
 import axios from 'axios';
 import { useTranslation } from "react-i18next";
 import { AccessTimeOutlined, LocationOnOutlined, QrCode2, WarningAmberOutlined}  from '@mui/icons-material';
-import {Link, Box, Button, Card, CardContent, CardHeader, CardMedia, Dialog, DialogTitle, IconButton, Pagination, Skeleton, Snackbar, Stack, Tooltip, Typography } from '@mui/material';
+import { Link, Box, Button, Card, CardContent, CardHeader, CardMedia, Dialog, DialogTitle, IconButton, Pagination, Skeleton, Snackbar, Stack, Tooltip, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 
-import QRCode from "react-qr-code";
-import ReactToPrint from 'react-to-print';
-import IosShareIcon from '@mui/icons-material/IosShare';
+import { convertMilesToMeters, getOrderParams, getApplicatorCharacter, getStandardTime, reformatDate} from "../helpers/functions"
+import SimpleDialog from "./SimpleDialog";
 
 
 function loadSkeleton() {
@@ -20,85 +19,6 @@ function loadSkeleton() {
     <Skeleton sx={{m:"15px", borderRadius: "16px"}} animation="wave" variant="rectangular" width="80%" height={150} />,
   ];
 }
-
-function SimpleDialog(props) {
-  const { onClose, open, qrCoords } = props;
-  const QRRef = useRef(null);
-
-  const [snackbarOpen, setSnackbarOpen] = useState(false)
-
-  if (!qrCoords.lat  && !qrCoords.lng ) {
-    return;
-  }
-
-  console.log("qr coords " + qrCoords.lat + " " + qrCoords.lng);
-
-  const handleClose = () => {
-    onClose();
-  };
-
-  const getPageMargins = () => {
-    return `@page { margin: '10px' '10px' '10px '10px' !important; }`;
-  };
-
-  var url = "https://pesticidenoi.netlify.app?lat=" + qrCoords.lat + "&lng=" + qrCoords.lng;
-  var debug = "http://localhost:3000?lat=" + qrCoords.lat + "&lng=" + qrCoords.lng;
-  console.log(url);
-
-  const handleClick = () => {
-    setSnackbarOpen(true);
-    navigator.clipboard.writeText(url);
-  }
-
-
-  return (
-    <Dialog 
-      titlestyle={{textAlign: "center"}}
-      onClose={handleClose} 
-      open={open}                    
-    >
-      <div ref={QRRef} style={{ background: 'white', padding: '16px', justifyContent:"center", alignItems:"center"}}>
-        <DialogTitle textAlign="center"> Scan for Pesticide Location </DialogTitle>
-          <QRCode
-            size={256}
-            style={{ width: "100%"}}
-            value={url}
-            viewBox={`0 0 256 256`}
-          />
-        </div>
-
-        <Stack sx={{pb:"15px"}} direction="row" justifyContent="center" alignItems="center">
-          <ReactToPrint
-            pageStyle={getPageMargins}
-            // documentTitle = {"Pesticide Notification System"}
-            trigger={() => (
-              <Button sx={{p: "20px"}} >
-                Print QR Code
-              </Button>
-              )}
-            content={() => QRRef.current}>
-          </ReactToPrint>
-
-          <IconButton onClick={handleClick}>
-            <IosShareIcon />
-          </IconButton>
-          <Snackbar
-            anchorOrigin={{ vertical: 'top', horizontal: 'center'}}
-            open={snackbarOpen}
-            onClose={() => setSnackbarOpen(false)}
-            autoHideDuration={2500}
-            message="Copied to clipboard"
-          />
-        </Stack>
-
-
-        {/* <Link href={debug}>
-          Debug Link
-        </Link> */}
-    </Dialog>
-  );
-}
-
 
 const NOICards = (props) =>  {
   const { t } = useTranslation();
@@ -138,40 +58,24 @@ const NOICards = (props) =>  {
   const itemsPerPage = 10;
   const [page, setPage] = React.useState(1);
 
+  // Pagination
   const handleChange = (event, value) => {
     setPage(value);
     window.scroll({top: 0, left: 0, behavior: 'smooth' });
   };
 
-  const convertMilesToMeters = (miles) => {
-    return miles * 1609.34;
-  };
-
+  // QR Icon Button
   const handleClickOpen = () => {
     setOpen(true);
   };
 
-  const handleClose = (value) => {
+  // Dialog
+  const handleClose = () => {
     setOpen(false);
   };
 
   const generateQR = (lat, lng) => {
     setQrCoords({lat, lng});
-  };
-
-  const getOrderParams = (order) => {
-    switch(order) {
-      case 'Most Recent':
-        return ["DESC", "time"];
-      case 'Least Recent':
-        return ["ASC", "time"];
-      case 'Closest':
-        return ["ASC", "distance"];
-      case 'Furthest':
-        return ["DESC", "distance"];
-      default:
-        return ["ASC", "distance"];
-    }
   };
 
   const getApplicatorType = (char) => {
@@ -185,47 +89,6 @@ const NOICards = (props) =>  {
       default:
         return "N/A";
     }
-  };
-
-  const getApplicatorCharacter = (str) => {
-    switch(str) {
-      case 'Aerial':
-        return 'A';
-      case 'Ground':
-        return 'B';
-      case 'Aerial/Ground':
-        return 'C';
-      default:
-        return "N/A";
-    }
-  };
-
-  const getStandardTime = (time) => {
-    // Times that are listed null
-    if (!time) {
-      return "";
-    }
-
-    var militaryTime = time.substring(0, 5);
-    var militaryHour = parseInt(militaryTime.substring(0,2));
-    var standardHour = ((militaryHour + 11) % 12) + 1;
-    var amPm = militaryHour > 11 ? 'PM' : 'AM';
-    var minutes = militaryTime.substring(3);
-
-    return standardHour + ":" + minutes + amPm;
-  };
-
-  const reformatDate = (date) => {
-    // Dates that are listed null
-    if (!date) {
-      return "";
-    }
-    var yymmdd_format = date.substring(0, 10);
-    var year = yymmdd_format.substring(0, 4);
-    var month = parseInt(yymmdd_format.substring(5, 7));
-    var day = yymmdd_format.substring(8, 10);
-
-    return month + "/" + day + "/" + year;
   };
 
   const update = () => {
@@ -287,8 +150,6 @@ const NOICards = (props) =>  {
       } else {
         console.log("finding current location");
 
-        console.log(order[1]);
-
         axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
             params: { latitude: coordinates.lat, longitude: coordinates.lng, radius: convertMilesToMeters(radius), order: order[0], orderParam: order[1], startDate: startDate, endDate: endDate},
         })
@@ -319,7 +180,7 @@ const NOICards = (props) =>  {
     props.location &&
       localStorage.setItem('location', JSON.stringify(props.location));
 
-    console.log(props.order);
+    // console.log(props.order);
 
     // console.log("Fumigant " + props.fumigant);
     // console.log("Aerial/Ground " + props.aerialGround);
@@ -329,17 +190,12 @@ const NOICards = (props) =>  {
 
     // console.log(dayjs(props.startDate.$d).format('YYYY-MM-DD'));
     // console.log(dayjs(props.endDate.$d).format('YYYY-MM-DD'));
-
-
   }, [props], []);
 
   const iconMedia = (elem) => {
     return(
       <>
-        
         <Stack direction="row" alignItems="center" gap={2}> 
-
-
           <Tooltip title={TOOLTIP_DISTANCE} arrow placement="left">
             <LocationOnOutlined />
           </Tooltip>
@@ -354,15 +210,14 @@ const NOICards = (props) =>  {
               {elem.county_name} {COUNTY}
             </Typography> 
           }
-
         </Stack>
+
         <Stack direction="row" alignItems="center" gap={2} sx={{pt:"5px"}}>
           <Tooltip title={TOOLTIP_DATE}  arrow placement="left">
             <AccessTimeOutlined />
           </Tooltip>
 
           <Stack direction="column">
-
             {/* Desktop View: time & date formatted vertically */}
             { isDesktop &&
               <>
@@ -473,21 +328,14 @@ const NOICards = (props) =>  {
                 }
 
                 <CardContent>
-{/* 
-                  <IconButton sx={{mt:"15px"}} aria-label="qr_code" onClick={() => { handleClickOpen(); generateQR(elem.latitude, elem.longitude);}}>
-                    <QrCode2 />
-                  </IconButton> */}
+
                   <Typography variant="h11" color="#A5ADBB" alignItems="center">
                     {ADDRESS}
-                    <IconButton sx={{ml:"-5px", mr:"-8px"}} aria-label="qr_code" onClick={() => { handleClickOpen(); generateQR(elem.latitude, elem.longitude);}}>
-                      <QrCode2 opacity="0.8"/>
-                    </IconButton>
+                      <IconButton sx={{ml:"-5px", mr:"-8px"}} aria-label="qr_code" onClick={() => { handleClickOpen(); generateQR(elem.latitude, elem.longitude);}}>
+                        <QrCode2 opacity="0.8"/>
+                      </IconButton>
                     : {`${elem.latitude}`}, {`${elem.longitude}`}
                   </Typography>
-
-                  {/* <Typography variant="h11" color="#A5ADBB">
-                    {ADDRESS} : {`${elem.latitude}`}, {`${elem.longitude}`}
-                  </Typography> */}
 
                   <Typography color="#A5ADBB">
                     {COVERAGE}: {`${elem.acre_treated}`} {`${COVERAGE_UNIT}`}
@@ -496,6 +344,7 @@ const NOICards = (props) =>  {
                   <Typography color="#A5ADBB">
                     {FUMIGANT}: {`${elem.fumigant_sw === 'X' ? "Yes" : "No"}`}
                   </Typography>
+
                 </CardContent>
               </Box>
 

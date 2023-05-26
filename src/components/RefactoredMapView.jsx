@@ -128,20 +128,16 @@ function RefactoredMapView(props) {
 
   }, [props, currentLocation]);
 
-  // useEffect(() => {
-  //   console.log((address));
-  // }, [address]);
-
-  const findPlaceFromCoords = (lat, lng) => {
-    var lat_lng = lat + ", " + lng;
-    console.log(lat_lng);
-    axios.get(`https://maps.googleapis.com/maps/api/geocode/json?`, {
-      params: { latlng: lat_lng , key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY },
-    })
-    .then(({data}) => {
-        setAddress(data.results[2].formatted_address);
-    });
-  };
+  // const findPlaceFromCoords = (lat, lng) => {
+  //   var lat_lng = lat + ", " + lng;
+  //   console.log(lat_lng);
+  //   axios.get(`https://maps.googleapis.com/maps/api/geocode/json?`, {
+  //     params: { latlng: lat_lng , key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY },
+  //   })
+  //   .then(({data}) => {
+  //       setAddress(data.results[2].formatted_address);
+  //   });
+  // };
 
   // Receive new location from search box, converts it to lat/long coordinates
   // Uses new coordinates to obtain pesticide data
@@ -166,10 +162,6 @@ function RefactoredMapView(props) {
   };
 
   const onMapLoad = (map) => {
-
-    // google.maps.event.addListener(map, "bounds_changed", () => {
-    //   setBounds(map.getBounds());
-    // });
 
     const legend = document.getElementById("legend");
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
