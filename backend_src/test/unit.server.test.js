@@ -152,6 +152,16 @@ describe("Backend API", () => {
                         }
                     })
             });
+
+            it("does not return values without the 3 required parameters", () => {
+                supertest(app)
+                    .get('/findNearbyNOI')
+                    .set('Accept', 'application/json')
+                    .expect((res) => {
+                        assert.equal(res.status, 500);
+                        assert.equal(res.text, 'Error in request: findNearbyNOI');
+                    })
+            });
         })
     })
 
@@ -220,30 +230,6 @@ describe("Backend API", () => {
         })
     })
 
-    describe("Find Nearby NOIs", () => {
-        describe("Invalid", () => {
-            beforeEach(() => {
-                this.get = sinon.stub(request, 'get').resolves({
-                    'Content-Type': "text/html; charset=utf-8",
-                    status: 500,
-                    text: 'Error in request: findNearbyNOI'
-                })
-            })
-            afterEach(() => {
-                sinon.restore();
-            })
-            it("does not return values without the 3 required parameters", () => {
-                supertest(app)
-                    .get('/findNearbyNOI')
-                    .set('Accept', 'application/json')
-                    .expect((res) => {
-                        assert.equal(res.status, 500);
-                        assert.equal(res.text, 'Error in request: findNearbyNOI');
-                    })
-            });
-        })
-    })
-
     describe("Add to Table NOI", () => {
         describe("Happy Path", () => {
             beforeEach(() => {
@@ -255,7 +241,7 @@ describe("Backend API", () => {
             })
             afterEach(() => {
                 sinon.restore();
-            })
+            });
 
             it("Should successfully insert", (done) => {
                 supertest(app)
@@ -268,7 +254,19 @@ describe("Backend API", () => {
                     })
                 done();
             })
-        })
+        });
+        // describe("Bad Path", () => {
+        //     beforeEach(() => {
+        //         this.post = sinon.stub(request, 'post').resolves({
+        //             'Content-Type': "text/html; charset=utf-8",
+        //             status: 200,
+        //             text: 'NOI Table updated. Not a fumigant, so no immediate text notification.'
+        //         })
+        //     })
+        //     afterEach(() => {
+        //         sinon.restore();
+        //     })
+        // })
     })
 
     describe("SMS", () => {
@@ -283,7 +281,7 @@ describe("Backend API", () => {
             afterEach(() => {
                 sinon.restore();
             })
-            it("should respond with the guide", (done) => {
+            it("Should respond with the guide", (done) => {
                 supertest(app)
                     .post('/sms/in/en')
                     .send({

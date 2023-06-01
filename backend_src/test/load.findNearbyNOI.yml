@@ -29,4 +29,4 @@ scenarios:
   - flow:
       - get:
           url: "/findNearbyNOI?latitude={{latitude}}&longitude={{longitude}}
-          &radius={{radius}}&startDate={{startDate}}&endDate={{endDate}}&orderParam=time&order=ASC"
+          &radius={{radius}}&startDate={{startDate}}&endDate={{endDate}}&orderParam=distance&order=ASC"

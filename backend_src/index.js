@@ -162,30 +162,58 @@ app.get('/findNearbyNOI', async (req, res) => {
   let reqOrder = req.query.order;
   let startDate = req.query.startDate;
   let endDate = req.query.endDate;
+  let page = req.query.page;
+  let pageSize = req.query.pageSize;
+  if (!pageSize) {
+    pageSize = 10;
+  }
+  let count = req.query.count;
+  let map = req.query.map;
 
   try {
     res.set('Access-Control-Allow-Origin', '*');
 
-    const noiList = await pool.select(pool.raw('* FROM find_nearby_noi_data(?, ?, ?)', [latitude, longitude, radius]))
+    // can probably refactor ala strategy pattern
+    let rawQuery;
+    if (count === 'true') {
+      rawQuery = pool.raw('count(*) FROM find_nearby_noi_data(?, ?, ?)', [latitude, longitude, radius])
+    } else if (map === 'true') {
+      rawQuery = pool.raw('latitude, longitude FROM find_nearby_noi_data(?, ?, ?)', [latitude, longitude, radius])
+    } else {
+      rawQuery = pool.raw('* FROM find_nearby_noi_data(?, ?, ?)', [latitude, longitude, radius])
+    }
+    const noiList = await pool.select(rawQuery)
       .modify((pool) => {
-        // Sort
-        if (orderParam === "distance") {
-          pool.orderBy([
-            { column: 'distance', order: reqOrder },
-          ])
-        } else if (orderParam === "time") {
-          pool.orderBy([
-            { column: 'applic_dt', order: reqOrder },
-            { column: 'applic_time', order: reqOrder }
-          ])
-        }
-
         // Date range filter
         if (startDate) {
           pool.whereRaw('applic_dt >= ?', [startDate])
         }
         if (endDate) {
           pool.whereRaw('applic_dt <= ?', [endDate])
+        }
+
+        if (count != 'true' && map != 'true') {
+          // Sort
+          if (orderParam === "distance") {
+            pool.orderBy([
+              { column: 'distance', order: reqOrder },
+            ])
+          } else if (orderParam === "time") {
+            pool.orderBy([
+              { column: 'applic_dt', order: reqOrder },
+              { column: 'applic_time', order: reqOrder }
+            ])
+          }
+
+          if (page) {
+            // Pagination
+            if (page > 0) {
+              pool.offset(pageSize * (page - 1))
+            }
+            if (pageSize >= 10) {
+              pool.limit(pageSize);
+            }
+          }
         }
       })
     res.status(200).json(noiList);
