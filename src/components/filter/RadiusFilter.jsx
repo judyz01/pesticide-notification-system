@@ -41,7 +41,7 @@ export default function RadiusFilter(props) {
   const RADIUS_LABEL = t("Set Radius");
 
   const theme = useTheme();
-  const [radius, setRadius] = React.useState(props.currentRadius);
+  const [radius, setRadius] = React.useState(props.radius);
 
   const handleChange = (event) => {
     setRadius(event.target.value);
@@ -52,8 +52,8 @@ export default function RadiusFilter(props) {
   }, [radius, props]);
 
   return (
-    <FormControl sx={{ width: "100%", mt: 2  }}>
-      <InputLabel id="order-by-radius-label">{RADIUS_LABEL}</InputLabel>
+    <FormControl sx={{ minWidth:"120px", width: "20%"}}>
+      <InputLabel id="order-by-radius-label">{RADIUS_LABEL} </InputLabel>
       <Select
         labelId="order-by-radius-label"
         id="order-by-radius"
