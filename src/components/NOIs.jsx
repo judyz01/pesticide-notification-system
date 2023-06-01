@@ -10,7 +10,7 @@ const NOIs = (props) => {
   const { t } = useTranslation();
   const NOI_SEARCH = t("NOISearch");
 
-  const [county, setCounty] = React.useState([]);
+  const [county, setCounty] = React.useState([1]);
   const [order, setOrder] = React.useState();
   const [radius, setRadius] = React.useState();
   const [fumigant, setFumigant] = React.useState();
@@ -22,7 +22,7 @@ const NOIs = (props) => {
   const [showDrawer, setShowDrawer] = React.useState(false);
   const [dontRefresh, setDontRefresh] = React.useState(false);
 
-  const [currentCounty, setCurrentCounty] = React.useState([]);
+  const [currentCounty, setCurrentCounty] = React.useState([1]);
   const [currentOrder, setCurrentOrder] = React.useState('');
   const [currentRadius, setCurrentRadius] = React.useState(5);
   const [currentFumigant, setCurrentFumigant] = React.useState(false);

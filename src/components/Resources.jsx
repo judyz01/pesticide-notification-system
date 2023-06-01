@@ -19,7 +19,7 @@ import Checkbox from '@mui/material/Checkbox';
 
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
-))(({ theme }) => ({
+  ))(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,
   '&:not(:last-child)': {
     borderBottom: 0,
@@ -118,7 +118,7 @@ const Resources = () => {
       </Typography>
 
 
-      <Box sx={{width:"80%"}}>
+      <Box sx={{width:"60%"}}>
         <Accordion data-testid="accordian-home" expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
           <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
             <Typography>

@@ -5,9 +5,11 @@ import { Box, Input, InputAdornment, Stack, TextField } from "@mui/material";
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { Circle, GoogleMap, Marker, MarkerClusterer, StandaloneSearchBox } from "@react-google-maps/api";
 import { useTranslation } from "react-i18next";
+import { convertMilesToMeters } from "../helpers/functions"
 
 function RefactoredMapView(props) {
 
+  // If not from QR code, then use default coordinates for pesticide data until current location is found
   const [currentLocation, setCurrentLocation] = useState(() => (props.lat && props.lng) ? {lat: parseFloat(props.lat), lng: parseFloat(props.lng)} : {lat: 38.53709139783189, lng: -121.75506664377548});
 
   const [pesticideData, setPesticideData] = useState([]);
@@ -17,7 +19,12 @@ function RefactoredMapView(props) {
   const { i18n, t } = useTranslation();
 
   // Radius is in meters, currently set to 5 mile radius (8046.72m)
-  var userRadius = (props.lat && props.lng) ? 1609.34 : 8046.72;
+  var userRadius = (props.lat && props.lng) ? 1609.34 : 8046.72 ;
+
+  if (props.radius) {
+    userRadius = (convertMilesToMeters(props.radius));
+  }
+  var zoomDict = {8046.72: 12, 16093.4: 11, 24140.1: 10}
 
   var setLegend = i18n.language === "en" ? "../images/legend_en.svg" : "../images/legend_sp.svg";
   const ENTER_ADDRESS = t("Enter Address");
@@ -86,7 +93,7 @@ function RefactoredMapView(props) {
 
     // Set pesticide date according to user's location
     axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-        params: { latitude: lat, longitude: lng, radius: userRadius, order: "DESC", orderParam: "" },
+        params: { latitude: lat, longitude: lng, radius: userRadius },
     })
     .then(response => 
       setPesticideData(response.data))
@@ -206,7 +213,7 @@ function RefactoredMapView(props) {
       </Stack>
         <GoogleMap 
           center={currentLocation}
-          zoom={12}
+          zoom={zoomDict[convertMilesToMeters(props.radius)] ? zoomDict[convertMilesToMeters(props.radius)] : 12}
           onLoad={map => {onMapLoad(map)}}
           mapContainerStyle={{ height: "100%", width: "100%" }}
         >

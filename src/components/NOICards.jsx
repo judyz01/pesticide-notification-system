@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect} from 'react';
 
 import axios from 'axios';
 import { useTranslation } from "react-i18next";
 import { AccessTimeOutlined, LocationOnOutlined, QrCode2, WarningAmberOutlined}  from '@mui/icons-material';
-import { Link, Box, Button, Card, CardContent, CardHeader, CardMedia, Dialog, DialogTitle, IconButton, Pagination, Skeleton, Snackbar, Stack, Tooltip, Typography } from '@mui/material';
+import { Link, Box, Card, CardContent, CardHeader, CardMedia, IconButton, Pagination, Skeleton, Stack, Tooltip, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 
 import { convertMilesToMeters, getOrderParams, getApplicatorCharacter, getStandardTime, reformatDate} from "../helpers/functions"
@@ -102,7 +102,8 @@ const NOICards = (props) =>  {
       var check_coordinates_exist = props.location ? props.location : JSON.parse(stored_coordinates);
       var coordinates = check_coordinates_exist ? check_coordinates_exist : { lat: 38.53709139783189, lng: -121.75506664377548 };
 
-      var order = getOrderParams(props.order);
+      var order = props.order? getOrderParams(props.order) : getOrderParams(props.distance_order);
+
       var radius = props.radius? props.radius : 5;
 
       var startDate = "";
@@ -112,7 +113,6 @@ const NOICards = (props) =>  {
         startDate = dayjs(props.startDate.$d).format('YYYY-MM-DD');
         endDate = dayjs(props.endDate.$d).format('YYYY-MM-DD');
       }
-
 
       if (typeof props.county !== 'undefined' && props.county.length > 0) {
         console.log("finding counties");
@@ -187,6 +187,9 @@ const NOICards = (props) =>  {
     // console.log(props.county);
     // console.log(props.startDate);
     // console.log(props.endDate);
+
+    console.log(props.distance_order);
+
 
     // console.log(dayjs(props.startDate.$d).format('YYYY-MM-DD'));
     // console.log(dayjs(props.endDate.$d).format('YYYY-MM-DD'));

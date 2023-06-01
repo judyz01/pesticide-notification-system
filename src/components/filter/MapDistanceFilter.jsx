@@ -17,8 +17,8 @@ const MenuProps = {
 };
 
 const names = [
-  'Most Recent',
-  'Least Recent'
+  'Closest',
+  'Furthest'
 ];
 
 function getStyles(name, distanceDateOrder, theme) {
@@ -31,39 +31,23 @@ function getStyles(name, distanceDateOrder, theme) {
   };
 }
 
-export default function DateDistanceFilter(props) {
+export default function MapDistanceFilter(props) {
   const { t } = useTranslation();
   const INPUT_LABEL = t("Date/Distance");
 
   const theme = useTheme();
-  const [distanceDateOrder, setDistanceDateOrder] = React.useState(props.currentOrder);
+  const [distanceDateOrder, setDistanceDateOrder] = React.useState(props.distanceOrder);
 
   const handleChange = (event) => {
     setDistanceDateOrder(event.target.value);
   };
 
-  // const handleDisable = (name) => {
-  //   if (typeof props.currentCounty !== 'undefined' && props.currentCounty.length > 0) {
-  //     if(name === 'Closest' || name === 'Furthest') {
-  //       return true;
-  //     }
-  //   }
-
-  //   return false;
-  // };
-
   React.useEffect(() => {
-    // if (typeof props.currentCounty !== 'undefined' && props.currentCounty.length > 0) {
-    //   if (distanceDateOrder != 'Most Recent' && distanceDateOrder != 'Least Recent') {
-    //     setDistanceDateOrder('Most Recent');
-    //   }
-    // }
-
     props.func(distanceDateOrder);
   }, [distanceDateOrder, props]);
 
   return (
-    <FormControl sx={{ width: "100%", mt: 3  }}>
+    <FormControl sx={{ minWidth:"120px", width: "20%"}}>
       <InputLabel id="order-by-distance-date-label">{INPUT_LABEL}</InputLabel>
       <Select
         labelId="order-by-distance-date-label"
@@ -78,8 +62,7 @@ export default function DateDistanceFilter(props) {
           <MenuItem
             key={name}
             value={name}
-            // disabled={handleDisable(name)}
-            style={getStyles(name, distanceDateOrder, theme)}
+            // style={getStyles(name, distanceDateOrder, theme)}
           >
             {t(name)}
           </MenuItem>
