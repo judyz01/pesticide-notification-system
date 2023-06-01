@@ -96,7 +96,6 @@ app.get('/', (req, res) => {
 */
 app.get('/findCountyNOI', async (req, res) => {
   pool = pool || (await createPool());
-
   let reqOrder = req.query.order
   if (!reqOrder) {
     reqOrder = 'ASC';
@@ -108,15 +107,30 @@ app.get('/findCountyNOI', async (req, res) => {
     counties = [counties]
   }
 
-  // Date range query
   let startDate = req.query.startDate;
   let endDate = req.query.endDate;
+  let page = req.query.page;
+  let pageSize = req.query.pageSize;
+  if (!pageSize) {
+    pageSize = 10;
+  }
+  let count = req.query.count;
 
   try {
     res.set('Access-Control-Allow-Origin', '*');
-    const noiList = await pool.distinct('restricted_noi_view.use_no', 'prodno', 'product_name', 'aer_grnd_ind', 'fumigant_sw',
+
+    const queryColumns = [
+      'restricted_noi_view.use_no', 'prodno', 'product_name', 'aer_grnd_ind', 'fumigant_sw',
       'chem_code', 'chemname', 'acre_treated', 'unit_treated', 'applic_dt',
-      'applic_time', 'aer_gnd_ind', 'county_cd', 'county_name', 'latitude', 'longitude', 'product_label_link')
+      'applic_time', 'aer_gnd_ind', 'county_cd', 'county_name', 'latitude', 'longitude', 'product_label_link'
+    ]
+    let query;
+    if (count === 'true') {
+      query = pool.distinct(pool.raw('count(*)'));
+    } else {
+      query = pool.distinct(queryColumns)
+    }
+    const noiList = await query
       .from('restricted_noi_view')
       .innerJoin('coordinates_view', 'restricted_noi_view.use_no', '=', 'coordinates_view.use_no')
       .whereIn('county_cd', counties)
@@ -127,11 +141,24 @@ app.get('/findCountyNOI', async (req, res) => {
         if (endDate) {
           pool.whereRaw('applic_dt <= ?', [endDate])
         }
+
+        if (count != 'true') {
+          pool.orderBy([
+            { column: 'applic_dt', order: reqOrder },
+            { column: 'applic_time', order: reqOrder }
+          ])
+
+          if (page) {
+            // Pagination
+            if (page > 0) {
+              pool.offset(pageSize * (page - 1))
+            }
+            if (pageSize >= 10) {
+              pool.limit(pageSize);
+            }
+          }
+        }
       })
-      .orderBy([
-        { column: 'applic_dt', order: reqOrder },
-        { column: 'applic_time', order: reqOrder }
-      ])
 
     // Return list of NOI's
     res.status(200).json(noiList);
