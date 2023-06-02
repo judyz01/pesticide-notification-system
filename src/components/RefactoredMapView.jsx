@@ -19,11 +19,7 @@ function RefactoredMapView(props) {
   const { i18n, t } = useTranslation();
 
   // Radius is in meters, currently set to 5 mile radius (8046.72m)
-  var userRadius = (props.lat && props.lng) ? 250 : 8046.72 ;
-
-  if (props.radius) {
-    userRadius = (convertMilesToMeters(props.radius));
-  }
+  var userRadius = (props.lat && props.lng) ? 250: props.radius ? convertMilesToMeters(props.radius) : 8046.72;
   var zoomDict = {8046.72: 12, 16093.4: 11, 24140.1: 10}
 
   var setLegend = i18n.language === "en" ? "../images/legend_en.svg" : "../images/legend_sp.svg";
