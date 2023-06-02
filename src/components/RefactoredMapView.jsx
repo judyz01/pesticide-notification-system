@@ -20,7 +20,10 @@ function RefactoredMapView(props) {
 
   // Radius is in meters, currently set to 5 mile radius (8046.72m)
   var userRadius = (props.lat && props.lng) ? 250: props.radius ? convertMilesToMeters(props.radius) : 8046.72;
-  var zoomDict = {8046.72: 12, 16093.4: 11, 24140.1: 10}
+  console.log("radius is " + userRadius);
+  console.log("props radius is " + props.radius);
+
+  var zoomDict = {8046.7: 12, 16093.4: 11, 24140.1: 10}
 
   var setLegend = i18n.language === "en" ? "../images/legend_en.svg" : "../images/legend_sp.svg";
   const ENTER_ADDRESS = t("Enter Address");
@@ -209,7 +212,7 @@ function RefactoredMapView(props) {
       </Stack>
         <GoogleMap 
           center={currentLocation}
-          zoom={zoomDict[convertMilesToMeters(props.radius)] ? zoomDict[convertMilesToMeters(props.radius)] : 12}
+          zoom={(props.lat && props.lng) ? 18 : zoomDict[convertMilesToMeters(props.radius)] ? zoomDict[convertMilesToMeters(props.radius)] : 12}
           onLoad={map => {onMapLoad(map)}}
           mapContainerStyle={{ height: "100%", width: "100%" }}
         >
