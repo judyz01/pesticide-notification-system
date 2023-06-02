@@ -47,7 +47,6 @@ const Home = (props) => {
 
       <Box sx={{display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#fdf7ee", flexGrow: 1}}>
         
-
         <Typography align="center" sx={{mt: "25px", fontSize: 28, fontWeight: 600, color: "#126701"}}>
             {t("Title")}
         </Typography>
