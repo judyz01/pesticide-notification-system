@@ -1,7 +1,7 @@
 /*global google*/
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Box, IconButton, Input, InputAdornment, Stack, TextField } from "@mui/material";
+import { Box, Button, IconButton, Input, InputAdornment, Stack, TextField } from "@mui/material";
 import {QrCode2}  from '@mui/icons-material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { Circle, GoogleMap, Marker, MarkerClusterer, StandaloneSearchBox } from "@react-google-maps/api";
@@ -31,6 +31,7 @@ function RefactoredMapView(props) {
 
   var setLegend = i18n.language === "en" ? "../images/legend_en.svg" : "../images/legend_sp.svg";
   const ENTER_ADDRESS = t("Enter Address");
+  const SITE_HELP = t("Site Help");
 
   // Icon for user's current location
   const blueDot = {
@@ -231,6 +232,26 @@ function RefactoredMapView(props) {
             <QrCode2 fontSize="large" opacity="0.8"/>
           </IconButton>
         </Stack>
+
+        <Button sx={{ 
+            display: "flex",
+            height: "40px",
+            p: "16px",
+            variant:"contained", 
+            backgroundColor:"#0d87f1", 
+            color:"white",
+            "&:hover": {
+              backgroundColor: "#0d87f1",
+              "@media (hover: none)": {
+                backgroundColor: "#0d87f1",
+                "&:active": {
+                  backgroundColor: "#0d87f1"
+                }
+              }}
+            }}
+        >
+          {SITE_HELP}
+        </Button> 
 
       </Stack>
         <GoogleMap 
