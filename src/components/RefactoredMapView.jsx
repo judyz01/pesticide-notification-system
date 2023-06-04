@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Box, Button, IconButton, Input, InputAdornment, Stack, TextField } from "@mui/material";
 import {QrCode2}  from '@mui/icons-material';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
+import MyLocationIcon from '@mui/icons-material/MyLocation';
 import { Circle, GoogleMap, Marker, MarkerClusterer, StandaloneSearchBox } from "@react-google-maps/api";
 import { useTranslation } from "react-i18next";
 import { convertMilesToMeters } from "../helpers/functions"
@@ -220,7 +220,7 @@ function RefactoredMapView(props) {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <LocationOnIcon />
+                    <MyLocationIcon />
                   </InputAdornment>
                 )
               }} >
