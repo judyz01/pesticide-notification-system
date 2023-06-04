@@ -25,13 +25,15 @@ export default function DateDistanceFilter(props) {
   const { t } = useTranslation();
   const INPUT_LABEL = t("Date/Distance");
 
-  const theme = useTheme();
   const [distanceDateOrder, setDistanceDateOrder] = React.useState(props.currentOrder);
 
 
   React.useEffect(() => {
-    handleClear();
-  }, [props.clearFilters])
+    if(props.clearFilters == true) {
+      handleClear();
+      props.resetFilters();
+    }
+  }, [props.clearFilters]);
 
   const handleClear = () => {
     setDistanceDateOrder('');

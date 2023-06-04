@@ -39,7 +39,10 @@ export default function DateFilter(props) {
   const [aerialGroundOrder, setAerialGroundOrder] = React.useState(props.currentAerialGround);
 
   React.useEffect(() => {
-    handleClear();
+    if(props.clearFilters == true) {
+      handleClear();
+      props.resetFilters();
+    }
   }, [props.clearFilters])
 
   const handleClear = () => {

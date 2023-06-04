@@ -84,15 +84,18 @@ names.forEach((countyName, index) => {
 
 export default function CountyDropdown(props) {
   const theme = useTheme();
-  const [countyName, setcountyName] = React.useState([names[props.currentCounty - 1]]);
+  const [countyName, setcountyName] = React.useState(props.currentCounty.map((val) => names[val-1]));
   const [countyIndex, setcountyIndex] = React.useState(props.currentCounty);
 
   const { t } = useTranslation();
   const COUNTY_LABEL = t("Select County");
 
   React.useEffect(() => {
-    handleClear();
-  }, [props.clearFilters])
+    if(props.clearFilters == true) {
+      handleClear();
+      props.resetFilters();
+    }
+  }, [props.clearFilters]);
 
   const handleClear = () => {
     setcountyName([]);

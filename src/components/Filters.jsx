@@ -35,7 +35,11 @@ const Filters = (props) => {
   }
 
   const clearAllFilters = () => {
-    setClearFilters(!clearFilters);
+    setClearFilters(true);
+  }
+
+  const resetFilters = () => {
+    setClearFilters(false);
   }
 
   return (
@@ -45,13 +49,14 @@ const Filters = (props) => {
         {t("Filters")}
       </Typography>
 
-      <Stack direction="column" alignItems="left" spacing={5} sx={{ pl: "15%", pr: "15%", pt: "30px"}}>
+      <Stack direction="column" alignItems="left" spacing={5} sx={{ mb:"30px", pl: "15%", pr: "15%", pt: "30px"}}>
 
         <CountyFilter 
           func={get_county}
           currentCounty={props.currentCounty}
 
           clearFilters={clearFilters}
+          resetFilters={resetFilters}
         />
         <DateDistanceFilter 
           func={get_order}
@@ -59,6 +64,7 @@ const Filters = (props) => {
           currentCounty={props.currentCounty}
 
           clearFilters={clearFilters}
+          resetFilters={resetFilters}
         />
 
         <AerialGroundFilter 
@@ -66,6 +72,7 @@ const Filters = (props) => {
           currentAerialGround={props.currentAerialGround}
 
           clearFilters={clearFilters}
+          resetFilters={resetFilters}
         />
 
         <DateRangeFilter 
@@ -76,6 +83,7 @@ const Filters = (props) => {
           currentEndDate={props.endDate}
 
           clearFilters={clearFilters}
+          resetFilters={resetFilters}
         />
 
         <FumigantFilter 
@@ -83,6 +91,7 @@ const Filters = (props) => {
           currentFumigant={props.currentFumigant}
 
           clearFilters={clearFilters}
+          resetFilters={resetFilters}
         />
 
         <Button 

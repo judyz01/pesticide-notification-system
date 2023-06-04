@@ -16,7 +16,10 @@ export default function DateRangeFilter(props) {
   const [error, setError] = React.useState(null);
 
   React.useEffect(() => {
-    handleClear();
+    if(props.clearFilters == true) {
+      handleClear();
+      props.resetFilters();
+    }
   }, [props.clearFilters])
 
   const handleClear = () => {

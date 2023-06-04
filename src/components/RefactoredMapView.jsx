@@ -92,7 +92,7 @@ function RefactoredMapView(props) {
 
     // Set pesticide date according to user's location
     axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-        params: { latitude: lat, longitude: lng, radius: userRadius },
+        params: { latitude: lat, longitude: lng, radius: userRadius, map: true},
     })
     .then(response => 
       setPesticideData(response.data))
