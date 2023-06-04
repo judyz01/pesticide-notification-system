@@ -13,6 +13,7 @@ function RefactoredMapView(props) {
 
   // If not from QR code, then use default coordinates for pesticide data until current location is found
   const [currentLocation, setCurrentLocation] = useState(() => (props.lat && props.lng) ? {lat: parseFloat(props.lat), lng: parseFloat(props.lng)} : {lat: 38.53709139783189, lng: -121.75506664377548});
+  const [realPosition, setRealPosition] = useState();
 
   const [pesticideData, setPesticideData] = useState([]);
   const [searchBox, setSearchBox] = useState(null);
@@ -129,6 +130,7 @@ function RefactoredMapView(props) {
           const pos = { lat, lng };
           console.log("found current location");
           setCurrentLocation(pos);
+          setRealPosition(pos);
         }
       );
     }
@@ -196,6 +198,10 @@ function RefactoredMapView(props) {
     setSearchBox(ref);
   }
 
+  const panToCurrentLocation = () => {
+    setCurrentLocation(realPosition);
+  }
+
   return (
     <>
     <Box sx={{ mt: "15px", height:"575px", width:"80%", display: { xs: "block", sm: "block" } }}>
@@ -220,7 +226,7 @@ function RefactoredMapView(props) {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <MyLocationIcon />
+                    <MyLocationIcon onClick={panToCurrentLocation}/>
                   </InputAdornment>
                 )
               }} >
