@@ -1,10 +1,15 @@
 import React, { useState, useEffect, useRef} from 'react';
+import { useTranslation } from "react-i18next";
 import QRCode from "react-qr-code";
 import ReactToPrint from 'react-to-print';
 import IosShareIcon from '@mui/icons-material/IosShare';
 import { Button, Dialog, DialogTitle, IconButton, Snackbar, Stack } from '@mui/material';
 
 export default function SimpleDialog(props) {
+  const { t } = useTranslation();
+  const PRINT_QR = t("Print QR");
+  const SCAN_QR = t("Scan QR");
+
 
   const { onClose, open, qrCoords } = props;
   const QRRef = useRef(null);
@@ -37,7 +42,7 @@ export default function SimpleDialog(props) {
       open={open}                    
     >
       <div ref={QRRef} style={{ background: 'white', padding: '16px', justifyContent:"center", alignItems:"center"}}>
-        <DialogTitle textAlign="center"> Scan for Pesticide Location </DialogTitle>
+        <DialogTitle textAlign="center"> {SCAN_QR} </DialogTitle>
           <QRCode
             size={256}
             style={{ width: "100%"}}
@@ -52,7 +57,7 @@ export default function SimpleDialog(props) {
             // documentTitle = {"Pesticide Notification System"}
             trigger={() => (
               <Button sx={{p: "20px"}} >
-                Print QR Code
+                {PRINT_QR}
               </Button>
               )}
             content={() => QRRef.current}>
