@@ -11,11 +11,18 @@ export default function DateRangeFilter(props) {
   const START_DATE = t("Start Date");
   const END_DATE = t("End Date");
 
-
-  
   const [startDate, setStartDate] = React.useState(null);
   const [endDate, setEndDate] = React.useState(null);
   const [error, setError] = React.useState(null);
+
+  React.useEffect(() => {
+    handleClear();
+  }, [props.clearFilters])
+
+  const handleClear = () => {
+    setStartDate(null);
+    setEndDate(null);
+  };
 
   const handleStartDate = (newValue) => {
     setStartDate(newValue);

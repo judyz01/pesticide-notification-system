@@ -21,16 +21,6 @@ const names = [
   'Least Recent'
 ];
 
-function getStyles(name, distanceDateOrder, theme) {
-
-  return {
-    fontWeight:
-    distanceDateOrder.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  };
-}
-
 export default function DateDistanceFilter(props) {
   const { t } = useTranslation();
   const INPUT_LABEL = t("Date/Distance");
@@ -38,27 +28,20 @@ export default function DateDistanceFilter(props) {
   const theme = useTheme();
   const [distanceDateOrder, setDistanceDateOrder] = React.useState(props.currentOrder);
 
+
+  React.useEffect(() => {
+    handleClear();
+  }, [props.clearFilters])
+
+  const handleClear = () => {
+    setDistanceDateOrder('');
+  };
+
   const handleChange = (event) => {
     setDistanceDateOrder(event.target.value);
   };
 
-  // const handleDisable = (name) => {
-  //   if (typeof props.currentCounty !== 'undefined' && props.currentCounty.length > 0) {
-  //     if(name === 'Closest' || name === 'Furthest') {
-  //       return true;
-  //     }
-  //   }
-
-  //   return false;
-  // };
-
   React.useEffect(() => {
-    // if (typeof props.currentCounty !== 'undefined' && props.currentCounty.length > 0) {
-    //   if (distanceDateOrder != 'Most Recent' && distanceDateOrder != 'Least Recent') {
-    //     setDistanceDateOrder('Most Recent');
-    //   }
-    // }
-
     props.func(distanceDateOrder);
   }, [distanceDateOrder, props]);
 
@@ -79,7 +62,6 @@ export default function DateDistanceFilter(props) {
             key={name}
             value={name}
             // disabled={handleDisable(name)}
-            style={getStyles(name, distanceDateOrder, theme)}
           >
             {t(name)}
           </MenuItem>

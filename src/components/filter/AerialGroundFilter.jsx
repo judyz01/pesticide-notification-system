@@ -38,6 +38,14 @@ export default function DateFilter(props) {
   const theme = useTheme();
   const [aerialGroundOrder, setAerialGroundOrder] = React.useState(props.currentAerialGround);
 
+  React.useEffect(() => {
+    handleClear();
+  }, [props.clearFilters])
+
+  const handleClear = () => {
+    setAerialGroundOrder('');
+  };
+
   const handleChange = (event) => {
     setAerialGroundOrder(event.target.value);
   };
@@ -62,7 +70,6 @@ export default function DateFilter(props) {
           <MenuItem
             key={name}
             value={name}
-            style={getStyles(name, aerialGroundOrder, theme)}
           >
             {t(name)}
           </MenuItem>

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import { useTranslation } from "react-i18next";
 
 import { AerialGroundFilter, CountyFilter, DateDistanceFilter, DateRangeFilter, FumigantFilter } from './filter';
@@ -8,6 +8,8 @@ import { AerialGroundFilter, CountyFilter, DateDistanceFilter, DateRangeFilter, 
 
 const Filters = (props) => {
   const { t } = useTranslation();
+  const CLEAR_FILTERS = t("Clear All");
+  const [clearFilters, setClearFilters] = React.useState(false);
 
   const get_county = (county) => {
     props.set_county(county);
@@ -32,6 +34,10 @@ const Filters = (props) => {
     props.set_end_date(endDate);
   }
 
+  const clearAllFilters = () => {
+    setClearFilters(!clearFilters);
+  }
+
   return (
     <Box data-testid="filter-panel" sx={{display: "block", direction: "column", backgroundColor: "#EAEAEA", width:{md: "100%", lg: "20%"}, height:{lg:"auto"}}}>
     
@@ -44,29 +50,62 @@ const Filters = (props) => {
         <CountyFilter 
           func={get_county}
           currentCounty={props.currentCounty}
+
+          clearFilters={clearFilters}
         />
         <DateDistanceFilter 
           func={get_order}
           currentOrder={props.currentOrder}
           currentCounty={props.currentCounty}
+
+          clearFilters={clearFilters}
         />
+
         <AerialGroundFilter 
           func={get_aerial_ground}
           currentAerialGround={props.currentAerialGround}
+
+          clearFilters={clearFilters}
         />
 
-        < DateRangeFilter 
+        <DateRangeFilter 
           start_date_func={get_start_date}
           currentStartDate={props.startDate}
 
           end_date_func={get_end_date}
           currentEndDate={props.endDate}
+
+          clearFilters={clearFilters}
         />
 
         <FumigantFilter 
           func={get_fumigant}
           currentFumigant={props.currentFumigant}
+
+          clearFilters={clearFilters}
         />
+
+        <Button 
+            onClick={clearAllFilters}
+            sx={{ 
+              display: "flex",
+              height: "40px",
+              p: "16px",
+              variant:"contained", 
+              backgroundColor:"#a82822", 
+              color:"white",
+              "&:hover": {
+                backgroundColor: "#a82822",
+                "@media (hover: none)": {
+                  backgroundColor: "#a82822",
+                  "&:active": {
+                    backgroundColor: "#a82822"
+                  }
+                }}
+            }}
+        >
+          {CLEAR_FILTERS}
+        </Button> 
 
       </Stack>
     </Box>

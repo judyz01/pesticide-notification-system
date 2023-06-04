@@ -182,7 +182,7 @@ const NOICards = (props) =>  {
 
     // console.log(props.order);
 
-    // console.log("Fumigant " + props.fumigant);
+    console.log("Fumigant " + props.fumigant);
     // console.log("Aerial/Ground " + props.aerialGround);
     // console.log(props.county);
     // console.log(props.startDate);
