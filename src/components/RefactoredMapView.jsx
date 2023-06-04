@@ -1,11 +1,13 @@
 /*global google*/
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Box, Input, InputAdornment, Stack, TextField } from "@mui/material";
+import { Box, IconButton, Input, InputAdornment, Stack, TextField } from "@mui/material";
+import {QrCode2}  from '@mui/icons-material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { Circle, GoogleMap, Marker, MarkerClusterer, StandaloneSearchBox } from "@react-google-maps/api";
 import { useTranslation } from "react-i18next";
 import { convertMilesToMeters } from "../helpers/functions"
+import SimpleDialog from "./SimpleDialog";
 
 function RefactoredMapView(props) {
 
@@ -15,6 +17,8 @@ function RefactoredMapView(props) {
   const [pesticideData, setPesticideData] = useState([]);
   const [searchBox, setSearchBox] = useState(null);
   const [address, setAddress] = useState(null);
+  const [qrCoords, setQrCoords] = useState({});
+  const [open, setOpen] = useState(false);
 
   const { i18n, t } = useTranslation();
 
@@ -83,6 +87,19 @@ function RefactoredMapView(props) {
       '../images/clusters/m',
   };
 
+  // QR Icon Button
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const generateQR = () => {
+    setQrCoords(currentLocation);
+  };
+
   const getPesticideData = ((lat, lng) => {
 
     if (!lat && !lng) {
@@ -94,7 +111,7 @@ function RefactoredMapView(props) {
     axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
         params: { latitude: lat, longitude: lng, radius: userRadius, map: true},
     })
-    .then(response => 
+    .then(response =>
       setPesticideData(response.data))
     .catch(function (error) {
         console.error(error);
@@ -179,6 +196,7 @@ function RefactoredMapView(props) {
   }
 
   return (
+    <>
     <Box sx={{ mt: "15px", height:"575px", width:"80%", display: { xs: "block", sm: "block" } }}>
       <Stack   
           direction="row"
@@ -186,28 +204,33 @@ function RefactoredMapView(props) {
           alignItems="center"
           sx={{pb:"15px"}}
       >
+        <Stack direction="row"> 
+          <StandaloneSearchBox
+            onLoad={onLoad}
+            onPlacesChanged={onPlacesChanged}
+          >
+            <TextField 
+              id="search_box" 
+              sx={{width:"100%"}}
+              label={ENTER_ADDRESS} 
+              variant="outlined" 
+              // value={address? address : ""}
+              placeholder=""
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LocationOnIcon />
+                  </InputAdornment>
+                )
+              }} >
+              <Input />
+            </TextField>
+          </StandaloneSearchBox>
 
-        <StandaloneSearchBox
-          onLoad={onLoad}
-          onPlacesChanged={onPlacesChanged}
-        >
-          <TextField 
-            id="search_box" 
-            sx={{width:"100%"}}
-            label={ENTER_ADDRESS} 
-            variant="outlined" 
-            // value={address? address : ""}
-            placeholder=""
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <LocationOnIcon />
-                </InputAdornment>
-              )
-            }} >
-            <Input />
-          </TextField>
-        </StandaloneSearchBox>
+          <IconButton aria-label="qr_code" onClick={() => { handleClickOpen(); generateQR();}}>
+            <QrCode2 fontSize="large" opacity="0.8"/>
+          </IconButton>
+        </Stack>
 
       </Stack>
         <GoogleMap 
@@ -240,6 +263,14 @@ function RefactoredMapView(props) {
 
       </GoogleMap>
     </Box>
+
+    {/* Dialog has to be outside everything to prevent black background bug */}
+    <SimpleDialog
+      qrCoords = {qrCoords}
+      open={open}
+      onClose={handleClose}
+    />
+    </>
   );
 }
 export default RefactoredMapView;

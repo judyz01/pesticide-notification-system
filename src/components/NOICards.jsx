@@ -32,6 +32,7 @@ const NOICards = (props) =>  {
   const COVERAGE = t("Coverage");
   const FUMIGANT = t("Fumigant label");
   const NO_NOIS = t("No NOIs");
+  const NO_COUNTY = t("No County");
   const COUNTY = t("County");
 
   const [pesticideData, setPesticideData] = useState([]);
@@ -294,7 +295,7 @@ const NOICards = (props) =>  {
         /* If the user doesn't choose any counties in the Archives page */
         ((window.location.pathname == "/Archive") && typeof props.county !== 'undefined' && (props.county.length <= 0)) ?
           <Typography align="center" sx={{width:"80%", fontSize: 18, fontWeight: 500, color: "#126701"}}>
-            Select Any County to Get Started
+            {NO_COUNTY}
           </Typography>
         :
         /* If we don't have any data to show, then the view will show "No NOIs" and pagination will be hidden */
