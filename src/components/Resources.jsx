@@ -118,7 +118,7 @@ const Resources = () => {
       </Typography>
 
 
-      <Box sx={{width:"60%"}}>
+      <Box sx={{width:"60%", minWidth:"290px"}}>
         <Accordion data-testid="accordian-home" expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
           <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
             <Typography>

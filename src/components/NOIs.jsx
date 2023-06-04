@@ -10,9 +10,8 @@ const NOIs = (props) => {
   const { t } = useTranslation();
   const NOI_SEARCH = t("NOISearch");
 
-  const [county, setCounty] = React.useState([1]);
+  const [county, setCounty] = React.useState();
   const [order, setOrder] = React.useState();
-  const [radius, setRadius] = React.useState();
   const [fumigant, setFumigant] = React.useState();
   const [aerialGround, setAerialGround] = React.useState();
   const [startDate, setStartDate] = React.useState();
@@ -22,9 +21,8 @@ const NOIs = (props) => {
   const [showDrawer, setShowDrawer] = React.useState(false);
   const [dontRefresh, setDontRefresh] = React.useState(false);
 
-  const [currentCounty, setCurrentCounty] = React.useState([1]);
+  const [currentCounty, setCurrentCounty] = React.useState([]);
   const [currentOrder, setCurrentOrder] = React.useState('');
-  const [currentRadius, setCurrentRadius] = React.useState(5);
   const [currentFumigant, setCurrentFumigant] = React.useState(false);
   const [currentAerialGround, setCurrentAerialGround] = React.useState('');
   const [currentStartDate, setCurrentStartDate] = React.useState();
@@ -59,11 +57,6 @@ const NOIs = (props) => {
     setCurrentOrder(order);
   }
 
-  const set_radius = (radius) => {
-    setRadius(radius);
-    setCurrentRadius(radius);
-  }
-
   const set_fumigant = (fumigant) => {
     setFumigant(fumigant);
     setCurrentFumigant(fumigant);
@@ -92,7 +85,6 @@ const NOIs = (props) => {
         <Filters
           set_county={set_county}
           set_order={set_order}
-          set_radius={set_radius}
           set_fumigant={set_fumigant}
           set_aerial_ground={set_aerial_ground}
           set_start_date={set_start_date}
@@ -100,7 +92,6 @@ const NOIs = (props) => {
 
           currentCounty={currentCounty}
           currentOrder={currentOrder}
-          currentRadius={currentRadius}
           currentFumigant={currentFumigant}
           currentAerialGround={currentAerialGround}
           currentStartDate={currentStartDate}
@@ -177,7 +168,6 @@ const NOIs = (props) => {
             <Filters
               set_county={set_county}
               set_order={set_order}
-              set_radius={set_radius}
               set_fumigant={set_fumigant}
               set_aerial_ground={set_aerial_ground}
               set_start_date={set_start_date}
@@ -185,7 +175,6 @@ const NOIs = (props) => {
 
               currentCounty={currentCounty}
               currentOrder={currentOrder}
-              currentRadius={currentRadius}
               currentFumigant={currentFumigant}
               currentAerialGround={currentAerialGround}
               currentStartDate={currentStartDate}
@@ -197,7 +186,6 @@ const NOIs = (props) => {
         <NOICards
           county={county}
           order={order}
-          radius={radius}
           fumigant={fumigant}
           aerialGround={aerialGround}
           startDate={startDate}

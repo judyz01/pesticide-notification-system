@@ -82,22 +82,25 @@ names.forEach((countyName, index) => {
   countyDict[countyName] = index + 1;
 });
 
-function getStyles(name, countyName, theme) {
-  return {
-    fontWeight:
-      countyName.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  };
-}
-
 export default function CountyDropdown(props) {
   const theme = useTheme();
-  const [countyName, setcountyName] = React.useState([names[props.currentCounty - 1]]);
+  const [countyName, setcountyName] = React.useState(props.currentCounty.map((val) => names[val-1]));
   const [countyIndex, setcountyIndex] = React.useState(props.currentCounty);
 
   const { t } = useTranslation();
   const COUNTY_LABEL = t("Select County");
+
+  React.useEffect(() => {
+    if(props.clearFilters == true) {
+      handleClear();
+      props.resetFilters();
+    }
+  }, [props.clearFilters]);
+
+  const handleClear = () => {
+    setcountyName([]);
+    setcountyIndex([]);
+  };
 
   const handleChange = (event) => {
 
@@ -148,7 +151,6 @@ export default function CountyDropdown(props) {
             <MenuItem
               key={name}
               value={name}
-              style={getStyles(name, countyName, theme)}
             >
               {name}
             </MenuItem>

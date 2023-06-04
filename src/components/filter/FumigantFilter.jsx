@@ -9,6 +9,17 @@ export default function FumigantFilter(props) {
 
   const [checked, setChecked] = React.useState(props.currentFumigant);
 
+  React.useEffect(() => {
+    if(props.clearFilters == true) {
+      handleClear();
+      props.resetFilters();
+    }
+  }, [props.clearFilters])
+
+  const handleClear = () => {
+    setChecked(false);
+  };
+
   const handleChange = (event) => {
     setChecked(event.target.checked);
   };

@@ -32,6 +32,7 @@ const NOICards = (props) =>  {
   const COVERAGE = t("Coverage");
   const FUMIGANT = t("Fumigant label");
   const NO_NOIS = t("No NOIs");
+  const NO_COUNTY = t("No County");
   const COUNTY = t("County");
 
   const [pesticideData, setPesticideData] = useState([]);
@@ -61,6 +62,7 @@ const NOICards = (props) =>  {
   // Pagination
   const handleChange = (event, value) => {
     setPage(value);
+    // TODO fix scrolling of pagination in map view scrolling to the top page
     window.scroll({top: 0, left: 0, behavior: 'smooth' });
   };
 
@@ -114,62 +116,67 @@ const NOICards = (props) =>  {
         endDate = dayjs(props.endDate.$d).format('YYYY-MM-DD');
       }
 
-      if (typeof props.county !== 'undefined' && props.county.length > 0) {
-        console.log("finding counties");
+      if(window.location.pathname == "/Archive") {
+        if (typeof props.county !== 'undefined' && props.county.length > 0) {
+          console.log("finding counties");
 
-        var counties = new URLSearchParams();
+          var counties = new URLSearchParams();
 
-        counties.append("order", order[0]);
-        props.county.forEach((countyIndex, idx) => {
-          counties.append("counties", countyIndex);
-        });
+          counties.append("order", order[0]);
+          props.county.forEach((countyIndex, idx) => {
+            counties.append("counties", countyIndex);
+          });
 
-        counties.append("startDate", startDate);
-        counties.append("endDate", endDate);
+          counties.append("startDate", startDate);
+          counties.append("endDate", endDate);
 
 
-        axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findCountyNOI`, {
-          params: counties,
-        })
-        .then((response) => {
-          console.log(response);
-          if (props.fumigant === true) {
-            const filteredData = response.data.filter(elem => elem.fumigant_sw === 'X');
-            setPesticideData(filteredData);
-          } else if (props.aerialGround) {
-            const filteredData = response.data.filter(elem => elem.aer_grnd_ind === getApplicatorCharacter(props.aerialGround));
-            setPesticideData(filteredData);
-          } else {
-            setPesticideData(response.data);
-          }
-        })
-        .catch(function (error) {
-            console.error(error);
-        });
-
+          axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findCountyNOI`, {
+            params: counties,
+          })
+          .then((response) => {
+            console.log(response);
+            if (props.fumigant === true) {
+              const filteredData = response.data.filter(elem => elem.fumigant_sw === 'X');
+              setPesticideData(filteredData);
+            } else if (props.aerialGround) {
+              const filteredData = response.data.filter(elem => elem.aer_grnd_ind === getApplicatorCharacter(props.aerialGround));
+              setPesticideData(filteredData);
+            } else {
+              setPesticideData(response.data);
+            }
+          })
+          .catch(function (error) {
+              console.error(error);
+          });
+        } else {
+          // Didn't choose a county, no data retreived but don't want to be stuck at loadSkeleton()
+          setPesticideData({});
+        }
       } else {
-        console.log("finding current location");
+        if(window.location.pathname == "/") {
+          console.log("finding current location");
 
-        axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-            params: { latitude: coordinates.lat, longitude: coordinates.lng, radius: convertMilesToMeters(radius), order: order[0], orderParam: order[1], startDate: startDate, endDate: endDate},
-        })
-        .then((response) => {
-          console.log(response);
-          if (props.fumigant === true) {
-            const filteredData = response.data.filter(elem => elem.fumigant_sw === 'X');
-            setPesticideData(filteredData);
-          } else if (props.aerialGround) {
-            const filteredData = response.data.filter(elem => elem.aer_grnd_ind === getApplicatorCharacter(props.aerialGround));
-            setPesticideData(filteredData);
-          } else {
-            setPesticideData(response.data);
-          }
-        })
-        .catch(function (error) {
-            console.error(error);
-        });
+          axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
+              params: { latitude: coordinates.lat, longitude: coordinates.lng, radius: convertMilesToMeters(radius), order: order[0], orderParam: order[1], startDate: startDate, endDate: endDate},
+          })
+          .then((response) => {
+            console.log(response);
+            if (props.fumigant === true) {
+              const filteredData = response.data.filter(elem => elem.fumigant_sw === 'X');
+              setPesticideData(filteredData);
+            } else if (props.aerialGround) {
+              const filteredData = response.data.filter(elem => elem.aer_grnd_ind === getApplicatorCharacter(props.aerialGround));
+              setPesticideData(filteredData);
+            } else {
+              setPesticideData(response.data);
+            }
+          })
+          .catch(function (error) {
+              console.error(error);
+          });
+        }
       }
-
     };
   };
 
@@ -188,7 +195,7 @@ const NOICards = (props) =>  {
     // console.log(props.startDate);
     // console.log(props.endDate);
 
-    console.log(props.distance_order);
+    // console.log(props.distance_order);
 
 
     // console.log(dayjs(props.startDate.$d).format('YYYY-MM-DD'));
@@ -283,99 +290,107 @@ const NOICards = (props) =>  {
         overflow="auto"
         sx={{ width: "100%", mb: "30px"}}
       >
-        {/* If we don't have any data to show, then the view will show "No NOIs" and pagination will be hidden */}
-        {(pesticideData.length > 0) ? pesticideData
-        .slice((page - 1) * itemsPerPage, page * itemsPerPage)
-        .map((elem, index) => (
 
-          <Card key={index} sx={{ display:"flex", width: "80%", borderRadius: "16px", justifyContent: "space-between", flexDirection:{ sm:"column", md:"row"} }}>
-              <Box sx={{ flexDirection: "column" }}>
+      {
+        /* If the user doesn't choose any counties in the Archives page */
+        ((window.location.pathname == "/Archive") && typeof props.county !== 'undefined' && (props.county.length <= 0)) ?
+          <Typography align="center" sx={{width:"80%", fontSize: 18, fontWeight: 500, color: "#126701"}}>
+            {NO_COUNTY}
+          </Typography>
+        :
+        /* If we don't have any data to show, then the view will show "No NOIs" and pagination will be hidden */
+        (pesticideData.length > 0) ? pesticideData
+          .slice((page - 1) * itemsPerPage, page * itemsPerPage)
+          .map((elem, index) => (
 
-                <Stack direction="row">
+            <Card key={index} sx={{ display:"flex", width: "80%", borderRadius: "16px", justifyContent: "space-between", flexDirection:{ sm:"column", md:"row"} }}>
+                <Box sx={{ flexDirection: "column" }}>
 
-                  {elem.product_label_link ? 
-                    <Link underline="hover" href={`${elem.product_label_link}`}>
+                  <Stack direction="row">
+
+                    {elem.product_label_link ? 
+                      <Link underline="hover" href={`${elem.product_label_link}`}>
+                        <CardHeader
+                          title={`${elem.product_name}`}
+                          sx={{pb:0, pr:0}}
+                        />
+                      </Link>
+                      :
                       <CardHeader
                         title={`${elem.product_name}`}
                         sx={{pb:0, pr:0}}
                       />
-                    </Link>
+                    }
+                  </Stack>
+
+                  {/* 
+                    Mobile view: icons are shown sandwiched in between CardHeader and CardContent 
+                      XS+: icons formatted horizontally
+                      XS or below: icons formatted vertically
+                  */}
+                  {!isDesktop &&
+                    (!isXSMobile ? 
+                      // XS+
+                      <CardMedia sx={{ pl:"20px", pt:"10px", flexDirection: "row", width: "80%", minWidth: "520px", justifyContent:"space-between"}}>
+                        <Stack direction="row" gap={3}>
+                          {iconMedia(elem) }
+                        </Stack>
+                      </CardMedia>
+
                     :
-                    <CardHeader
-                      title={`${elem.product_name}`}
-                      sx={{pb:0, pr:0}}
-                    />
-                  }
-                </Stack>
-
-                {/* 
-                  Mobile view: icons are shown sandwiched in between CardHeader and CardContent 
-                    XS+: icons formatted horizontally
-                    XS or below: icons formatted vertically
-                */}
-                {!isDesktop &&
-                  (!isXSMobile ? 
-                    // XS+
-                    <CardMedia sx={{ pl:"20px", pt:"10px", flexDirection: "row", width: "80%", minWidth: "520px", justifyContent:"space-between"}}>
-                      <Stack direction="row" gap={3}>
+                      // XS or below
+                      <CardMedia sx={{ p:"20px", flexDirection: "column", width: "80%", justifyContent:"space-between"}}>
                         {iconMedia(elem) }
-                      </Stack>
-                    </CardMedia>
+                      </CardMedia>
+                    )
+                  }
 
-                  :
-                    // XS or below
-                    <CardMedia sx={{ p:"20px", flexDirection: "column", width: "80%", justifyContent:"space-between"}}>
-                      {iconMedia(elem) }
-                    </CardMedia>
-                  )
+                  <CardContent>
+
+                    <Typography variant="h11" color="#A5ADBB" alignItems="center">
+                      {ADDRESS}
+                        <IconButton sx={{ml:"-5px", mr:"-8px"}} aria-label="qr_code" onClick={() => { handleClickOpen(); generateQR(elem.latitude, elem.longitude);}}>
+                          <QrCode2 opacity="0.8"/>
+                        </IconButton>
+                      : {`${elem.latitude}`}, {`${elem.longitude}`}
+                    </Typography>
+
+                    <Typography color="#A5ADBB">
+                      {COVERAGE}: {`${elem.acre_treated}`} {`${COVERAGE_UNIT}`}
+                    </Typography>
+
+                    <Typography color="#A5ADBB">
+                      {FUMIGANT}: {`${elem.fumigant_sw === 'X' ? "Yes" : "No"}`}
+                    </Typography>
+
+                  </CardContent>
+                </Box>
+
+                {/* Desktop View: Icons shows on right side of the card, vertically */}
+                {isDesktop && 
+                <CardMedia sx={{ pt:"35px", pb:"25px", flexDirection: "column", width: "22%", display: "block"}}>
+                    {iconMedia(elem)}
+                </CardMedia>
                 }
+            </Card> 
+          )) : 
+            <Typography align="center" sx={{width:"80%", fontSize: 18, fontWeight: 500, color: "#126701"}}>
+              {NO_NOIS}
+            </Typography>
+      }
 
-                <CardContent>
-
-                  <Typography variant="h11" color="#A5ADBB" alignItems="center">
-                    {ADDRESS}
-                      <IconButton sx={{ml:"-5px", mr:"-8px"}} aria-label="qr_code" onClick={() => { handleClickOpen(); generateQR(elem.latitude, elem.longitude);}}>
-                        <QrCode2 opacity="0.8"/>
-                      </IconButton>
-                    : {`${elem.latitude}`}, {`${elem.longitude}`}
-                  </Typography>
-
-                  <Typography color="#A5ADBB">
-                    {COVERAGE}: {`${elem.acre_treated}`} {`${COVERAGE_UNIT}`}
-                  </Typography>
-
-                  <Typography color="#A5ADBB">
-                    {FUMIGANT}: {`${elem.fumigant_sw === 'X' ? "Yes" : "No"}`}
-                  </Typography>
-
-                </CardContent>
-              </Box>
-
-              {/* Desktop View: Icons shows on right side of the card, vertically */}
-              {isDesktop && 
-              <CardMedia sx={{ pt:"35px", pb:"25px", flexDirection: "column", width: "22%", display: "block"}}>
-                  {iconMedia(elem)}
-              </CardMedia>
-              }
-          </Card> 
-        )) : 
-          <Typography align="center" sx={{width:"80%", fontSize: 18, fontWeight: 500, color: "#126701"}}>
-            {NO_NOIS}
-          </Typography>
-        }
-
-        {(pesticideData.length > 0) &&
-          <Pagination 
-              count={Math.ceil(pesticideData.length / itemsPerPage)}
-              page={page}
-              onChange={handleChange}
-              defaultPage={1}
-              color="primary"
-              size="large"
-              showFirstButton
-              showLastButton
-            />
-        }
+      {(pesticideData.length > 0) &&
+        <Pagination 
+            count={Math.ceil(pesticideData.length / itemsPerPage)}
+            page={page}
+            onChange={handleChange}
+            defaultPage={1}
+            color="primary"
+            size="large"
+            showFirstButton
+            showLastButton
+          />
+      }
       </Stack>
       
       {/* Dialog has to be outside everything to prevent black background bug */}

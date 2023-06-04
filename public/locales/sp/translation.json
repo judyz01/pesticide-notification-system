@@ -7,6 +7,7 @@
     "Archive": "ARCHIVO",
     "Resources": "RECURSOS",
     "NOIS": "NOIS",
+    "Site Help": "Ayuda del sitio",
 
     "Community Voices": "Voces de la Comunidad",
     "CommunityUser1": "Quiero que me digan cuándo y cómo protegerse, así no dejamos salir a los niños. Pero deben de saber que yo trabajo con personas que no saben leer o escribir. Yo también quiero saber cómo los pesticidas afectan a los niños, porque me preocupa que el hijo de mi hermana tenga problemas de desarrollo por los pesticidas.",
@@ -39,12 +40,15 @@
     "Ground": "Suelo",
     "Aerial/Ground": "Aéreo/Suelo",
     "Applicant Type": "Tipo de Solicitante",
+    "Clear All": "Limpiar Todo",
 
     "Tooltip Distance": "Condado",
     "Tooltip Time/Date": "Hora y fecha",
     "Tooltip Application": "Método de aplicación",
 
     "No NOIs": "No se encontraron avisos de intención",
+    "No County": "Seleccione cualquier condado para comenzar",
+
 
     "What To Do": "Qué hacer en caso de exposición a pesticidas",
     "At Home": "En casa",
