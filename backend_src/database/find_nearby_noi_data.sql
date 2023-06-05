@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION public.find_nearby_noi_data(
 	lat numeric,
 	lon numeric,
 	radius numeric)
-    RETURNS TABLE(use_no numeric, prodno numeric, product_name character varying, aer_grnd_ind character varying, fumigant_sw character varying, chem_code numeric, chemname character varying, acre_treated numeric, unit_treated character, applic_dt date, applic_time time without time zone, aer_gnd_ind character, county_cd character, product_label_link character varying, latitude numeric, longitude numeric, distance numeric) 
+    RETURNS TABLE(use_no numeric, prodno numeric, product_name character varying, aer_grnd_ind character varying, fumigant_sw character varying, chem_code numeric, chemname character varying, acre_treated numeric, unit_treated character, applic_dt date, applic_time time without time zone, aer_gnd_ind character, county_cd character, product_label_link character varying, latitude numeric, longitude numeric, distance numeric, address character varying) 
     LANGUAGE 'plpgsql'
     COST 100
     VOLATILE PARALLEL UNSAFE
@@ -32,10 +32,13 @@ BEGIN
 		restricted_noi_view.product_label_link,
 		a.latitude, 
 		a.longitude,
-		haversine(a.latitude, a.longitude, lat, lon) distance
+		haversine(a.latitude, a.longitude, lat, lon) distance,
+		address_view.address
 	FROM restricted_noi_view
-	INNER JOIN (SELECT * FROM find_nearby_noi(lat, lon, radius)) a 
-	ON restricted_noi_view.use_no=a.use_no;
+	INNER JOIN (SELECT * FROM find_nearby_noi(lat, lon, radius)) a
+	ON restricted_noi_view.use_no=a.use_no
+	LEFT JOIN address_view
+	ON address_view.latitude = a.latitude AND address_view.longitude = a.longitude;
 END;
 $BODY$;
 

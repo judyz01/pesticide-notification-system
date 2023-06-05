@@ -122,17 +122,22 @@ app.get('/findCountyNOI', async (req, res) => {
     const queryColumns = [
       'restricted_noi_view.use_no', 'prodno', 'product_name', 'aer_grnd_ind', 'fumigant_sw',
       'chem_code', 'chemname', 'acre_treated', 'unit_treated', 'applic_dt',
-      'applic_time', 'aer_gnd_ind', 'county_cd', 'county_name', 'latitude', 'longitude', 'product_label_link'
+      'applic_time', 'aer_gnd_ind', 'county_cd', 'county_name', 'coordinates_view.latitude',
+      'coordinates_view.longitude', 'product_label_link', 'address'
     ]
     let query;
     if (count === 'true') {
-      query = pool.distinct(pool.raw('count(*)'));
+      query = pool.select(pool.raw('count (distinct (restricted_noi_view.use_no, prodno, product_name, aer_grnd_ind, fumigant_sw,\
+        chem_code, chemname, acre_treated, unit_treated, applic_dt,\
+        applic_time, aer_gnd_ind, county_cd, county_name, coordinates_view.latitude, coordinates_view.longitude, product_label_link, address))'));
     } else {
       query = pool.distinct(queryColumns)
     }
+    // querying only displayable nois
     const noiList = await query
       .from('restricted_noi_view')
       .innerJoin('coordinates_view', 'restricted_noi_view.use_no', '=', 'coordinates_view.use_no')
+      .leftJoin('address_view', 'address_view.latitude', "=", 'coordinates_view.latitude', 'address_view.longitude', '=', 'coordinates_view.longitude')
       .whereIn('county_cd', counties)
       .modify((pool) => {
         if (startDate) {
