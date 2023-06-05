@@ -38,7 +38,7 @@ The PNSS database can be queried for information about pesticides in two ways: b
       - **map** ('true' or 'false'): When this parameter is true, the query will **only** return the coordinates of the NOIs within the given radius; there will be no specific details
     - **Optional**
       - **order** ('asc' or 'desc'): This parameter specifies the order by which the data returned will be sorted
-      - ~~**orderParam** ('distance' or 'time'): This parameter specifies to sort by distance or time~~ Depracated
+      - ~~**orderParam** ('distance' or 'time'): This parameter specifies to sort by distance or time~~ Deprecated
       - **startDate** (YYYY-MM-DD): This parameter specifies the start of the date range to be filtering the response data by
       - **endDate** (YYYY-MM-DD): This parameter specifies the end of the date range to be filtering the response data by
       - **page** (integer > 0): This parameter specifies which page of the pagination sequence for the set of returned data to return
