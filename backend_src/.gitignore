@@ -26,3 +26,4 @@ yarn-error.log*
 /.nyc_output
 /test/reports
 /scripts/*.csv
+/scripts/reverseGeocode.csv
