@@ -352,7 +352,7 @@ const NOICards = (props) =>  {
                         <IconButton sx={{ml:"-5px", mr:"-8px"}} aria-label="qr_code" onClick={() => { handleClickOpen(); generateQR(elem.latitude, elem.longitude);}}>
                           <QrCode2 opacity="0.8"/>
                         </IconButton>
-                      : {`${elem.latitude}`}, {`${elem.longitude}`}
+                      : { elem.address ? `${elem.address}` : `${elem.latitude}, ${elem.longitude}` }
                     </Typography>
 
                     <Typography color="#A5ADBB">
