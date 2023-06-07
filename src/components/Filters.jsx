@@ -43,7 +43,7 @@ const Filters = (props) => {
   }
 
   return (
-    <Box data-testid="filter-panel" sx={{display: "block", direction: "column", backgroundColor: "#EAEAEA", width:{md: "100%", lg: "20%"}, height:{lg:"auto"}}}>
+    <Box data-cy="filter-panel" sx={{display: "block", direction: "column", backgroundColor: "#EAEAEA", width:{md: "100%", lg: "20%"}, height:{lg:"auto"}}}>
     
       <Typography align='center' sx={{pt: "45px", fontSize: 21, fontWeight: 600, color: "#126701" }}>
         {t("Filters")}

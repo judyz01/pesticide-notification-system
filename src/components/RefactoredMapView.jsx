@@ -234,7 +234,7 @@ function RefactoredMapView(props) {
             </TextField>
           </StandaloneSearchBox>
 
-          <IconButton aria-label="qr_code" onClick={() => { handleClickOpen(); generateQR();}}>
+          <IconButton data-cy="qr-icon" aria-label="qr_code" onClick={() => { handleClickOpen(); generateQR();}}>
             <QrCode2 fontSize="large" opacity="0.8"/>
           </IconButton>
         </Stack>

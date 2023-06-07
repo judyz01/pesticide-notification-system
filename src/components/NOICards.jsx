@@ -162,15 +162,7 @@ const NOICards = (props) =>  {
           })
           .then((response) => {
             console.log(response);
-            if (props.fumigant === true) {
-              const filteredData = response.data.filter(elem => elem.fumigant_sw === 'X');
-              setPesticideData(filteredData);
-            } else if (props.aerialGround) {
-              const filteredData = response.data.filter(elem => elem.aer_grnd_ind === getApplicatorCharacter(props.aerialGround));
-              setPesticideData(filteredData);
-            } else {
-              setPesticideData(response.data);
-            }
+            setPesticideData(response.data);
           })
           .catch(function (error) {
               console.error(error);
@@ -345,11 +337,11 @@ const NOICards = (props) =>  {
                     )
                   }
 
-                  <CardContent>
+                  <CardContent data-cy="card-content">
 
                     <Typography variant="h11" color="#A5ADBB" alignItems="center">
                       {ADDRESS}
-                        <IconButton sx={{ml:"-5px", mr:"-8px"}} aria-label="qr_code" onClick={() => { handleClickOpen(); generateQR(elem.latitude, elem.longitude);}}>
+                        <IconButton data-cy="qr-icon" sx={{ml:"-5px", mr:"-8px"}} aria-label="qr_code" onClick={() => { handleClickOpen(); generateQR(elem.latitude, elem.longitude);}}>
                           <QrCode2 opacity="0.8"/>
                         </IconButton>
                       : { elem.address ? `${elem.address}` : `${elem.latitude}, ${elem.longitude}` }

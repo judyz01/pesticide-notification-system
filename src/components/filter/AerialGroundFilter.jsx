@@ -22,15 +22,6 @@ const names = [
   'Aerial/Ground'
 ];
 
-function getStyles(name, aerialGroundOrder, theme) {
-  return {
-    fontWeight:
-    aerialGroundOrder.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  };
-}
-
 export default function DateFilter(props) {
   const { t } = useTranslation();
   const INPUT_LABEL = t("Applicant Type");
@@ -58,11 +49,12 @@ export default function DateFilter(props) {
   }, [aerialGroundOrder, props]);
 
   return (
-    <FormControl data-testid="aerialground" sx={{ width: "100%", mt: 3  }}>
-      <InputLabel id="order-by-aerial-ground-date-label">{INPUT_LABEL}</InputLabel>
+    <FormControl sx={{ width: "100%", mt: 3  }}>
+      <InputLabel id="order-by-aerial-ground-label">{INPUT_LABEL}</InputLabel>
       <Select
-        labelId="order-by-distance-date-label"
-        id="order-by-distance-date"
+        data-cy="applicant-filter"
+        labelId="order-by-aerial-ground-label"
+        id="order-by-aerial-ground"
         value={aerialGroundOrder}
         label={INPUT_LABEL}
         onChange={handleChange}

@@ -7,9 +7,8 @@ const Emergency = () => {
   const { t } = useTranslation();
 
   return (
-    // #d0342c red
     <>
-      <Box data-testid="emergency-panel" sx={{pt: "10px", pl: "20px", fontSize: 21, fontWeight: 600, color: "#126701" }}>
+      <Box sx={{pt: "10px", pl: "20px", fontSize: 21, fontWeight: 600, color: "#126701" }}>
         {t("Emergency")}
       </Box>
 
