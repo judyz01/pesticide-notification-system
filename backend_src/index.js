@@ -442,7 +442,7 @@ app.post('/sms/in/:lng', async (req, res) => {
 // Handle text messages with 1 keyword
 const handleSingleKeywordText = (req, res, token) => {
   if (token == 'GUIDE') {
-    twilio_functions.sendGuide(req, res);
+    twilio_functions.sendGuide(req);
     res.status(200).send("Information successfully sent.");
   } else {
     // Handle non-default SMS keywords

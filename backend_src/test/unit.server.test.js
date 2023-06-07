@@ -53,6 +53,7 @@ describe("Backend API", () => {
         comtrs: "57M10N03E06",
         error_flag: ""
     }
+    const testNumber = '+12025550190'
 
     describe("API endpoint sanity check", () => {
         it("returns 'GET / works correctly'", () => {
@@ -270,29 +271,62 @@ describe("Backend API", () => {
     })
 
     describe("SMS", () => {
-        describe("English Lines", () => {
-            beforeEach(() => {
-                this.post = sinon.stub(request, 'post').resolves({
-                    'Content-Type': "text/html; charset=utf-8",
-                    status: 200,
-                    text: 'Information successfully sent.'
+        describe("English Line", () => {
+            describe("Valid", () => {
+                it("Should respond with a subscription confirmation", async () => {
+                    const response = await supertest(app)
+                        .post('/sms/in/en')
+                        .send({
+                            From: testNumber,
+                            Body: "sub stanislaus",
+                        })
+                    expect(response.status).equal(200);
+                    expect(response.text).equal("Subscription successful.")
+                })
+
+                it("Should respond with a unsubscription confirmation", async () => {
+                    const response = await supertest(app)
+                        .post('/sms/in/en')
+                        .send({
+                            From: testNumber,
+                            Body: "halt stanislaus",
+                        })
+                    expect(response.status).equal(200);
+                    expect(response.text).equal("Unsubscription successful.");
+                })
+
+                it("Should respond with the guide", async () => {
+                    const response = await supertest(app)
+                        .post('/sms/in/en')
+                        .send({
+                            From: testNumber,
+                            Body: "guide",
+                        })
+                    expect(response.status).equal(200);
+                    expect(response.text).equal("Information successfully sent.");
                 })
             })
-            afterEach(() => {
-                sinon.restore();
-            })
-            it("Should respond with the guide", (done) => {
-                supertest(app)
-                    .post('/sms/in/en')
-                    .send({
-                        from: "testNumber",
-                        Body: "guide",
-                    })
-                    .expect(200)
-                    .then(res => {
-                        assert.equal(res.text, "Information successfully sent.");
-                    })
-                done();
+            describe("Invalid", () => {
+                it("Should respond to invalid single word commands with the error message", async () => {
+                    const response = await supertest(app)
+                        .post('/sms/in/en')
+                        .send({
+                            From: testNumber,
+                            Body: "invalid",
+                        })
+                    expect(response.status).equal(500);
+                    expect(response.text).equal("Error parsing command. Invalid keyword.")
+                })
+                it("Should respond to an invalid multi-word command with the error message", async () => {
+                    const response = await supertest(app)
+                        .post('/sms/in/en')
+                        .send({
+                            From: testNumber,
+                            Body: "fake command",
+                        })
+                    expect(response.status).equal(500);
+                    expect(response.text, "Invalid command fake command");
+                })
             })
         })
     })

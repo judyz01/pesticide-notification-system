@@ -1,11 +1,22 @@
 const dotenv = require('dotenv').config();
 const i18next = require('i18next');
-
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
-const mSID = process.env.MESSAGING_SERVICE_ID;
-const mSIDSp = process.env.MESSAGING_SERVICE_ID_SPANISH;
-const client = require('twilio')(accountSid, authToken);
+const testSid = process.env.TWILIO_TEST_ACCOUNT_SID;
+const testToken = process.env.TWILIO_TEST_AUTH_TOKEN;
+let mSID = process.env.MESSAGING_SERVICE_ID;
+let mSIDSp = process.env.MESSAGING_SERVICE_ID_SPANISH;
+let client;
+let sender = "messagingServiceSid"
+if (process.env.NODE_ENV === 'development') {
+    client = require('twilio')(testSid, testToken);
+    // Twilio provided testing "magic" numbers
+    mSID = '+15005550006';
+    mSIDSp = '+15005550006';
+    sender = "from"
+} else {
+    client = require('twilio')(accountSid, authToken)
+}
 
 const county_functions = require('./county_functions')
 
@@ -37,35 +48,41 @@ const optOutKeywords = new Set([
 ]);
 
 // Reply to subscription
-const sendSubscribeConfirmation = (req, res, county) => {
+const sendSubscribeConfirmation = async (req, res, county) => {
     client.messages
         .create({
             body: req.t("successful_subscription", { county: county }),
-            messagingServiceSid: req.headers['accept-language'] == 'en' ? mSID : mSIDSp,
+            [sender]: req.headers['accept-language'] == 'en' ? mSID : mSIDSp,
             to: req.body.From
         })
         .then(message => console.log(message.status));
 }
 
 // Reply to unsubscription
-const sendUnsubscribeConfirmation = (req, res, county) => {
+const sendUnsubscribeConfirmation = async (req, res, county) => {
     client.messages
         .create({
             body: req.t("successful_unsubscription", { county: county }),
-            messagingServiceSid: req.headers['accept-language'] == 'en' ? mSID : mSIDSp,
+            [sender]: req.headers['accept-language'] == 'en' ? mSID : mSIDSp,
             to: req.body.From
         })
         .then(message => console.log(message.status));
 }
 
-const sendGuide = (req, res) => {
-    client.messages
-        .create({
-            body: req.t("guide", { available_counties: `${county_functions.available_county_table}` }),
-            messagingServiceSid: req.headers['accept-language'] == 'en' ? mSID : mSIDSp,
-            to: req.body.From
-        })
-        .then(message => console.log(message.status));
+const sendGuide = async (req) => {
+    try {
+        client.messages
+            .create({
+                body: req.t("guide", { available_counties: county_functions.available_county_table }),
+                [sender]: req.headers['accept-language'] == 'en' ? mSID : mSIDSp,
+                to: req.body.From
+            })
+            .then((message) => {
+                console.log(message.status)
+            });
+    } catch (err) {
+        console.log(error)
+    }
 }
 
 /**
@@ -75,13 +92,17 @@ const sendGuide = (req, res) => {
  * @param {*} err 
  */
 const sendError = async (req, res, err) => {
-    client.messages
-        .create({
-            body: req.t(err),
-            messagingServiceSid: req.headers['accept-language'] == 'en' ? mSID : mSIDSp,
-            to: req.body.From
-        })
-        .then(message => console.log(message.status));
+    try {
+        client.messages
+            .create({
+                body: req.t(err),
+                [sender]: req.headers['accept-language'] == 'en' ? mSID : mSIDSp,
+                to: req.body.From
+            })
+            .then(message => console.log(message.status));
+    } catch (err) {
+        console.log(err);
+    }
 }
 
 const sendNotifications = async (i18next, number, Chemical_name, link, language, lat, lon) => {
