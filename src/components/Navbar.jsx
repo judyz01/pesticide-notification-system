@@ -166,7 +166,7 @@ const Navbar = (props) => {
           </Box>
           <Box sx={{display: { xs: "block", sm: "none" }}}>
             <Button 
-              data-testid="menu-icon"
+              data-cy="menu-icon"
               sx={{pr:"25px", float:"right", minWidth:"0px"}}
               onClick={() => setShowMenu(!showMenu)}
             >

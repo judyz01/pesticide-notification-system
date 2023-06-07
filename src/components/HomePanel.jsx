@@ -36,6 +36,10 @@ const HomePanel = () => {
 
   const [value, setValue] = React.useState(0);
 
+  const EMERGENCY = t("Emergency");
+  const COMMUNITY = t("Community");
+
+
   const handleChange = (e, newValue) => {
     console.log(newValue);
     setValue(newValue);
@@ -64,8 +68,8 @@ const HomePanel = () => {
           variant="fullWidth"
           aria-label="full width tabs example"
         >
-          <Tab data-testid="emergency-tab" sx={{ pt:3, pb:3 }} label="Emergency" {...a11yProps(0)} />
-          <Tab data-testid="community-tab" sx={{ pt:3, pb:3 }} label="Community" {...a11yProps(1)} />
+          <Tab data-testid="emergency-tab" sx={{ pt:3, pb:3 }} label={EMERGENCY} {...a11yProps(0)} />
+          <Tab data-testid="community-tab" sx={{ pt:3, pb:3 }} label={COMMUNITY} {...a11yProps(1)} />
         </Tabs>
 
         <SwipeableViews 
