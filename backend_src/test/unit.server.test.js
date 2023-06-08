@@ -2,10 +2,11 @@ const request = require('request');
 const assert = require('assert');
 const supertest = require('supertest');
 const app = require('../index.js').app;
-const pool = require('../index.js').pool;
+const server = require('../index.js');
 const sinon = require('sinon');
 const knex = require('../create_unix_socket.js');
 const { expect } = require('chai');
+const proxyquire = require('proxyquire')
 
 describe("Backend API", () => {
     const testCountyValid = 57;
@@ -18,9 +19,11 @@ describe("Backend API", () => {
     const badEndDate = "2019-06-31";
     const testOrderParam = "distance";
     const testReqOrder = "ASC";
-    const testInsertData = {
+    const testFumigant = 10533;
+    const testNonFumigant = 61852;
+    let testInsertData = {
         use_no: 12344321,
-        prodno: 10533,
+        prodno: 0,
         chem_code: 385,
         prodchem_pct: 1,
         lbs_chm_used: 1,
@@ -56,15 +59,12 @@ describe("Backend API", () => {
     const testNumber = '+12025550190'
 
     describe("API endpoint sanity check", () => {
-        it("returns 'GET / works correctly'", () => {
-            return supertest(app)
+        it("returns 'GET / works correctly'", async () => {
+            const response = await supertest(app)
                 .get('/')
                 .set('Accept', 'application/json')
-                .expect('Content-Type', "text/html; charset=utf-8")
-                .expect(res => {
-                    assert.equal(res.status, 200);
-                    assert.equal(res.text, 'GET / works correctly');
-                });
+            expect(response.status).equal(200);
+            expect(response.text).equal('GET / works correctly');
         });
     })
 
@@ -127,41 +127,36 @@ describe("Backend API", () => {
             })
         })
         describe("Invalid", () => {
-            beforeEach(() => {
-                this.get = sinon.stub(request, 'get').resolves({
-                    'Content-Type': "text/html; charset=utf-8",
-                    status: 500,
-                    text: 'Error in request: findCountyNOI'
-                })
-            });
+            // beforeEach(() => {
+            //     const promise = sinon.stub().resolves("Query executed")
+            //     const pool = sinon.stub().returns({
+            //         raw: promise
+            //     })
+            //     this.currentTest.myStub = promise;
+            // });
             afterEach(() => {
                 sinon.restore();
             });
             it("does not return information from invalid counties", async () => {
-                return supertest(app)
+                const response = await supertest(app)
                     .get('/findCountyNOI')
                     .query({
                         counties: testCountyInvalid
                     })
                     .set('Accept', 'application/json')
-                    .expect('Content-Type', "application/json; charset=utf-8")
-                    .then(res => {
-                        assert.ok(res.body, [])
-                        assert.equal(Array.isArray(res.body), true);
-                        if (res.body.length > 0) {
-                            assert.equal(res.body[0].county_cd, '1');
-                        }
-                    })
+                expect(response.status).equal(200);
+                assert.equal(Array.isArray(response.body), true);
+                if (response.body.length > 0) {
+                    assert.equal(response.body[0].county_cd, '1');
+                }
             });
 
-            it("does not return values without the 3 required parameters", () => {
-                supertest(app)
+            it("does not return values without the 3 required parameters", async () => {
+                const response = await supertest(app)
                     .get('/findNearbyNOI')
                     .set('Accept', 'application/json')
-                    .expect((res) => {
-                        assert.equal(res.status, 500);
-                        assert.equal(res.text, 'Error in request: findNearbyNOI');
-                    })
+                expect(response.status).equal(500);
+                expect(response.text).equal('Error in request: findNearbyNOI')
             });
         })
     })
@@ -234,6 +229,36 @@ describe("Backend API", () => {
     describe("Add to Table NOI", () => {
         describe("Happy Path", () => {
             beforeEach(() => {
+                // this.post = sinon.stub(supertest, 'post').resolves({
+                //     'Content-Type': "text/html; charset=utf-8",
+                //     status: 200,
+                //     text: 'NOI Table updated. Not a fumigant, so no immediate text notification.'
+                // })
+            })
+            afterEach(() => {
+                sinon.restore();
+            });
+
+            it("Should successfully insert", async () => {
+                testInsertData.prodno = testFumigant;
+                const response = await supertest(app)
+                    .post('/addTableNOI')
+                    .send(testInsertData)
+                expect(response.status).equal(200);
+                expect(response.text).equal('Notifications sent');
+            })
+
+            it("Should not send notifications when the pesticide is not a fumigant", async () => {
+                testInsertData.prodno = testNonFumigant;
+                const response = await supertest(app)
+                    .post('/addTableNOI')
+                    .send(testInsertData)
+                expect(response.status).equal(200);
+                expect(response.text).equal("NOI Table updated. Not a fumigant, so no immediate text notification.");
+            })
+        });
+        describe("Bad Path", () => {
+            beforeEach(() => {
                 this.post = sinon.stub(request, 'post').resolves({
                     'Content-Type': "text/html; charset=utf-8",
                     status: 200,
@@ -242,32 +267,16 @@ describe("Backend API", () => {
             })
             afterEach(() => {
                 sinon.restore();
-            });
-
-            it("Should successfully insert", (done) => {
-                supertest(app)
+            })
+            it("Should not insert when values are not the correct type", async () => {
+                testInsertData.prodno = "STRING";
+                const response = await supertest(app)
                     .post('/addTableNOI')
                     .send(testInsertData)
-                    .set('Accept', 'application/json')
-                    .expect(200)
-                    .then(res => {
-                        assert.equal(res.text, 'NOI Table updated. Not a fumigant, so no immediate text notification.');
-                    })
-                done();
+                expect(response.status).equal(500);
+                expect(response.text).equal('Error in request');
             })
-        });
-        // describe("Bad Path", () => {
-        //     beforeEach(() => {
-        //         this.post = sinon.stub(request, 'post').resolves({
-        //             'Content-Type': "text/html; charset=utf-8",
-        //             status: 200,
-        //             text: 'NOI Table updated. Not a fumigant, so no immediate text notification.'
-        //         })
-        //     })
-        //     afterEach(() => {
-        //         sinon.restore();
-        //     })
-        // })
+        })
     })
 
     describe("SMS", () => {
@@ -317,7 +326,7 @@ describe("Backend API", () => {
                     expect(response.status).equal(500);
                     expect(response.text).equal("Error parsing command. Invalid keyword.")
                 })
-                it("Should respond to an invalid multi-word command with the error message", async () => {
+                it("Should respond to an invalid multi-word command with the correct error message", async () => {
                     const response = await supertest(app)
                         .post('/sms/in/en')
                         .send({
@@ -326,6 +335,16 @@ describe("Backend API", () => {
                         })
                     expect(response.status).equal(500);
                     expect(response.text, "Invalid command fake command");
+                })
+                it("Should respond to an invalid county with the correct error", async () => {
+                    const response = await supertest(app)
+                        .post('/sms/in/en')
+                        .send({
+                            From: testNumber,
+                            Body: "sub orlando"
+                        })
+                    expect(response.status).equal(500);
+                    expect(response.text, "Invalid county. Error subscribing")
                 })
             })
         })

@@ -70,19 +70,15 @@ const sendUnsubscribeConfirmation = async (req, res, county) => {
 }
 
 const sendGuide = async (req) => {
-    try {
-        client.messages
-            .create({
-                body: req.t("guide", { available_counties: county_functions.available_county_table }),
-                [sender]: req.headers['accept-language'] == 'en' ? mSID : mSIDSp,
-                to: req.body.From
-            })
-            .then((message) => {
-                console.log(message.status)
-            });
-    } catch (err) {
-        console.log(error)
-    }
+    client.messages
+        .create({
+            body: req.t("guide", { available_counties: county_functions.available_county_table }),
+            [sender]: req.headers['accept-language'] == 'en' ? mSID : mSIDSp,
+            to: req.body.From
+        })
+        .then((message) => {
+            console.log(message.status)
+        });
 }
 
 /**
@@ -92,24 +88,20 @@ const sendGuide = async (req) => {
  * @param {*} err 
  */
 const sendError = async (req, res, err) => {
-    try {
-        client.messages
-            .create({
-                body: req.t(err),
-                [sender]: req.headers['accept-language'] == 'en' ? mSID : mSIDSp,
-                to: req.body.From
-            })
-            .then(message => console.log(message.status));
-    } catch (err) {
-        console.log(err);
-    }
+    client.messages
+        .create({
+            body: req.t(err),
+            [sender]: req.headers['accept-language'] == 'en' ? mSID : mSIDSp,
+            to: req.body.From
+        })
+        .then(message => console.log(message.status));
 }
 
 const sendNotifications = async (i18next, number, Chemical_name, link, language, lat, lon) => {
     client.messages
         .create({
             body: i18next.t("notification", { chemical_name: Chemical_name, link: link, lat: lat, lon: lon, lng: language }),
-            messagingServiceSid: language == 'en' ? mSID : mSIDSp,
+            [sender]: language == 'en' ? mSID : mSIDSp,
             to: number
         })
         .then(message => console.log(message.status))
