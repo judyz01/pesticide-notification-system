@@ -51,6 +51,7 @@ export default function DateDistanceFilter(props) {
     <FormControl sx={{ width: "100%", mt: 3  }}>
       <InputLabel id="order-by-distance-date-label">{INPUT_LABEL}</InputLabel>
       <Select
+        data-cy="order-filter"
         labelId="order-by-distance-date-label"
         id="order-by-distance-date"
         value={distanceDateOrder}

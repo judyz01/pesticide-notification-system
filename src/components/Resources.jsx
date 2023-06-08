@@ -149,7 +149,7 @@ const Resources = () => {
                     <ListItemButton role={undefined} onClick={handleToggle(value)} >
                       <ListItemIcon>
                         <Checkbox
-                          data-testid={dataTestId}
+                          data-cy={dataTestId}
                           edge="start"
                           checked={checked.indexOf(value) !== -1}
                           tabIndex={-1}

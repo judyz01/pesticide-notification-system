@@ -56,14 +56,14 @@ export default function SimpleDialog(props) {
             pageStyle={getPageMargins}
             // documentTitle = {"Pesticide Notification System"}
             trigger={() => (
-              <Button sx={{p: "20px"}} >
+              <Button data-cy="print-qr" sx={{p: "20px"}} >
                 {PRINT_QR}
               </Button>
               )}
             content={() => QRRef.current}>
           </ReactToPrint>
 
-          <IconButton onClick={handleClick}>
+          <IconButton data-cy="share-qr" onClick={handleClick}>
             <IosShareIcon />
           </IconButton>
           <Snackbar

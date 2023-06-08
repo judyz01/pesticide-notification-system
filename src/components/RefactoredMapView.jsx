@@ -9,6 +9,12 @@ import { useTranslation } from "react-i18next";
 import { convertMilesToMeters } from "../helpers/functions"
 import SimpleDialog from "./SimpleDialog";
 
+
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
+import Slider from '@mui/material/Slider';
+
+
 function RefactoredMapView(props) {
 
   // If not from QR code, then use default coordinates for pesticide data until current location is found
@@ -21,12 +27,20 @@ function RefactoredMapView(props) {
   const [qrCoords, setQrCoords] = useState({});
   const [open, setOpen] = useState(false);
 
-  const { i18n, t } = useTranslation();
+  // DEMO
+  const [demo, setDemo] = useState(false);
+  const [demoZoom, setDemoZoom] = useState();
+  const [demoRadius, setDemoRadius] = useState();
+  const [demoStartDate, setDemoStartDate] = useState("");
+  const [demoEndDate, setDemoEndDate] = useState("");
+  const [value, setValue] = React.useState([1, 7]);
 
+
+  const { i18n, t } = useTranslation();
   // Radius is in meters, currently set to 5 mile radius (8046.72m)
-  var userRadius = (props.lat && props.lng) ? 250: props.radius ? convertMilesToMeters(props.radius) : 8046.72;
-  console.log("radius is " + userRadius);
-  console.log("props radius is " + props.radius);
+  var userRadius = demoRadius ? demoRadius: (props.lat && props.lng) ? 250: props.radius ? convertMilesToMeters(props.radius) : 8046.72;
+  // console.log("radius is " + userRadius);
+  // console.log("props radius is " + props.radius);
 
   var zoomDict = {8046.7: 12, 16093.4: 11, 24140.1: 10}
 
@@ -105,13 +119,13 @@ function RefactoredMapView(props) {
   const getPesticideData = ((lat, lng) => {
 
     if (!lat && !lng) {
-      console.log("can't get pesticide data");
       return;
     }
 
     // Set pesticide date according to user's location
+    // DEMO for dates
     axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
-        params: { latitude: lat, longitude: lng, radius: userRadius, map: true},
+        params: { latitude: lat, longitude: lng, radius: userRadius, map: true, startDate: demoStartDate, endDate: demoEndDate },
     })
     .then(response =>
       setPesticideData(response.data))
@@ -128,21 +142,17 @@ function RefactoredMapView(props) {
       navigator.geolocation.getCurrentPosition(
         ({ coords: { latitude: lat, longitude: lng } }) => {
           const pos = { lat, lng };
-          console.log("found current location");
+
           setCurrentLocation(pos);
           setRealPosition(pos);
         }
       );
     }
-
-    console.log(currentLocation.lat, currentLocation.lng);
-
     getPesticideData(currentLocation.lat, currentLocation.lng);
   }, []);
   
   // Updates everytime the user's location changes
   useEffect(() => {
-    console.log("curr location changed " + currentLocation.lat + " " + currentLocation.lng);
     // Reset pesticide data
     setPesticideData([]);
 
@@ -152,18 +162,8 @@ function RefactoredMapView(props) {
     // Get pesticide data
     getPesticideData(currentLocation.lat, currentLocation.lng);
 
-  }, [props, currentLocation]);
 
-  // const findPlaceFromCoords = (lat, lng) => {
-  //   var lat_lng = lat + ", " + lng;
-  //   console.log(lat_lng);
-  //   axios.get(`https://maps.googleapis.com/maps/api/geocode/json?`, {
-  //     params: { latlng: lat_lng , key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY },
-  //   })
-  //   .then(({data}) => {
-  //       setAddress(data.results[2].formatted_address);
-  //   });
-  // };
+  }, [props, currentLocation, demoStartDate, demoEndDate]);
 
   // Receive new location from search box, converts it to lat/long coordinates
   // Uses new coordinates to obtain pesticide data
@@ -202,6 +202,48 @@ function RefactoredMapView(props) {
     setCurrentLocation(realPosition);
   }
 
+  // DEMO
+  const handleChange = () => {
+    setDemo(!demo);
+
+    if (!demo === false) {
+      console.log("off");
+      setCurrentLocation(realPosition);
+      setDemoZoom(null);
+      setDemoRadius(null);
+      setDemoStartDate("");
+      setDemoEndDate("");
+
+
+    } else {
+      console.log("on");
+      setCurrentLocation({lat: 37.4822491, lng: -120.931951})
+      setDemoZoom(14);
+      setDemoRadius(3000);
+      setDemoStartDate("2019-08-1");
+      setDemoEndDate("2019-08-7");
+    }
+  }
+
+  const handleSliderChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  const handleSliderCommitted = (event, newValue) => {
+    let start = "2019-08-" + newValue[0].toString();
+    let end = "2019-08-" + newValue[1].toString();
+
+    setDemoStartDate(start);
+    setDemoEndDate(end);
+  };
+
+  function valueLabelFormat(value) {  
+      console.log(value);
+      return ` 8/${value}/2019 `;
+  }
+
+  // DEMO END
+
   return (
     <>
     <Box sx={{ mt: "15px", height:"575px", width:"80%", display: { xs: "block", sm: "block" } }}>
@@ -234,7 +276,7 @@ function RefactoredMapView(props) {
             </TextField>
           </StandaloneSearchBox>
 
-          <IconButton aria-label="qr_code" onClick={() => { handleClickOpen(); generateQR();}}>
+          <IconButton data-cy="qr-icon" aria-label="qr_code" onClick={() => { handleClickOpen(); generateQR();}}>
             <QrCode2 fontSize="large" opacity="0.8"/>
           </IconButton>
         </Stack>
@@ -262,7 +304,7 @@ function RefactoredMapView(props) {
       </Stack>
         <GoogleMap 
           center={currentLocation}
-          zoom={(props.lat && props.lng) ? 18 : zoomDict[convertMilesToMeters(props.radius)] ? zoomDict[convertMilesToMeters(props.radius)] : 12}
+          zoom={demoZoom? demoZoom : (props.lat && props.lng) ? 18 : zoomDict[convertMilesToMeters(props.radius)] ? zoomDict[convertMilesToMeters(props.radius)] : 12}
           onLoad={map => {onMapLoad(map)}}
           mapContainerStyle={{ height: "100%", width: "100%" }}
         >
@@ -289,6 +331,31 @@ function RefactoredMapView(props) {
         </div>
 
       </GoogleMap>
+
+
+      {/* // DEMO */}
+
+      <Stack direction="row" alignItems="center"> 
+
+        <FormControlLabel onChange={handleChange} control={<Switch checked={demo} />} label="Demo" />
+
+        { demo && 
+        <Slider
+          sx={{width: "60%", ml:"20px"}}
+          min={1}
+          max={31}
+          getAriaLabel={() => 'Date range'}
+          value={value}
+          onChange={handleSliderChange}
+          onChangeCommitted = {handleSliderCommitted}
+          valueLabelFormat={valueLabelFormat}
+          valueLabelDisplay="auto"
+        />}
+
+      </Stack>
+
+      {/* // DEMO END */}
+
     </Box>
 
     {/* Dialog has to be outside everything to prevent black background bug */}

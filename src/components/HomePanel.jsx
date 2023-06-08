@@ -7,8 +7,6 @@ import Emergency from "./Emergency";
 
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import SwipeableViews from 'react-swipeable-views-react-18-fix';
-
 
 function TabPanel(props) {
   const { children, value, index } = props;
@@ -41,12 +39,7 @@ const HomePanel = () => {
 
 
   const handleChange = (e, newValue) => {
-    console.log(newValue);
     setValue(newValue);
-  };
-
-  const handleChangeIndex = (index) => {
-    setValue(index);
   };
 
   function a11yProps(index) {
@@ -72,18 +65,12 @@ const HomePanel = () => {
           <Tab data-testid="community-tab" sx={{ pt:3, pb:3 }} label={COMMUNITY} {...a11yProps(1)} />
         </Tabs>
 
-        <SwipeableViews 
-          axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-          index={value}
-          onChangeIndex={handleChangeIndex}
-        >
           <TabPanel value={value} index={0}>
             <Emergency/>
           </TabPanel>
           <TabPanel value={value} index={1}>
             <CommunityVoices/>
           </TabPanel>
-        </SwipeableViews>
     </Box>
   );
 };

@@ -59,6 +59,7 @@ export default function DateRangeFilter(props) {
 
       <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker 
+            data-cy="start-date-filter"
             label={START_DATE}
             inputFormat="MM/DD/YYYY"
             value={startDate}
@@ -66,6 +67,7 @@ export default function DateRangeFilter(props) {
           />
 
           <DatePicker 
+            data-cy="end-date-filter"
             label={END_DATE}
             inputFormat="MM/DD/YYYY"
             minDate={startDate}

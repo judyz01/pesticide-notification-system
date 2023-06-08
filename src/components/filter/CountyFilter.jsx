@@ -131,6 +131,7 @@ export default function CountyDropdown(props) {
       <FormControl data-testid="county" sx={{ width: "100%", mt: 3 }}>
         <InputLabel id="county-label"> {COUNTY_LABEL} </InputLabel>
         <Select
+          data-cy="county-filter"
           labelId="county-label"
           id="county"
           multiple
