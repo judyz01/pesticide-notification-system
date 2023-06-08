@@ -21,7 +21,7 @@ function RefactoredMapView(props) {
 
   // If not from QR code, then use default coordinates for pesticide data until current location is found
   const [currentLocation, setCurrentLocation] = useState(() => (props.lat && props.lng) ? {lat: parseFloat(props.lat), lng: parseFloat(props.lng)} : {lat: 38.53709139783189, lng: -121.75506664377548});
-  const [realPosition, setRealPosition] = useState();
+  const [realPosition, setRealPosition] = useState({lat: 38.53709139783189, lng: -121.75506664377548});
 
   const [pesticideData, setPesticideData] = useState([]);
   const [searchBox, setSearchBox] = useState(null);
@@ -146,6 +146,7 @@ function RefactoredMapView(props) {
 
           setCurrentLocation(pos);
           setRealPosition(pos);
+          console.log("set real position");
         }
       );
     }
@@ -209,7 +210,6 @@ function RefactoredMapView(props) {
     setDemo(!demo);
 
     if (!demo === false) {
-      console.log("off");
       setCurrentLocation(realPosition);
       setDemoZoom(null);
       setDemoRadius(null);
@@ -218,7 +218,6 @@ function RefactoredMapView(props) {
 
 
     } else {
-      console.log("on");
       setCurrentLocation({lat: 37.4822491, lng: -120.931951})
       setDemoZoom(14);
       setDemoRadius(3000);
