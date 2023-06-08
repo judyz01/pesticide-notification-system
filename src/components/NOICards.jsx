@@ -111,14 +111,13 @@ const NOICards = (props) =>  {
       var startDate = "";
       var endDate = "";
 
-      if(props.startDate && props.endDate && (props.startDate.$d < props.endDate.$d)) {
+      if(props.startDate && props.endDate && (props.startDate.$d <= props.endDate.$d)) {
         startDate = dayjs(props.startDate.$d).format('YYYY-MM-DD');
         endDate = dayjs(props.endDate.$d).format('YYYY-MM-DD');
       }
 
       if(window.location.pathname == "/Archive") {
         if (typeof props.county !== 'undefined' && props.county.length > 0) {
-          console.log("finding counties");
 
           var counties = new URLSearchParams();
 
@@ -135,7 +134,7 @@ const NOICards = (props) =>  {
             params: counties,
           })
           .then((response) => {
-            console.log(response);
+            // console.log(response);
             if (props.fumigant === true) {
               const filteredData = response.data.filter(elem => elem.fumigant_sw === 'X');
               setPesticideData(filteredData);
@@ -155,13 +154,13 @@ const NOICards = (props) =>  {
         }
       } else {
         if(window.location.pathname == "/") {
-          console.log("finding current location");
+          // console.log("finding current location");
 
           axios.get(`https://noi-notification-system-qvo2g2xyga-uc.a.run.app/findNearbyNOI`, {
               params: { latitude: coordinates.lat, longitude: coordinates.lng, radius: convertMilesToMeters(radius), order: order[0], orderParam: order[1], startDate: startDate, endDate: endDate},
           })
           .then((response) => {
-            console.log(response);
+            // console.log(response);
             setPesticideData(response.data);
           })
           .catch(function (error) {
@@ -184,7 +183,7 @@ const NOICards = (props) =>  {
     // console.log("Fumigant " + props.fumigant);
     // console.log("Aerial/Ground " + props.aerialGround);
     // console.log(props.county);
-    // console.log(props.startDate);
+    console.log(props.startDate);
     // console.log(props.endDate);
 
     // console.log(props.distance_order);

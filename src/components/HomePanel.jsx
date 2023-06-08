@@ -7,8 +7,6 @@ import Emergency from "./Emergency";
 
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import SwipeableViews from 'react-swipeable-views-react-18-fix';
-
 
 function TabPanel(props) {
   const { children, value, index } = props;
@@ -41,7 +39,6 @@ const HomePanel = () => {
 
 
   const handleChange = (e, newValue) => {
-    console.log(newValue);
     setValue(newValue);
   };
 
