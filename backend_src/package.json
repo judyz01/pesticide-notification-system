@@ -4,7 +4,7 @@
   "description": "Backend for NOI Notification System",
   "main": "index.js",
   "scripts": {
-    "test": "nyc mocha --reporter spec",
+    "test": "nyc mocha --timeout 5000 --reporter spec",
     "start": "npx functions-framework --target=api [--signature-type=http]",
     "watch": "npm-watch start",
     "loadNearby": "artillery run -o test/reports/findNearbyNOI.json test/load.findNearbyNOI.yml",

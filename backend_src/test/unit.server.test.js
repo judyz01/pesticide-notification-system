@@ -68,6 +68,15 @@ describe("Backend API", () => {
         });
     })
 
+    describe("Bad endpoint", () => {
+        it("returns 404 when the endpoint isn't valid", async () => {
+            const response = await supertest(app)
+                .get('/fake')
+            expect(response.status).equal(404);
+            expect(response.text).equal("Unable to locate resource. Please try again.");
+        })
+    })
+
     describe("Find County NOIs", () => {
         describe("Valid", () => {
             beforeEach(() => {
