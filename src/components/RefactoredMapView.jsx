@@ -40,8 +40,6 @@ function RefactoredMapView(props) {
   const { i18n, t } = useTranslation();
   // Radius is in meters, currently set to 5 mile radius (8046.72m)
   var userRadius = demoRadius ? demoRadius: (props.lat && props.lng && qrFlag) ? 250: props.radius ? convertMilesToMeters(props.radius) : 8046.72;
-  // console.log("radius is " + userRadius);
-  // console.log("props radius is " + props.radius);
 
   var zoomDict = {8046.7: 12, 16093.4: 11, 24140.1: 10}
 
@@ -146,7 +144,6 @@ function RefactoredMapView(props) {
 
           setCurrentLocation(pos);
           setRealPosition(pos);
-          console.log("set real position");
         }
       );
     }
@@ -202,7 +199,16 @@ function RefactoredMapView(props) {
 
   const panToCurrentLocation = () => {
     setQrFlag(false);
-    setCurrentLocation(realPosition);
+
+    // Find current position of user
+    navigator.geolocation.getCurrentPosition(
+      ({ coords: { latitude: lat, longitude: lng } }) => {
+        const pos = { lat, lng };
+
+        setCurrentLocation(pos);
+        setRealPosition(pos);
+      }
+    );
   }
 
   // DEMO
@@ -239,7 +245,6 @@ function RefactoredMapView(props) {
   };
 
   function valueLabelFormat(value) {  
-      console.log(value);
       return ` 8/${value}/2019 `;
   }
 
