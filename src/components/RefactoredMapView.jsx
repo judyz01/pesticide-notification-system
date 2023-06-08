@@ -17,13 +17,14 @@ import Slider from '@mui/material/Slider';
 
 function RefactoredMapView(props) {
 
+  const [qrFlag, setQrFlag] = useState(true);
+
   // If not from QR code, then use default coordinates for pesticide data until current location is found
   const [currentLocation, setCurrentLocation] = useState(() => (props.lat && props.lng) ? {lat: parseFloat(props.lat), lng: parseFloat(props.lng)} : {lat: 38.53709139783189, lng: -121.75506664377548});
   const [realPosition, setRealPosition] = useState();
 
   const [pesticideData, setPesticideData] = useState([]);
   const [searchBox, setSearchBox] = useState(null);
-  const [address, setAddress] = useState(null);
   const [qrCoords, setQrCoords] = useState({});
   const [open, setOpen] = useState(false);
 
@@ -38,7 +39,7 @@ function RefactoredMapView(props) {
 
   const { i18n, t } = useTranslation();
   // Radius is in meters, currently set to 5 mile radius (8046.72m)
-  var userRadius = demoRadius ? demoRadius: (props.lat && props.lng) ? 250: props.radius ? convertMilesToMeters(props.radius) : 8046.72;
+  var userRadius = demoRadius ? demoRadius: (props.lat && props.lng && qrFlag) ? 250: props.radius ? convertMilesToMeters(props.radius) : 8046.72;
   // console.log("radius is " + userRadius);
   // console.log("props radius is " + props.radius);
 
@@ -137,7 +138,7 @@ function RefactoredMapView(props) {
   // Used once on mount
   useEffect(() => {
 
-    if (!(props.lat && props.lng)) {
+    if (!(props.lat && props.lng && qrFlag)) {
       // Find current position of user
       navigator.geolocation.getCurrentPosition(
         ({ coords: { latitude: lat, longitude: lng } }) => {
@@ -168,7 +169,7 @@ function RefactoredMapView(props) {
   // Receive new location from search box, converts it to lat/long coordinates
   // Uses new coordinates to obtain pesticide data
   const onPlacesChanged = (placeID) => {
-
+    setQrFlag(false);
     var place =  placeID ? placeID : searchBox.getPlaces()[0].place_id;
 
     axios.get(`https://maps.googleapis.com/maps/api/geocode/json?`, {
@@ -199,6 +200,7 @@ function RefactoredMapView(props) {
   }
 
   const panToCurrentLocation = () => {
+    setQrFlag(false);
     setCurrentLocation(realPosition);
   }
 
@@ -304,7 +306,7 @@ function RefactoredMapView(props) {
       </Stack>
         <GoogleMap 
           center={currentLocation}
-          zoom={demoZoom? demoZoom : (props.lat && props.lng) ? 18 : zoomDict[convertMilesToMeters(props.radius)] ? zoomDict[convertMilesToMeters(props.radius)] : 12}
+          zoom={demoZoom? demoZoom : (props.lat && props.lng && qrFlag) ? 18 : zoomDict[convertMilesToMeters(props.radius)] ? zoomDict[convertMilesToMeters(props.radius)] : 12}
           onLoad={map => {onMapLoad(map)}}
           mapContainerStyle={{ height: "100%", width: "100%" }}
         >
