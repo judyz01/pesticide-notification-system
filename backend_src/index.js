@@ -7,7 +7,7 @@ const Backend = require('i18next-fs-backend');
 const middleware = require('i18next-http-middleware');
 
 const county_functions = require('./county_functions.js');
-const create_unix_socket = require('./create_unix_socket.js');
+const pool = require('./knex.js');
 const twilio_functions = require('./twilio_functions.js')
 require('dotenv').config()
 
@@ -16,68 +16,6 @@ const app = express()
 // Automatically parse request body as form data.
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-
-// lazy init knex connection pool
-let pool;
-
-// initialize SQL Pool
-app.use(async (req, res, next) => {
-  if (pool) {
-    return next();
-  }
-  try {
-    pool = await createPool();
-    next();
-  } catch (err) {
-    return next(err);
-  }
-});
-
-// Initialize Knex, a Node.js SQL query builder library with built-in connection pooling.
-const createPool = async () => {
-  // Configure which instance and what database user to connect with.
-  const config = {
-    acquireConnectionTimeout: 600000,
-    pool: {}
-  };
-
-  // [START cloud_sql_postgres_knex_limit]
-  // 'max' limits the total number of concurrent connections this pool will keep. Ideal
-  // values for this setting are highly variable on app design, infrastructure, and database.
-  config.pool.max = 1;
-  // 'min' is the minimum number of idle connections Knex maintains in the pool.
-  // Additional connections will be established to meet this value unless the pool is full.
-  config.pool.min = 0;
-  // [END cloud_sql_postgres_knex_limit]
-
-  // [START cloud_sql_postgres_knex_timeout]
-  // 'acquireTimeoutMillis' is the number of milliseconds before a timeout occurs when acquiring a
-  // connection from the pool. This is slightly different from connectionTimeout, because acquiring
-  // a pool connection does not always involve making a new connection, and may include multiple retries.
-  // when making a connection
-  config.pool.acquireTimeoutMillis = 60000; // 60 seconds
-  // 'createTimeoutMillis` is the maximum number of milliseconds to wait trying to establish an
-  // initial connection before retrying.
-  // After acquireTimeoutMillis has passed, a timeout exception will be thrown.
-  config.pool.createTimeoutMillis = 10000; // 10 seconds
-  // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool
-  // and not be checked out before it is automatically closed.
-  config.pool.idleTimeoutMillis = 1; // Immediately after the query is serviced
-  // [END cloud_sql_postgres_knex_timeout]
-
-  // [START cloud_sql_postgres_knex_backoff]
-  // 'knex' uses a built-in retry strategy which does not implement backoff.
-  // 'createRetryIntervalMillis' is how long to idle after failed connection creation before trying again
-  config.pool.createRetryIntervalMillis = 200; // 0.2 seconds
-  // [END cloud_sql_postgres_knex_backoff]
-
-  if (process.env.INSTANCE_UNIX_SOCKET) {
-    // Use a Unix socket when INSTANCE_UNIX_SOCKET (e.g., /cloudsql/proj:region:instance) is defined.
-    return create_unix_socket(config);
-  } else {
-    throw 'INSTANCE_UNIX_SOCKET` is required.';
-  }
-};
 
 // API Endpoint test
 app.get('/', (req, res) => {
@@ -95,7 +33,6 @@ app.get('/', (req, res) => {
  *  JSON List of NOI's and their relevant information 
 */
 app.get('/findCountyNOI', async (req, res) => {
-  pool = pool || (await createPool());
   let reqOrder = req.query.order
   if (!reqOrder) {
     reqOrder = 'ASC';
@@ -186,7 +123,6 @@ app.get('/findCountyNOI', async (req, res) => {
  *  JSON List of nearby NOI's and their relevant information 
 */
 app.get('/findNearbyNOI', async (req, res) => {
-  pool = pool || (await createPool());
   let latitude = req.query.latitude;
   let longitude = req.query.longitude;
   let radius = req.query.radius;
@@ -295,10 +231,8 @@ Return Value:
   JSON message "Successfully added" */
 
 app.post('/addTableNOI', async function (req, res, next) {
-  pool = pool || (await createPool());
   let tablename = 'noi'
   let restricted = 'restricted_products'
-  let preset_link = 'https://apps.cdpr.ca.gov/cgi-bin/label/label.pl?typ=pir&prodno='
   try {
     res.set('Access-Control-Allow-Origin', '*');
 
@@ -354,7 +288,6 @@ app.post('/addTableNOI', async (req, res, next) => {
   req.lon = coordinates.lon;
   try {
     res.set('Access-Control-Allow-Origin', '*');
-    pool = pool || (await createPool());
     const noiList = await pool.raw('INSERT INTO coordinates VALUES (?, ?, ?, ST_MakePoint(?, ?))', [req.body.use_no, req.lat, req.lon, req.lon, req.lat]);
   } catch (err) {
     console.error(err);
@@ -365,7 +298,6 @@ app.post('/addTableNOI', async (req, res, next) => {
 
 // Add an NOI to our database, and send notifications about this new application
 app.post('/addTableNOI', async (req, res) => {
-  pool = pool || (await createPool());
   const tableName = 'subscribers';
   let county_column = 'sub' + String(req.body.county_cd);
   try {
@@ -471,7 +403,6 @@ const handleMultiKeywordText = async (req, res, tokens) => {
     // Send error message otherwise.
     try {
       res.set('Access-Control-Allow-Origin', '*');
-      pool = (pool || createPool());
       const lng = req.headers['accept-language']
       // Add to subscribers table
       await pool.raw('INSERT INTO ?? (phone_number, language, ??) VALUES (?, ?, ?) ON CONFLICT (phone_number)\
@@ -492,12 +423,20 @@ const handleMultiKeywordText = async (req, res, tokens) => {
     let tableName = 'subscribers';
     // Delete users to subscription list, and send confirmation text.
     // Send error message otherwise.
+    let county_num = county_functions.county_lookup(tokens[1]);
+    let county_column;
+    if (county_num) {
+      county_column = 'sub' + String(county_num);
+    } else {
+      console.error("Invalid county");
+      twilio_functions.sendError(req, res, "invalid_county");
+      res.status(500).send("Invalid county. Error unsubscribing");
+      return;
+    }
     try {
       res.set('Access-Control-Allow-Origin', '*');
-      pool = (pool || createPool());
-      let subscriber_string = 'sub' + String(county_functions.county_lookup(tokens[1]));
       // Toggle boolean for county specified
-      await pool.raw('UPDATE ?? SET ?? = false WHERE phone_number = ?', [tableName, subscriber_string, req.body.From]);
+      await pool.raw('UPDATE ?? SET ?? = false WHERE phone_number = ?', [tableName, county_column, req.body.From]);
       twilio_functions.sendUnsubscribeConfirmation(req, res, tokens[1]);
       res.status(200).send("Unsubscription successful.");
     } catch (err) {
