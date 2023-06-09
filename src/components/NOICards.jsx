@@ -183,7 +183,7 @@ const NOICards = (props) =>  {
     // console.log("Fumigant " + props.fumigant);
     // console.log("Aerial/Ground " + props.aerialGround);
     // console.log(props.county);
-    console.log(props.startDate);
+    // console.log(props.startDate);
     // console.log(props.endDate);
 
     // console.log(props.distance_order);
@@ -372,6 +372,7 @@ const NOICards = (props) =>  {
 
       {(pesticideData.length > 0) &&
         <Pagination 
+            data-cy="pagination"
             count={Math.ceil(pesticideData.length / itemsPerPage)}
             page={page}
             onChange={handleChange}

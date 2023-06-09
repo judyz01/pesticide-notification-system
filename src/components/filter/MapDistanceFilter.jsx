@@ -21,16 +21,6 @@ const names = [
   'Furthest'
 ];
 
-function getStyles(name, distanceDateOrder, theme) {
-
-  return {
-    fontWeight:
-    distanceDateOrder.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  };
-}
-
 export default function MapDistanceFilter(props) {
   const { t } = useTranslation();
   const INPUT_LABEL = t("Date/Distance");
@@ -50,6 +40,7 @@ export default function MapDistanceFilter(props) {
     <FormControl sx={{ minWidth:"120px", width: "20%"}}>
       <InputLabel id="order-by-distance-date-label">{INPUT_LABEL}</InputLabel>
       <Select
+        data-cy="order-distance-filter"
         labelId="order-by-distance-date-label"
         id="order-by-distance-date"
         value={distanceDateOrder}
@@ -62,7 +53,6 @@ export default function MapDistanceFilter(props) {
           <MenuItem
             key={name}
             value={name}
-            // style={getStyles(name, distanceDateOrder, theme)}
           >
             {t(name)}
           </MenuItem>
