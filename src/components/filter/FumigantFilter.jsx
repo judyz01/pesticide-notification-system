@@ -30,9 +30,8 @@ export default function FumigantFilter(props) {
 
   return (
     <FormControlLabel
-          data-cy="fumigant-filter"
           value="end"
-          control={<Checkbox />}
+          control={<Checkbox data-cy="fumigant-filter" />}
           label={FUMIGANT_LABEL}
           labelPlacement="end"
           checked={checked}

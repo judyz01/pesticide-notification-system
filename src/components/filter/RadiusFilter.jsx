@@ -55,6 +55,7 @@ export default function RadiusFilter(props) {
     <FormControl sx={{ minWidth:"120px", width: "20%"}}>
       <InputLabel id="order-by-radius-label">{RADIUS_LABEL} </InputLabel>
       <Select
+        data-cy="radius-filter"
         labelId="order-by-radius-label"
         id="order-by-radius"
         value={radius}

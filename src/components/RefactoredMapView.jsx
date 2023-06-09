@@ -269,12 +269,11 @@ function RefactoredMapView(props) {
               sx={{width:"100%"}}
               label={ENTER_ADDRESS} 
               variant="outlined" 
-              // value={address? address : ""}
               placeholder=""
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <MyLocationIcon onClick={panToCurrentLocation}/>
+                    <MyLocationIcon data-cy="location-icon" onClick={panToCurrentLocation}/>
                   </InputAdornment>
                 )
               }} >
@@ -343,10 +342,11 @@ function RefactoredMapView(props) {
 
       <Stack direction="row" alignItems="center"> 
 
-        <FormControlLabel onChange={handleChange} control={<Switch checked={demo} />} label="Demo" />
+        <FormControlLabel onChange={handleChange} control={<Switch data-cy="demo-switch" checked={demo} />} label="Demo" />
 
         { demo && 
         <Slider
+          data-cy="demo-slider"
           sx={{width: "60%", ml:"20px"}}
           min={1}
           max={31}
