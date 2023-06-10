@@ -34,22 +34,6 @@ describe('Archive Page', () => {
     cy.contains('Yolo').click()
   })
 
-  // it('Is able to deselect multiple counties in mobile view', () => {
-  //   cy.viewport(600, 982) 
-  //   cy.contains('Filters').click()
-  //   cy.get('[data-cy="county-filter"]').click()
-  //   cy.contains('Alameda').click()
-  //   cy.contains('Alpine').click()
-  //   cy.contains('Yolo').click()
-
-
-  //   cy.get('body').click(0,0);
-  //   cy.get('[data-cy="county-filter"]').click()
-
-  //   cy.contains('Alameda').click()
-  //   cy.contains('Yolo').click()
-  // })
-
   it('Is able to select Order By filter in mobile view', () => {
     cy.viewport(600, 982) 
     cy.contains('Filters').click()

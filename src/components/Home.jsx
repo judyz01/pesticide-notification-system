@@ -65,10 +65,6 @@ const Home = (props) => {
             {t("NOI")}
           </Typography>
 
-          <Link to="/Archive" underline="hover" component={RouterLink} sx={{ pt: "15px", component: "button", color: "#208EF3", fontSize: 18, fontWeight: 600}}>
-            {t("SeeAll")}
-          </Link>
-
         </Box>
 
         <Stack direction="row" spacing={2} sx={{width: "80%", mb:"15px"}}>

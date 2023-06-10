@@ -86,6 +86,12 @@ describe('Home Page', () => {
     cy.get('[data-cy="menu-icon"]').click()
   })
 
+  it('Is able to update menu icon for nav bar in mobile/desktop view', () => {
+    cy.viewport(590, 982) 
+    cy.viewport(1512, 982) 
+
+  })
+
   it('Is able to choose between different radii', () => {
     cy.get('[data-cy="radius-filter"]').click()
     cy.contains('10 mi.').click()
