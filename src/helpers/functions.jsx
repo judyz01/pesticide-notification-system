@@ -33,7 +33,7 @@ export const getApplicatorCharacter = (str) => {
 // Converts military time to standard time
 export const getStandardTime = (time) => {
   // Times that are listed null
-  if (!time) {
+  if (time == null) {
     return "";
   }
 
