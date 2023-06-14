@@ -23,7 +23,7 @@ function loadSkeleton() {
 const NOICards = (props) =>  {
   const { t } = useTranslation();
 
-  const TOOLTIP_DISTANCE = t("Tooltip Distance");
+  const TOOLTIP_LOCATION= (window.location.pathname == "/") ? t("Tooltip Distance") : t("Tooltip County");
   const TOOLTIP_DATE = t("Tooltip Time/Date");
   const TOOLTIP_APPLICATION = t("Tooltip Application");
   const COVERAGE_UNIT = t("acres");
@@ -201,7 +201,7 @@ const NOICards = (props) =>  {
     return(
       <>
         <Stack direction="row" alignItems="center" gap={2}> 
-          <Tooltip title={TOOLTIP_DISTANCE} arrow placement="left">
+          <Tooltip title={TOOLTIP_LOCATION} arrow placement="left">
             <LocationOnOutlined />
           </Tooltip>
 
