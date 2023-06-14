@@ -62,8 +62,12 @@ const NOICards = (props) =>  {
   // Pagination
   const handleChange = (event, value) => {
     setPage(value);
-    // TODO fix scrolling of pagination in map view scrolling to the top page
-    window.scroll({top: 0, left: 0, behavior: 'smooth' });
+    if(window.location.pathname == "/") {
+      window.scroll({top: 700, left: 0, behavior: 'smooth' });
+    }
+    if(window.location.pathname == "/Archive") {
+      window.scroll({top: 0, left: 0, behavior: 'smooth' });
+    }
   };
 
   // QR Icon Button
