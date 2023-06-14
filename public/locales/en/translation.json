@@ -48,7 +48,8 @@
     "Applicant Type": "Applicant Type",
     "Clear All": "Clear All",
 
-    "Tooltip Distance": "County",
+    "Tooltip Distance": "Distance from current location",
+    "Tooltip County": "County",
     "Tooltip Time/Date": "Time/Date" ,
     "Tooltip Application": "Application Method",
 

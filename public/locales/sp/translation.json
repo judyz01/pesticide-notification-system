@@ -46,7 +46,8 @@
     "Applicant Type": "Tipo de Solicitante",
     "Clear All": "Limpiar Todo",
 
-    "Tooltip Distance": "Condado",
+    "Tooltip Distance": "Distancia desde la ubicación actual",
+    "Tooltip County": "Condado",
     "Tooltip Time/Date": "Hora y fecha",
     "Tooltip Application": "Método de aplicación",
 
