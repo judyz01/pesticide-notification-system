@@ -5,8 +5,8 @@ describe('Home Page', () => {
     cy.visit('http://localhost:3001/')  
   });
 
-  it('Is able to click Site Help button', () => {
-    cy.contains('Site Help').click()
+  it('Is able to see Guide button', () => {
+    cy.contains('Guide').should('be.visible')
   })
 
   it('Is able to click search bar', () => {
