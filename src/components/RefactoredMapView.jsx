@@ -302,6 +302,7 @@ function RefactoredMapView(props) {
                 }
               }}
             }}
+            href="https://youtu.be/n-2rxkcqTdo"
         >
           {SITE_HELP}
         </Button> 
