@@ -287,6 +287,8 @@ function RefactoredMapView(props) {
         </Stack>
 
         <Button sx={{ 
+            justifyContent: "center",
+            alignItems: "center",
             display: "flex",
             height: "40px",
             p: "16px",
